@@ -1,165 +1,5 @@
 [
     {
-        "id": "_pb_users_auth_",
-        "name": "users",
-        "type": "auth",
-        "system": false,
-        "listRule": "id = @request.auth.id",
-        "viewRule": "id = @request.auth.id",
-        "createRule": "",
-        "updateRule": "id = @request.auth.id",
-        "deleteRule": "id = @request.auth.id",
-        "fields": [
-            {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "hidden": false,
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "min": 15,
-                "max": 15,
-                "pattern": "^[a-z0-9]+$"
-            },
-            {
-                "id": "email3885137012",
-                "name": "email",
-                "type": "email",
-                "system": true,
-                "required": true,
-                "hidden": false
-            },
-            {
-                "id": "bool1547992806",
-                "name": "emailVisibility",
-                "type": "bool",
-                "system": true,
-                "required": false,
-                "hidden": false
-            },
-            {
-                "id": "bool256245529",
-                "name": "verified",
-                "type": "bool",
-                "system": true,
-                "required": false,
-                "hidden": false
-            },
-            {
-                "id": "password901924565",
-                "name": "password",
-                "type": "password",
-                "system": true,
-                "required": true,
-                "hidden": true,
-                "min": 8,
-                "max": 0,
-                "cost": 0
-            },
-            {
-                "id": "text2504183744",
-                "name": "tokenKey",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "hidden": true,
-                "autogeneratePattern": "[a-zA-Z0-9]{50}",
-                "min": 30,
-                "max": 60
-            },
-            {
-                "id": "text1579384326",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "hidden": false,
-                "max": 255
-            },
-            {
-                "id": "file376926767",
-                "name": "avatar",
-                "type": "file",
-                "system": false,
-                "required": false,
-                "hidden": false,
-                "maxSelect": 1,
-                "mimeTypes": ["image/jpeg", "image/png", "image/svg+xml", "image/gif", "image/webp"]
-            },
-            {
-                "id": "text_gender",
-                "name": "gender",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "hidden": false,
-                "max": 20
-            },
-            {
-                "id": "date_dob",
-                "name": "dob",
-                "type": "date",
-                "system": false,
-                "required": false,
-                "hidden": false
-            },
-            {
-                "id": "number_height",
-                "name": "heightCm",
-                "type": "number",
-                "system": false,
-                "required": false,
-                "hidden": false,
-                "min": 0,
-                "max": 300
-            },
-            {
-                "id": "number_weight",
-                "name": "weightKg",
-                "type": "number",
-                "system": false,
-                "required": false,
-                "hidden": false,
-                "min": 0,
-                "max": 500
-            },
-            {
-                "id": "autodate2990389176",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate3332085495",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
-            }
-        ],
-        "indexes": [
-            "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
-            "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
-        ],
-        "authRule": "",
-        "manageRule": null,
-        "passwordAuth": {
-            "enabled": true,
-            "identityFields": ["email"]
-        },
-        "authToken": {
-            "duration": 604800
-        }
-    },
-    {
-        "id": "food_logs",
         "name": "food_logs",
         "type": "base",
         "system": false,
@@ -170,79 +10,43 @@
         "deleteRule": "@request.auth.id != '' && userId = @request.auth.id",
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "relation_user",
                 "name": "userId",
                 "type": "relation",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "collectionId": "_pb_users_auth_",
-                "cascadeDelete": true,
-                "minSelect": null,
-                "maxSelect": 1,
-                "displayFields": null
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
             },
             {
-                "id": "text_food_id",
                 "name": "foodId",
                 "type": "text",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "max": 100
+                "options": {
+                    "max": 100
+                }
             },
             {
-                "id": "number_calories",
                 "name": "calories",
                 "type": "number",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "date_timestamp",
                 "name": "timestamp",
                 "type": "date",
-                "system": false,
-                "required": true,
-                "hidden": false
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "required": true
             }
         ],
         "indexes": [
-            "CREATE INDEX `idx_food_logs_user` ON `food_logs` (`userId`)",
-            "CREATE INDEX `idx_food_logs_timestamp` ON `food_logs` (`timestamp`)"
+            "CREATE INDEX idx_food_logs_user ON food_logs (userId)",
+            "CREATE INDEX idx_food_logs_timestamp ON food_logs (timestamp)"
         ]
     },
     {
-        "id": "water_logs",
         "name": "water_logs",
         "type": "base",
         "system": false,
@@ -253,68 +57,35 @@
         "deleteRule": "@request.auth.id != '' && userId = @request.auth.id",
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "relation_user",
                 "name": "userId",
                 "type": "relation",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "collectionId": "_pb_users_auth_",
-                "cascadeDelete": true,
-                "maxSelect": 1
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
             },
             {
-                "id": "number_amount",
                 "name": "amountMl",
                 "type": "number",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "date_timestamp",
                 "name": "timestamp",
                 "type": "date",
-                "system": false,
-                "required": true,
-                "hidden": false
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "required": true
             }
         ],
         "indexes": [
-            "CREATE INDEX `idx_water_logs_user` ON `water_logs` (`userId`)",
-            "CREATE INDEX `idx_water_logs_timestamp` ON `water_logs` (`timestamp`)"
+            "CREATE INDEX idx_water_logs_user ON water_logs (userId)",
+            "CREATE INDEX idx_water_logs_timestamp ON water_logs (timestamp)"
         ]
     },
     {
-        "id": "workouts",
         "name": "workouts",
         "type": "base",
         "system": false,
@@ -325,87 +96,54 @@
         "deleteRule": "@request.auth.id != '' && userId = @request.auth.id",
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "relation_user",
                 "name": "userId",
                 "type": "relation",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "collectionId": "_pb_users_auth_",
-                "cascadeDelete": true,
-                "maxSelect": 1
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
             },
             {
-                "id": "text_type",
                 "name": "type",
                 "type": "text",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "max": 50
+                "options": {
+                    "max": 50
+                }
             },
             {
-                "id": "number_duration",
                 "name": "durationMin",
                 "type": "number",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "min": 1
+                "options": {
+                    "min": 1
+                }
             },
             {
-                "id": "number_calories_burned",
                 "name": "caloriesBurned",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "number_effort",
                 "name": "effortUnits",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "options": {
+                    "min": 0
+                }
             }
         ],
         "indexes": [
-            "CREATE INDEX `idx_workouts_user` ON `workouts` (`userId`)",
-            "CREATE INDEX `idx_workouts_created` ON `workouts` (`created`)"
+            "CREATE INDEX idx_workouts_user ON workouts (userId)",
+            "CREATE INDEX idx_workouts_created ON workouts (created)"
         ]
     },
     {
-        "id": "settings",
         "name": "settings",
         "type": "base",
         "system": false,
@@ -416,96 +154,62 @@
         "deleteRule": "@request.auth.id != '' && userId = @request.auth.id",
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "relation_user",
                 "name": "userId",
                 "type": "relation",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "collectionId": "_pb_users_auth_",
-                "cascadeDelete": true,
-                "maxSelect": 1
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
             },
             {
-                "id": "number_calorie_target",
                 "name": "dietCalorieTarget",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "number_hydro_target",
                 "name": "hydroTargetMl",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "number_hydro_interval",
                 "name": "hydroIntervalMin",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "number_meals",
                 "name": "expectedMealsPerDay",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 1,
-                "max": 10
+                "options": {
+                    "min": 1,
+                    "max": 10
+                }
             },
             {
-                "id": "text_timezone",
                 "name": "timezone",
                 "type": "text",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "max": 50
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "options": {
+                    "max": 50
+                }
             }
         ],
         "indexes": [
-            "CREATE UNIQUE INDEX `idx_settings_user` ON `settings` (`userId`)"
+            "CREATE UNIQUE INDEX idx_settings_user ON settings (userId)"
         ]
     },
     {
-        "id": "streaks",
         "name": "streaks",
         "type": "base",
         "system": false,
@@ -516,86 +220,53 @@
         "deleteRule": "@request.auth.id != '' && userId = @request.auth.id",
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "relation_user",
                 "name": "userId",
                 "type": "relation",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "collectionId": "_pb_users_auth_",
-                "cascadeDelete": true,
-                "maxSelect": 1
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
             },
             {
-                "id": "number_diet",
                 "name": "dietDays",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "number_hydro",
                 "name": "hydroDays",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "number_workout",
                 "name": "workoutDays",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "number_perfect",
                 "name": "perfectDays",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "options": {
+                    "min": 0
+                }
             }
         ],
         "indexes": [
-            "CREATE UNIQUE INDEX `idx_streaks_user` ON `streaks` (`userId`)"
+            "CREATE UNIQUE INDEX idx_streaks_user ON streaks (userId)"
         ]
     },
     {
-        "id": "waifu_states",
         "name": "waifu_states",
         "type": "base",
         "system": false,
@@ -606,78 +277,46 @@
         "deleteRule": "@request.auth.id != '' && userId = @request.auth.id",
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "relation_user",
                 "name": "userId",
                 "type": "relation",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "collectionId": "_pb_users_auth_",
-                "cascadeDelete": true,
-                "maxSelect": 1
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
             },
             {
-                "id": "number_emotion_score",
                 "name": "emotionScore",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0,
-                "max": 100
+                "options": {
+                    "min": 0,
+                    "max": 100
+                }
             },
             {
-                "id": "text_emotion",
                 "name": "emotion",
                 "type": "text",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "max": 50
+                "options": {
+                    "max": 50
+                }
             },
             {
-                "id": "text_greeting",
                 "name": "greeting",
                 "type": "text",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "max": 1000
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "options": {
+                    "max": 1000
+                }
             }
         ],
         "indexes": [
-            "CREATE UNIQUE INDEX `idx_waifu_states_user` ON `waifu_states` (`userId`)"
+            "CREATE UNIQUE INDEX idx_waifu_states_user ON waifu_states (userId)"
         ]
     },
     {
-        "id": "daily_summaries",
         "name": "daily_summaries",
         "type": "base",
         "system": false,
@@ -688,108 +327,71 @@
         "deleteRule": "@request.auth.id != '' && userId = @request.auth.id",
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "relation_user",
                 "name": "userId",
                 "type": "relation",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "collectionId": "_pb_users_auth_",
-                "cascadeDelete": true,
-                "maxSelect": 1
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
             },
             {
-                "id": "date_date",
                 "name": "date",
                 "type": "date",
-                "system": false,
-                "required": true,
-                "hidden": false
+                "required": true
             },
             {
-                "id": "number_diet_score",
                 "name": "dietScore",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0,
-                "max": 100
+                "options": {
+                    "min": 0,
+                    "max": 100
+                }
             },
             {
-                "id": "number_hydro_score",
                 "name": "hydroScore",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0,
-                "max": 100
+                "options": {
+                    "min": 0,
+                    "max": 100
+                }
             },
             {
-                "id": "number_effort_score",
                 "name": "effortScore",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0,
-                "max": 100
+                "options": {
+                    "min": 0,
+                    "max": 100
+                }
             },
             {
-                "id": "number_total_score",
                 "name": "totalScore",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0,
-                "max": 100
+                "options": {
+                    "min": 0,
+                    "max": 100
+                }
             },
             {
-                "id": "text_waifu_id",
                 "name": "waifuId",
                 "type": "text",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "max": 50
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "options": {
+                    "max": 50
+                }
             }
         ],
         "indexes": [
-            "CREATE INDEX `idx_daily_summaries_user` ON `daily_summaries` (`userId`)",
-            "CREATE UNIQUE INDEX `idx_daily_summaries_user_date` ON `daily_summaries` (`userId`, `date`)"
+            "CREATE INDEX idx_daily_summaries_user ON daily_summaries (userId)",
+            "CREATE UNIQUE INDEX idx_daily_summaries_user_date ON daily_summaries (userId, date)"
         ]
     },
     {
-        "id": "weight_targets",
         "name": "weight_targets",
         "type": "base",
         "system": false,
@@ -800,68 +402,37 @@
         "deleteRule": "@request.auth.id != '' && userId = @request.auth.id",
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "relation_user",
                 "name": "userId",
                 "type": "relation",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "collectionId": "_pb_users_auth_",
-                "cascadeDelete": true,
-                "maxSelect": 1
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
             },
             {
-                "id": "number_target_weight",
                 "name": "targetWeightKg",
                 "type": "number",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "text_target_type",
                 "name": "targetType",
                 "type": "text",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "max": 20
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "options": {
+                    "max": 20
+                }
             }
         ],
         "indexes": [
-            "CREATE UNIQUE INDEX `idx_weight_targets_user` ON `weight_targets` (`userId`)"
+            "CREATE UNIQUE INDEX idx_weight_targets_user ON weight_targets (userId)"
         ]
     },
     {
-        "id": "meals",
         "name": "meals",
         "type": "base",
         "system": false,
@@ -872,165 +443,96 @@
         "deleteRule": "@request.auth.id != '' && userId = @request.auth.id",
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "relation_user",
                 "name": "userId",
                 "type": "relation",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "collectionId": "_pb_users_auth_",
-                "cascadeDelete": true,
-                "maxSelect": 1
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
             },
             {
-                "id": "text_type",
                 "name": "type",
                 "type": "text",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "max": 50
+                "options": {
+                    "max": 50
+                }
             },
             {
-                "id": "date_time",
                 "name": "time",
                 "type": "date",
-                "system": false,
-                "required": false,
-                "hidden": false
+                "required": false
             },
             {
-                "id": "number_total_calories",
                 "name": "totalCalories",
                 "type": "number",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "bool_complete",
                 "name": "isComplete",
                 "type": "bool",
-                "system": false,
-                "required": false,
-                "hidden": false
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "required": false
             }
         ],
         "indexes": [
-            "CREATE INDEX `idx_meals_user` ON `meals` (`userId`)"
+            "CREATE INDEX idx_meals_user ON meals (userId)"
         ]
     },
     {
-        "id": "meal_items",
         "name": "meal_items",
         "type": "base",
         "system": false,
-        "listRule": "@request.auth.id != '' && mealId.userId = @request.auth.id",
-        "viewRule": "@request.auth.id != '' && mealId.userId = @request.auth.id",
+        "listRule": "@request.auth.id != ''",
+        "viewRule": "@request.auth.id != ''",
         "createRule": "@request.auth.id != ''",
-        "updateRule": "@request.auth.id != '' && mealId.userId = @request.auth.id",
-        "deleteRule": "@request.auth.id != '' && mealId.userId = @request.auth.id",
+        "updateRule": "@request.auth.id != ''",
+        "deleteRule": "@request.auth.id != ''",
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "relation_meal",
                 "name": "mealId",
                 "type": "relation",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "collectionId": "meals",
-                "cascadeDelete": true,
-                "maxSelect": 1
+                "options": {
+                    "collectionId": "meals",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
             },
             {
-                "id": "text_food_id",
                 "name": "foodId",
                 "type": "text",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "max": 100
+                "options": {
+                    "max": 100
+                }
             },
             {
-                "id": "number_quantity",
                 "name": "quantity",
                 "type": "number",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "number_calories",
                 "name": "calories",
                 "type": "number",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "min": 0
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "options": {
+                    "min": 0
+                }
             }
         ],
         "indexes": [
-            "CREATE INDEX `idx_meal_items_meal` ON `meal_items` (`mealId`)"
+            "CREATE INDEX idx_meal_items_meal ON meal_items (mealId)"
         ]
     },
     {
-        "id": "foods",
         "name": "foods",
         "type": "base",
         "system": false,
@@ -1041,62 +543,93 @@
         "deleteRule": null,
         "fields": [
             {
-                "id": "text3208210256",
-                "name": "id",
-                "type": "text",
-                "system": true,
-                "required": true,
-                "primaryKey": true,
-                "autogeneratePattern": "[a-z0-9]{15}"
-            },
-            {
-                "id": "text_name",
                 "name": "name",
                 "type": "text",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "max": 200
+                "options": {
+                    "max": 200
+                }
             },
             {
-                "id": "number_calories",
                 "name": "caloriesPer100g",
                 "type": "number",
-                "system": false,
                 "required": true,
-                "hidden": false,
-                "min": 0
+                "options": {
+                    "min": 0
+                }
             },
             {
-                "id": "text_icon",
                 "name": "icon",
                 "type": "text",
-                "system": false,
                 "required": false,
-                "hidden": false,
-                "max": 50
-            },
-            {
-                "id": "autodate_created",
-                "name": "created",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": false
-            },
-            {
-                "id": "autodate_updated",
-                "name": "updated",
-                "type": "autodate",
-                "system": false,
-                "hidden": false,
-                "onCreate": true,
-                "onUpdate": true
+                "options": {
+                    "max": 50
+                }
             }
         ],
         "indexes": [
-            "CREATE INDEX `idx_foods_name` ON `foods` (`name`)"
+            "CREATE INDEX idx_foods_name ON foods (name)"
+        ]
+    },
+    {
+        "name": "user_profiles",
+        "type": "base",
+        "system": false,
+        "listRule": "@request.auth.id != '' && userId = @request.auth.id",
+        "viewRule": "@request.auth.id != '' && userId = @request.auth.id",
+        "createRule": "@request.auth.id != ''",
+        "updateRule": "@request.auth.id != '' && userId = @request.auth.id",
+        "deleteRule": "@request.auth.id != '' && userId = @request.auth.id",
+        "fields": [
+            {
+                "name": "userId",
+                "type": "relation",
+                "required": true,
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "maxSelect": 1
+                }
+            },
+            {
+                "name": "email",
+                "type": "email",
+                "required": false
+            },
+            {
+                "name": "gender",
+                "type": "text",
+                "required": false,
+                "options": {
+                    "max": 20
+                }
+            },
+            {
+                "name": "dob",
+                "type": "date",
+                "required": false
+            },
+            {
+                "name": "heightCm",
+                "type": "number",
+                "required": false,
+                "options": {
+                    "min": 0,
+                    "max": 300
+                }
+            },
+            {
+                "name": "weightKg",
+                "type": "number",
+                "required": false,
+                "options": {
+                    "min": 0,
+                    "max": 500
+                }
+            }
+        ],
+        "indexes": [
+            "CREATE UNIQUE INDEX idx_user_profiles_user ON user_profiles (userId)"
         ]
     }
 ]
