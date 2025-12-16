@@ -15,8 +15,7 @@ export class DailySummaryService extends BaseService<DailySummary> {
    * Get all summaries for a user
    */
   async getByUserId(userId: string): Promise<DailySummary[]> {
-    const result = await this.findByFilter(`userId="${userId}"`);
-    return result.items;
+    return await this.findByFilter(`userId="${userId}"`);
   }
 
   /**

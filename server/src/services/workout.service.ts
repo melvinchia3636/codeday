@@ -4,10 +4,10 @@ import PocketBase from 'pocketbase';
 
 /**
  * Effort Units Calculation Logic:
- * 
+ *
  * Effort units are calculated based on workout type and duration.
  * Different workout types have different intensity multipliers:
- * 
+ *
  * | Workout Type   | Multiplier | Description                    |
  * |----------------|------------|--------------------------------|
  * | running        | 2.0        | High-intensity cardio          |
@@ -19,9 +19,9 @@ import PocketBase from 'pocketbase';
  * | walking        | 0.5        | Low intensity cardio           |
  * | stretching     | 0.3        | Very low intensity             |
  * | other          | 1.0        | Default multiplier             |
- * 
+ *
  * Formula: effortUnits = duration (minutes) × intensity multiplier
- * 
+ *
  * Daily target: 60 effort units (equivalent to 30 min running or 40 min weights)
  */
 
@@ -67,7 +67,7 @@ const CALORIES_PER_MINUTE: Record<string, number> = {
 export class WorkoutService extends BaseService<Workout> {
   // Daily effort units target
   private readonly DAILY_EFFORT_TARGET = 60;
-  
+
   constructor(pb: PocketBase) {
     super(pb, 'workouts');
   }
@@ -99,8 +99,7 @@ export class WorkoutService extends BaseService<Workout> {
    * Get all workouts for a user
    */
   async getByUserId(userId: string): Promise<Workout[]> {
-    const result = await this.findByFilter(`userId="${userId}"`);
-    return result.items;
+    return await this.findByFilter(`userId="${userId}"`);
   }
 
   /**
@@ -108,8 +107,7 @@ export class WorkoutService extends BaseService<Workout> {
    */
   async getTodayWorkouts(userId: string): Promise<Workout[]> {
     const today = this.getTodayDateString();
-    const result = await this.findByFilter(`userId="${userId}" && created~"${today}"`);
-    return result.items;
+    return await this.findByFilter(`userId="${userId}" && created~"${today}"`);
   }
 
   /**
@@ -141,19 +139,25 @@ export class WorkoutService extends BaseService<Workout> {
     totalCaloriesBurned: number;
   }> {
     const todayWorkouts = await this.getTodayWorkouts(userId);
-    
-    const summary = todayWorkouts.reduce((acc, workout) => {
-      return {
-        totalEffortUnits: acc.totalEffortUnits + (workout.effortUnits || 0),
-        totalDurationMin: acc.totalDurationMin + (workout.durationMin || 0),
-        totalCaloriesBurned: acc.totalCaloriesBurned + (workout.caloriesBurned || 0),
-      };
-    }, { totalEffortUnits: 0, totalDurationMin: 0, totalCaloriesBurned: 0 });
+
+    const summary = todayWorkouts.reduce(
+      (acc, workout) => {
+        return {
+          totalEffortUnits: acc.totalEffortUnits + (workout.effortUnits || 0),
+          totalDurationMin: acc.totalDurationMin + (workout.durationMin || 0),
+          totalCaloriesBurned: acc.totalCaloriesBurned + (workout.caloriesBurned || 0),
+        };
+      },
+      { totalEffortUnits: 0, totalDurationMin: 0, totalCaloriesBurned: 0 }
+    );
 
     return {
       ...summary,
       targetEffortUnits: this.DAILY_EFFORT_TARGET,
-      percentage: Math.min(100, Math.round((summary.totalEffortUnits / this.DAILY_EFFORT_TARGET) * 100)),
+      percentage: Math.min(
+        100,
+        Math.round((summary.totalEffortUnits / this.DAILY_EFFORT_TARGET) * 100)
+      ),
       workoutsCount: todayWorkouts.length,
     };
   }
@@ -163,8 +167,9 @@ export class WorkoutService extends BaseService<Workout> {
    */
   async createWorkout(userId: string, data: CreateWorkoutDto): Promise<Workout> {
     const effortUnits = data.effortUnits || this.calculateEffortUnits(data.type, data.durationMin);
-    const caloriesBurned = data.caloriesBurned || this.calculateCaloriesBurned(data.type, data.durationMin);
-    
+    const caloriesBurned =
+      data.caloriesBurned || this.calculateCaloriesBurned(data.type, data.durationMin);
+
     return await this.create({
       ...data,
       userId,
@@ -180,7 +185,8 @@ export class WorkoutService extends BaseService<Workout> {
     // Recalculate effort units if type or duration changed
     if (data.type && data.durationMin) {
       data.effortUnits = data.effortUnits || this.calculateEffortUnits(data.type, data.durationMin);
-      data.caloriesBurned = data.caloriesBurned || this.calculateCaloriesBurned(data.type, data.durationMin);
+      data.caloriesBurned =
+        data.caloriesBurned || this.calculateCaloriesBurned(data.type, data.durationMin);
     }
     return await this.update(id, data);
   }

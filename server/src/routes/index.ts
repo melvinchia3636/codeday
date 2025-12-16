@@ -1,7 +1,17 @@
 import { Router } from 'express';
-import { createUserRoutes } from './user.routes';
-import { createHealthRoutes } from './health.routes';
 import PocketBase from 'pocketbase';
+import { createUserRoutes } from './user.routes';
+import { createDailySummaryRoutes } from './dailySummary.routes';
+import { createFoodLogRoutes } from './foodLog.routes';
+import { createProfileRoutes } from './profile.routes';
+import { createMealRoutes } from './meal.routes';
+import { createSettingsRoutes } from './settings.routes';
+import { createStreaksRoutes } from './streaks.routes';
+import { createWaifuRoutes } from './waifu.routes';
+import { createWaterLogRoutes } from './waterLog.routes';
+import { createWeightTargetRoutes } from './weightTarget.routes';
+import { createWorkoutRoutes } from './workout.routes';
+import { createWorkoutTypeRoutes } from './workoutType.routes';
 
 /**
  * Create main router with all API routes
@@ -9,13 +19,21 @@ import PocketBase from 'pocketbase';
 export const createRoutes = (pb: PocketBase): Router => {
   const router = Router();
 
-  // API routes
+  // User routes
   router.use('/users', createUserRoutes(pb));
 
-  // Health Tracker API routes (mounted at root to match API spec)
-  // Endpoints: /daily-summaries, /food-logs, /me, /meals, /settings,
-  //            /streaks, /waifu, /water-logs, /weight-targets, /workouts
-  router.use('/', createHealthRoutes(pb));
+  // Health Tracker API routes
+  router.use('/daily-summaries', createDailySummaryRoutes(pb));
+  router.use('/food-logs', createFoodLogRoutes(pb));
+  router.use('/me', createProfileRoutes(pb));
+  router.use('/meals', createMealRoutes(pb));
+  router.use('/settings', createSettingsRoutes(pb));
+  router.use('/streaks', createStreaksRoutes(pb));
+  router.use('/waifu', createWaifuRoutes(pb));
+  router.use('/water-logs', createWaterLogRoutes(pb));
+  router.use('/weight-targets', createWeightTargetRoutes(pb));
+  router.use('/workouts', createWorkoutRoutes(pb));
+  router.use('/workout-types', createWorkoutTypeRoutes(pb));
 
   // Health check
   router.get('/health', (req, res) => {

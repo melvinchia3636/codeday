@@ -31,8 +31,7 @@ export class WaterLogService extends BaseService<WaterLog> {
    * Get all water logs for a user
    */
   async getByUserId(userId: string): Promise<WaterLog[]> {
-    const result = await this.findByFilter(`userId="${userId}"`);
-    return result.items;
+    return await this.findByFilter(`userId="${userId}"`);
   }
 
   /**

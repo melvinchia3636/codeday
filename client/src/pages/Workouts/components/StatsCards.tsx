@@ -1,14 +1,60 @@
+import { useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { useWorkoutsAnimationRefs } from "../contexts/WorkoutsAnimationsContext";
-
-const stats = [
-  { label: "TOTAL_WORKOUTS", value: "156", icon: "pixelarticons:chart-bar" },
-  { label: "CALORIES_BURNED", value: "48.5K", icon: "pixelarticons:coin" },
-  { label: "TOTAL_DURATION", value: "72h", icon: "pixelarticons:clock" },
-];
+import { useWorkouts } from "../../../contexts/WorkoutsContext";
 
 export function StatsCards() {
   const { statsRef } = useWorkoutsAnimationRefs();
+  const { workouts } = useWorkouts();
+
+  // Calculate real stats from workouts
+  const stats = useMemo(() => {
+    const totalWorkouts = workouts.length;
+    const totalCalories = workouts.reduce(
+      (sum, w) => sum + (w.caloriesBurned || 0),
+      0
+    );
+    const totalMinutes = workouts.reduce(
+      (sum, w) => sum + (w.durationMin || 0),
+      0
+    );
+
+    // Format calories (e.g., 48500 -> "48.5K")
+    const formatCalories = (cal: number) => {
+      if (cal >= 1000) {
+        return `${(cal / 1000).toFixed(1)}K`;
+      }
+      return cal.toString();
+    };
+
+    // Format duration (e.g., 120 minutes -> "2h")
+    const formatDuration = (minutes: number) => {
+      if (minutes >= 60) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+      }
+      return `${minutes}m`;
+    };
+
+    return [
+      {
+        label: "TOTAL_WORKOUTS",
+        value: totalWorkouts.toString(),
+        icon: "pixelarticons:chart-bar",
+      },
+      {
+        label: "CALORIES_BURNED",
+        value: formatCalories(totalCalories),
+        icon: "pixelarticons:coin",
+      },
+      {
+        label: "TOTAL_DURATION",
+        value: formatDuration(totalMinutes),
+        icon: "pixelarticons:clock",
+      },
+    ];
+  }, [workouts]);
 
   return (
     <div

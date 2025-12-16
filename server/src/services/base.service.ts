@@ -17,21 +17,15 @@ export abstract class BaseService<T> {
   /**
    * Get all records with pagination
    */
-  async findAll(params?: QueryParams): Promise<PaginatedResponse<T>> {
-    const { page = 1, perPage = 20, sort, filter } = params || {};
+  async findAll(params?: QueryParams): Promise<T[]> {
+    const { sort, filter } = params || {};
 
-    const result = await this.pb.collection(this.collectionName).getList<T>(page, perPage, {
+    const result = await this.pb.collection(this.collectionName).getFullList<T>({
       sort: sort || '-created',
       filter: filter || '',
     });
 
-    return {
-      items: result.items,
-      page: result.page,
-      perPage: result.perPage,
-      totalItems: result.totalItems,
-      totalPages: result.totalPages,
-    };
+    return result;
   }
 
   /**
@@ -65,21 +59,15 @@ export abstract class BaseService<T> {
   /**
    * Find records by filter
    */
-  async findByFilter(filter: string, params?: QueryParams): Promise<PaginatedResponse<T>> {
-    const { page = 1, perPage = 20, sort } = params || {};
+  async findByFilter(filter: string, params?: QueryParams): Promise<T[]> {
+    const { sort } = params || {};
 
-    const result = await this.pb.collection(this.collectionName).getList<T>(page, perPage, {
+    const result = await this.pb.collection(this.collectionName).getFullList<T>({
       sort: sort || '-created',
       filter,
     });
 
-    return {
-      items: result.items,
-      page: result.page,
-      perPage: result.perPage,
-      totalItems: result.totalItems,
-      totalPages: result.totalPages,
-    };
+    return result;
   }
 
   /**

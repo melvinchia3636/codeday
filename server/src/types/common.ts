@@ -9,15 +9,9 @@ export interface ApiResponse<T = any> {
 
 export interface PaginatedResponse<T> {
   items: T[];
-  page: number;
-  perPage: number;
-  totalItems: number;
-  totalPages: number;
 }
 
 export interface QueryParams {
-  page?: number;
-  perPage?: number;
   sort?: string;
   filter?: string;
 }

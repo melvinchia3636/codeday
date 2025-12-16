@@ -5,14 +5,14 @@ import PocketBase from 'pocketbase';
 /**
  * Food Log Service
  * Handles food logging operations
- * 
+ *
  * Calorie aggregation is for today (single day) only.
  * Uses PocketBase filtering for date-based queries.
  */
 export class FoodLogService extends BaseService<FoodLog> {
   // Default daily calorie target
   private readonly DEFAULT_CALORIE_TARGET = 2000;
-  
+
   constructor(pb: PocketBase) {
     super(pb, 'food_logs');
   }
@@ -28,8 +28,7 @@ export class FoodLogService extends BaseService<FoodLog> {
    * Get all food logs for a user
    */
   async getByUserId(userId: string): Promise<FoodLog[]> {
-    const result = await this.findByFilter(`userId="${userId}"`);
-    return result.items;
+    return await this.findByFilter(`userId="${userId}"`);
   }
 
   /**
@@ -37,8 +36,7 @@ export class FoodLogService extends BaseService<FoodLog> {
    */
   async getTodayLogs(userId: string): Promise<FoodLog[]> {
     const today = this.getTodayDateString();
-    const result = await this.findByFilter(`userId="${userId}" && timestamp~"${today}"`);
-    return result.items;
+    return await this.findByFilter(`userId="${userId}" && timestamp~"${today}"`);
   }
 
   /**
@@ -54,17 +52,20 @@ export class FoodLogService extends BaseService<FoodLog> {
    * Calculate diet score (0-100) based on calorie intake
    * Score decreases if over or significantly under target
    */
-  async calculateDietScore(userId: string, targetCalories: number = this.DEFAULT_CALORIE_TARGET): Promise<number> {
+  async calculateDietScore(
+    userId: string,
+    targetCalories: number = this.DEFAULT_CALORIE_TARGET
+  ): Promise<number> {
     const totalCalories = await this.getTotalCalories(userId);
-    
+
     // Perfect score if within +/- 10% of target
     const lowerBound = targetCalories * 0.9;
     const upperBound = targetCalories * 1.1;
-    
+
     if (totalCalories >= lowerBound && totalCalories <= upperBound) {
       return 100;
     }
-    
+
     // Calculate deviation from target
     if (totalCalories < lowerBound) {
       // Under-eating: score based on how close to lower bound
@@ -81,7 +82,10 @@ export class FoodLogService extends BaseService<FoodLog> {
   /**
    * Get calorie summary for today
    */
-  async getTodaySummary(userId: string, targetCalories: number = this.DEFAULT_CALORIE_TARGET): Promise<{
+  async getTodaySummary(
+    userId: string,
+    targetCalories: number = this.DEFAULT_CALORIE_TARGET
+  ): Promise<{
     totalCalories: number;
     targetCalories: number;
     percentage: number;
@@ -91,12 +95,12 @@ export class FoodLogService extends BaseService<FoodLog> {
   }> {
     const [totalCalories, logs] = await Promise.all([
       this.getTotalCalories(userId),
-      this.getTodayLogs(userId)
+      this.getTodayLogs(userId),
     ]);
 
     const lowerBound = targetCalories * 0.9;
     const upperBound = targetCalories * 1.1;
-    
+
     let status: 'under' | 'optimal' | 'over';
     if (totalCalories < lowerBound) {
       status = 'under';
@@ -112,7 +116,7 @@ export class FoodLogService extends BaseService<FoodLog> {
       percentage: Math.round((totalCalories / targetCalories) * 100),
       remainingCalories: Math.max(0, targetCalories - totalCalories),
       logsCount: logs.length,
-      status
+      status,
     };
   }
 

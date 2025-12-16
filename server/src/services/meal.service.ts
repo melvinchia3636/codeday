@@ -25,13 +25,12 @@ export class MealService extends BaseService<MealItem> {
     const result = await this.pb.collection('meals').getList<Meal>(1, 100, {
       filter: `userId="${userId}"`,
     });
-    
-    const mealIds = result.items.map(m => m.id);
+
+    const mealIds = result.items.map((m) => m.id);
     if (mealIds.length === 0) return [];
-    
-    const filter = mealIds.map(id => `mealId="${id}"`).join(' || ');
-    const items = await this.findByFilter(filter);
-    return items.items;
+
+    const filter = mealIds.map((id) => `mealId="${id}"`).join(' || ');
+    return await this.findByFilter(filter);
   }
 
   /**
@@ -48,18 +47,18 @@ export class MealService extends BaseService<MealItem> {
     if (date) {
       mealFilter += ` && time~"${date}"`;
     }
-    
+
     const meals = await this.pb.collection('meals').getList<Meal>(1, 100, {
       filter: mealFilter,
     });
-    
-    const mealIds = meals.items.map(m => m.id);
+
+    const mealIds = meals.items.map((m) => m.id);
     if (mealIds.length === 0) return 0;
-    
-    const filter = mealIds.map(id => `mealId="${id}"`).join(' || ');
+
+    const filter = mealIds.map((id) => `mealId="${id}"`).join(' || ');
     const items = await this.findByFilter(filter);
-    
-    return items.items.reduce((total, item) => total + (item.calories || 0), 0);
+
+    return items.reduce((total, item) => total + (item.calories || 0), 0);
   }
 
   /**
