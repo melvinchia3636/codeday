@@ -6,7 +6,8 @@ import {
   useButtonAnimations,
   useSubmitAnimation,
 } from "./hooks/useLoginAnimations";
-import { PageDecorations } from "./components/PageDecorations";
+import { PageDecorationsProvider } from "../../contexts/PageDecorationsContext";
+import { PageDecorations } from "../../components/PageDecorations";
 import { LoginHeader } from "./components/LoginHeader";
 import { LoginForm } from "./components/LoginForm";
 import { useAuth } from "../../contexts/AuthContext";
@@ -18,7 +19,7 @@ import {
 
 type FeedbackState = "idle" | "loading" | "success" | "error";
 
-export function Login() {
+function LoginContent() {
   const navigate = useNavigate();
   const { loginSilent, applyAuthData, error, clearError } = useAuth();
 
@@ -35,17 +36,12 @@ export function Login() {
   const logoRef = useRef<HTMLHeadingElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const orbsRef = useRef<HTMLDivElement[]>([]);
-  const cornersRef = useRef<HTMLDivElement[]>([]);
   const sideBarsLeftRef = useRef<HTMLDivElement[]>([]);
   const sideBarsRightRef = useRef<HTMLDivElement[]>([]);
   const indicatorDotsRef = useRef<HTMLDivElement[]>([]);
   const cursorRef = useRef<HTMLSpanElement>(null);
   const glowBorderRef = useRef<HTMLDivElement>(null);
-  const topLineRef = useRef<HTMLDivElement>(null);
-  const bottomLineRef = useRef<HTMLDivElement>(null);
   const terminalIndicatorRef = useRef<HTMLSpanElement>(null);
-  const particlesRef = useRef<HTMLDivElement>(null);
 
   useLoginAnimations({
     containerRef,
@@ -53,12 +49,7 @@ export function Login() {
     cardRef,
     cursorRef,
     glowBorderRef,
-    topLineRef,
-    bottomLineRef,
     terminalIndicatorRef,
-    particlesRef,
-    orbsRef,
-    cornersRef,
     sideBarsLeftRef,
     sideBarsRightRef,
     indicatorDotsRef,
@@ -120,18 +111,52 @@ export function Login() {
   return (
     <div
       ref={containerRef}
-      className="flex-1 flex items-center justify-center border-[8px] border-pink-500 p-4 shadow-[0_0_30px_rgba(236,72,153,0.5)] bg-gradient-to-br from-zinc-900 via-zinc-950 to-fuchsia-950/30 relative overflow-hidden"
+      className="flex-1 flex items-center justify-center border-8 border-pink-500 p-4 shadow-[0_0_30px_rgba(236,72,153,0.5)] bg-linear-to-br from-zinc-900 via-zinc-950 to-fuchsia-950/30 relative overflow-hidden"
       style={{ opacity: 0 }}
     >
-      <PageDecorations
-        particlesRef={particlesRef}
-        topLineRef={topLineRef}
-        bottomLineRef={bottomLineRef}
-        orbsRef={orbsRef}
-        cornersRef={cornersRef}
-        sideBarsLeftRef={sideBarsLeftRef}
-        sideBarsRightRef={sideBarsRightRef}
-      />
+      <PageDecorations />
+
+      {/* Left sidebars - Login specific */}
+      <div className="absolute left-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-3">
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            ref={(el) => {
+              if (el) sideBarsLeftRef.current[i] = el;
+            }}
+            className="flex items-center gap-2"
+            style={{ opacity: 0 }}
+          >
+            <div
+              className={`w-8 h-1 ${
+                i % 2 === 0 ? "bg-pink-500/40" : "bg-pink-500/20"
+              }`}
+            />
+            <div className="w-1 h-1 bg-pink-500/60" />
+          </div>
+        ))}
+      </div>
+
+      {/* Right sidebars - Login specific */}
+      <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-3">
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            ref={(el) => {
+              if (el) sideBarsRightRef.current[i] = el;
+            }}
+            className="flex items-center gap-2"
+            style={{ opacity: 0 }}
+          >
+            <div className="w-1 h-1 bg-pink-500/60" />
+            <div
+              className={`w-8 h-1 ${
+                i % 2 === 0 ? "bg-pink-500/40" : "bg-pink-500/20"
+              }`}
+            />
+          </div>
+        ))}
+      </div>
 
       <div className="relative z-10 w-full max-w-md">
         <LoginHeader logoRef={logoRef} cursorRef={cursorRef} />
@@ -188,5 +213,13 @@ export function Login() {
         onClose={handleErrorClose}
       />
     </div>
+  );
+}
+
+export function Login() {
+  return (
+    <PageDecorationsProvider color="pink">
+      <LoginContent />
+    </PageDecorationsProvider>
   );
 }

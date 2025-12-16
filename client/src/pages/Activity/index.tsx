@@ -1,7 +1,8 @@
 import { useRef } from "react";
 import { useActivityAnimations } from "./hooks/useActivityAnimations";
-import { PageDecorations } from "./components/PageDecorations";
-import { PageHeader } from "./components/PageHeader";
+import { PageDecorationsProvider } from "../../contexts/PageDecorationsContext";
+import { PageDecorations } from "../../components/PageDecorations";
+import { PageHeader } from "../../components/PageHeader";
 import { SummaryCards } from "./components/SummaryCards";
 import { ActivityTimeline } from "./components/ActivityTimeline";
 import { HistoryCalendar } from "./components/HistoryCalendar";
@@ -131,33 +132,17 @@ const emotionColors: Record<string, string> = {
   yandere: "pink",
 };
 
-export function Activity() {
+function ActivityContent() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
-  const topLineRef = useRef<HTMLDivElement>(null);
-  const bottomLineRef = useRef<HTMLDivElement>(null);
-  const orbsRef = useRef<HTMLDivElement[]>([]);
-  const cornersRef = useRef<HTMLDivElement[]>([]);
-  const particlesRef = useRef<HTMLDivElement>(null);
-  const scanlineRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
 
   useActivityAnimations({
     containerRef,
-    headerRef,
     summaryRef,
     timelineRef,
     calendarRef,
-    topLineRef,
-    bottomLineRef,
-    orbsRef,
-    cornersRef,
-    particlesRef,
-    scanlineRef,
-    gridRef,
   });
 
   const today = dailySummaries[0];
@@ -165,28 +150,22 @@ export function Activity() {
   return (
     <div
       ref={containerRef}
-      className="flex-1 flex flex-col border-[8px] border-pink-500 p-6 shadow-[0_0_30px_rgba(236,72,153,0.5)] bg-gradient-to-br from-zinc-900 via-zinc-950 to-fuchsia-950/30 relative overflow-hidden"
+      className="flex-1 flex flex-col border-8 border-pink-500 p-6 shadow-[0_0_30px_rgba(236,72,153,0.5)] bg-linear-to-br from-zinc-900 via-zinc-950 to-fuchsia-950/30 relative overflow-hidden"
       style={{ opacity: 0 }}
     >
-      <PageDecorations
-        particlesRef={particlesRef}
-        gridRef={gridRef}
-        scanlineRef={scanlineRef}
-        topLineRef={topLineRef}
-        bottomLineRef={bottomLineRef}
-        orbsRef={orbsRef}
-        cornersRef={cornersRef}
+      <PageDecorations />
+      <PageHeader
+        icon="pixelarticons:timeline"
+        title="ACTIVITY_LOG"
+        status={`TODAY'S SCORE: ${today.total}%`}
+        color="pink"
       />
-
-      <PageHeader headerRef={headerRef} todaysScore={today.total} />
-
       <SummaryCards
         summaryRef={summaryRef}
         today={today}
         emotionIcons={emotionIcons}
         emotionColors={emotionColors}
       />
-
       <div className="relative z-10 flex-1 grid grid-cols-12 gap-6 overflow-hidden">
         <ActivityTimeline timelineRef={timelineRef} items={activityTimeline} />
         <HistoryCalendar
@@ -197,5 +176,13 @@ export function Activity() {
         />
       </div>
     </div>
+  );
+}
+
+export function Activity() {
+  return (
+    <PageDecorationsProvider color="pink">
+      <ActivityContent />
+    </PageDecorationsProvider>
   );
 }

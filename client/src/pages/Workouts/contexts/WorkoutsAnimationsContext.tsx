@@ -8,7 +8,7 @@ import {
 import { useWorkoutsAnimations } from "../hooks/useWorkoutsAnimations";
 import { useWorkouts } from "../../../contexts/WorkoutsContext";
 
-// Animation ref types
+// Animation ref types (page-specific only, decoration refs come from PageDecorationsContext)
 interface WorkoutsAnimationRefs {
   containerRef: RefObject<HTMLDivElement | null>;
   headerRef: RefObject<HTMLDivElement | null>;
@@ -16,13 +16,6 @@ interface WorkoutsAnimationRefs {
   historyRef: RefObject<HTMLDivElement | null>;
   typesRef: RefObject<HTMLDivElement | null>;
   logFormRef: RefObject<HTMLDivElement | null>;
-  topLineRef: RefObject<HTMLDivElement | null>;
-  bottomLineRef: RefObject<HTMLDivElement | null>;
-  orbsRef: RefObject<HTMLDivElement[]>;
-  cornersRef: RefObject<HTMLDivElement[]>;
-  particlesRef: RefObject<HTMLDivElement | null>;
-  scanlineRef: RefObject<HTMLDivElement | null>;
-  gridRef: RefObject<HTMLDivElement | null>;
 }
 
 interface WorkoutsAnimationsContextType extends WorkoutsAnimationRefs {
@@ -48,15 +41,6 @@ export function WorkoutsAnimationsProvider({
   const typesRef = useRef<HTMLDivElement>(null);
   const logFormRef = useRef<HTMLDivElement>(null);
 
-  // Decoration refs
-  const topLineRef = useRef<HTMLDivElement>(null);
-  const bottomLineRef = useRef<HTMLDivElement>(null);
-  const orbsRef = useRef<HTMLDivElement[]>([]);
-  const cornersRef = useRef<HTMLDivElement[]>([]);
-  const particlesRef = useRef<HTMLDivElement>(null);
-  const scanlineRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-
   // Get loading state from WorkoutsContext
   const { isLoading } = useWorkouts();
 
@@ -68,13 +52,6 @@ export function WorkoutsAnimationsProvider({
     historyRef,
     typesRef,
     logFormRef,
-    topLineRef,
-    bottomLineRef,
-    orbsRef,
-    cornersRef,
-    particlesRef,
-    scanlineRef,
-    gridRef,
     isLoading,
   });
 
@@ -85,13 +62,6 @@ export function WorkoutsAnimationsProvider({
     historyRef,
     typesRef,
     logFormRef,
-    topLineRef,
-    bottomLineRef,
-    orbsRef,
-    cornersRef,
-    particlesRef,
-    scanlineRef,
-    gridRef,
     isAnimationsReady: true,
   };
 

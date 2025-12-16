@@ -25,7 +25,7 @@ export function TargetsPanel() {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.05)_1px,transparent_1px)] bg-size-[20px_20px]" />
       <div className="relative">
         <h3 className="text-xl font-bold text-pink-400 tracking-[0.2em] mb-6 flex items-center gap-3 border-b border-pink-500/30 pb-3">
-          <Icon icon="pixelarticons:target" className="w-6 h-6" />
+          <Icon icon="pixelarticons:bullseye-arrow" className="w-6 h-6" />
           WEIGHT_TARGETS
         </h3>
         <div className="space-y-4">

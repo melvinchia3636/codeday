@@ -7,10 +7,6 @@ export interface ApiResponse<T = any> {
   message?: string;
 }
 
-export interface PaginatedResponse<T> {
-  items: T[];
-}
-
 export interface QueryParams {
   sort?: string;
   filter?: string;

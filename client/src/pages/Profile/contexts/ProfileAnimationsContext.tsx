@@ -8,7 +8,7 @@ import {
 import { useUserProfile } from "../../../contexts/UserProfileContext";
 import { useProfileAnimations } from "../hooks/useProfileAnimations";
 
-// Animation ref types
+// Animation ref types (page-specific only, decoration refs come from PageDecorationsContext)
 interface ProfileAnimationRefs {
   containerRef: RefObject<HTMLDivElement | null>;
   headerRef: RefObject<HTMLDivElement | null>;
@@ -17,15 +17,8 @@ interface ProfileAnimationRefs {
   settingsRef: RefObject<HTMLDivElement | null>;
   targetsRef: RefObject<HTMLDivElement | null>;
   waifuRef: RefObject<HTMLDivElement | null>;
-  topLineRef: RefObject<HTMLDivElement | null>;
-  bottomLineRef: RefObject<HTMLDivElement | null>;
-  orbsRef: RefObject<HTMLDivElement[]>;
-  cornersRef: RefObject<HTMLDivElement[]>;
   sideBarsRef: RefObject<HTMLDivElement[]>;
-  particlesRef: RefObject<HTMLDivElement | null>;
-  scanlineRef: RefObject<HTMLDivElement | null>;
   glitchOverlayRef: RefObject<HTMLDivElement | null>;
-  gridRef: RefObject<HTMLDivElement | null>;
 }
 
 interface ProfileAnimationsContextType extends ProfileAnimationRefs {
@@ -45,7 +38,7 @@ export function ProfileAnimationsProvider({
 }: ProfileAnimationsProviderProps) {
   const { isLoading } = useUserProfile();
 
-  // All animation refs
+  // Page-specific animation refs
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
@@ -53,15 +46,10 @@ export function ProfileAnimationsProvider({
   const settingsRef = useRef<HTMLDivElement>(null);
   const targetsRef = useRef<HTMLDivElement>(null);
   const waifuRef = useRef<HTMLDivElement>(null);
-  const topLineRef = useRef<HTMLDivElement>(null);
-  const bottomLineRef = useRef<HTMLDivElement>(null);
-  const orbsRef = useRef<HTMLDivElement[]>([]);
-  const cornersRef = useRef<HTMLDivElement[]>([]);
+
+  // Profile-specific decoration refs (not in shared context)
   const sideBarsRef = useRef<HTMLDivElement[]>([]);
-  const particlesRef = useRef<HTMLDivElement>(null);
-  const scanlineRef = useRef<HTMLDivElement>(null);
   const glitchOverlayRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
 
   const isAnimationsReady = !isLoading;
 
@@ -74,15 +62,8 @@ export function ProfileAnimationsProvider({
     settingsRef,
     targetsRef,
     waifuRef,
-    topLineRef,
-    bottomLineRef,
-    orbsRef,
-    cornersRef,
     sideBarsRef,
-    particlesRef,
-    scanlineRef,
     glitchOverlayRef,
-    gridRef,
     isReady: isAnimationsReady,
   });
 
@@ -94,15 +75,8 @@ export function ProfileAnimationsProvider({
     settingsRef,
     targetsRef,
     waifuRef,
-    topLineRef,
-    bottomLineRef,
-    orbsRef,
-    cornersRef,
     sideBarsRef,
-    particlesRef,
-    scanlineRef,
     glitchOverlayRef,
-    gridRef,
     isAnimationsReady,
   };
 

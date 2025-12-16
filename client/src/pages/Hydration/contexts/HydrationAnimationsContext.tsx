@@ -7,7 +7,7 @@ import {
 } from "react";
 import { useHydrationAnimations } from "../hooks/useHydrationAnimations";
 
-// Animation ref types
+// Animation ref types (page-specific only, decoration refs come from PageDecorationsContext)
 interface HydrationAnimationRefs {
   containerRef: RefObject<HTMLDivElement | null>;
   headerRef: RefObject<HTMLDivElement | null>;
@@ -15,13 +15,6 @@ interface HydrationAnimationRefs {
   statsRef: RefObject<HTMLDivElement | null>;
   historyRef: RefObject<HTMLDivElement | null>;
   logRef: RefObject<HTMLDivElement | null>;
-  topLineRef: RefObject<HTMLDivElement | null>;
-  bottomLineRef: RefObject<HTMLDivElement | null>;
-  orbsRef: RefObject<HTMLDivElement[]>;
-  cornersRef: RefObject<HTMLDivElement[]>;
-  particlesRef: RefObject<HTMLDivElement | null>;
-  scanlineRef: RefObject<HTMLDivElement | null>;
-  gridRef: RefObject<HTMLDivElement | null>;
   bubblesRef: RefObject<HTMLDivElement | null>;
 }
 
@@ -48,14 +41,7 @@ export function HydrationAnimationsProvider({
   const historyRef = useRef<HTMLDivElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
 
-  // Decoration refs
-  const topLineRef = useRef<HTMLDivElement>(null);
-  const bottomLineRef = useRef<HTMLDivElement>(null);
-  const orbsRef = useRef<HTMLDivElement[]>([]);
-  const cornersRef = useRef<HTMLDivElement[]>([]);
-  const particlesRef = useRef<HTMLDivElement>(null);
-  const scanlineRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
+  // Hydration-specific decoration ref
   const bubblesRef = useRef<HTMLDivElement>(null);
 
   // Run the animations hook
@@ -66,13 +52,6 @@ export function HydrationAnimationsProvider({
     statsRef,
     historyRef,
     logRef,
-    topLineRef,
-    bottomLineRef,
-    orbsRef,
-    cornersRef,
-    particlesRef,
-    scanlineRef,
-    gridRef,
     bubblesRef,
   });
 
@@ -83,13 +62,6 @@ export function HydrationAnimationsProvider({
     statsRef,
     historyRef,
     logRef,
-    topLineRef,
-    bottomLineRef,
-    orbsRef,
-    cornersRef,
-    particlesRef,
-    scanlineRef,
-    gridRef,
     bubblesRef,
     isAnimationsReady: true,
   };

@@ -1,5 +1,5 @@
 import PocketBase from 'pocketbase';
-import { QueryParams, PaginatedResponse } from '../types/common';
+import { QueryParams } from '../types/common';
 
 /**
  * Abstract Base Service

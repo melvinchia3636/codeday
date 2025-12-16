@@ -1,5 +1,5 @@
 import { useEffect, type RefObject } from "react";
-import { animate, createTimeline, stagger, random } from "animejs";
+import { animate, createTimeline, stagger } from "animejs";
 
 interface UseLoginAnimationsProps {
   containerRef: RefObject<HTMLDivElement | null>;
@@ -7,29 +7,23 @@ interface UseLoginAnimationsProps {
   cardRef: RefObject<HTMLDivElement | null>;
   cursorRef: RefObject<HTMLSpanElement | null>;
   glowBorderRef: RefObject<HTMLDivElement | null>;
-  topLineRef: RefObject<HTMLDivElement | null>;
-  bottomLineRef: RefObject<HTMLDivElement | null>;
   terminalIndicatorRef: RefObject<HTMLSpanElement | null>;
-  particlesRef: RefObject<HTMLDivElement | null>;
-  orbsRef: RefObject<HTMLDivElement[]>;
-  cornersRef: RefObject<HTMLDivElement[]>;
   sideBarsLeftRef: RefObject<HTMLDivElement[]>;
   sideBarsRightRef: RefObject<HTMLDivElement[]>;
   indicatorDotsRef: RefObject<HTMLDivElement[]>;
 }
 
+/**
+ * Login page-specific animations.
+ * Decoration animations (grid, particles, corners, etc.) are handled by usePageDecorationsAnimations.
+ */
 export function useLoginAnimations({
   containerRef,
   logoRef,
   cardRef,
   cursorRef,
   glowBorderRef,
-  topLineRef,
-  bottomLineRef,
   terminalIndicatorRef,
-  particlesRef,
-  orbsRef,
-  cornersRef,
   sideBarsLeftRef,
   sideBarsRightRef,
   indicatorDotsRef,
@@ -46,18 +40,6 @@ export function useLoginAnimations({
       duration: 800,
     });
 
-    // Top/bottom lines
-    const lines = [topLineRef.current, bottomLineRef.current].filter(
-      Boolean
-    ) as HTMLDivElement[];
-    if (lines.length > 0) {
-      tl.add(
-        lines,
-        { scaleX: [0, 1], duration: 1000, ease: "outExpo" },
-        "-=600"
-      );
-    }
-
     // Logo entrance
     tl.add(
       logoRef.current,
@@ -67,7 +49,7 @@ export function useLoginAnimations({
         duration: 1000,
         ease: "outElastic(1, .6)",
       },
-      "-=800"
+      "-=600"
     );
 
     // Cursor blink
@@ -130,44 +112,7 @@ export function useLoginAnimations({
       });
     }
 
-    // Floating orbs
-    orbsRef.current.forEach((orb, i) => {
-      if (orb) {
-        animate(orb, {
-          translateX: [0, random(-30, 30)],
-          translateY: [0, random(-30, 30)],
-          scale: [1, random(0.8, 1.2)],
-          opacity: [0.2, random(0.1, 0.4)],
-          duration: random(3000, 5000),
-          ease: "inOutSine",
-          loop: true,
-          alternate: true,
-          delay: i * 500,
-        });
-      }
-    });
-
-    // Corner brackets
-    cornersRef.current.forEach((corner, i) => {
-      if (corner) {
-        animate(corner, {
-          opacity: [0, 1],
-          scale: [0.5, 1],
-          duration: 500,
-          delay: 800 + i * 100,
-          ease: "outBack",
-        });
-        animate(corner, {
-          opacity: [1, 0.5, 1],
-          duration: 2000,
-          delay: i * 200,
-          ease: "inOutSine",
-          loop: true,
-        });
-      }
-    });
-
-    // Side bars left
+    // Side bars left (Login-specific)
     sideBarsLeftRef.current.forEach((bar, i) => {
       if (bar) {
         animate(bar, {
@@ -189,7 +134,7 @@ export function useLoginAnimations({
       }
     });
 
-    // Side bars right
+    // Side bars right (Login-specific)
     sideBarsRightRef.current.forEach((bar, i) => {
       if (bar) {
         animate(bar, {
@@ -227,27 +172,6 @@ export function useLoginAnimations({
         ease: "inOutSine",
         loop: true,
       });
-    }
-
-    // Floating particles
-    if (particlesRef.current) {
-      for (let i = 0; i < 20; i++) {
-        const particle = document.createElement("div");
-        particle.className = "absolute w-1 h-1 bg-pink-500/30 rounded-full";
-        particle.style.left = `${random(0, 100)}%`;
-        particle.style.top = `${random(0, 100)}%`;
-        particlesRef.current.appendChild(particle);
-        animate(particle, {
-          translateY: [0, random(-100, -200)],
-          translateX: [0, random(-50, 50)],
-          opacity: [0.5, 0],
-          scale: [1, 0],
-          duration: random(3000, 6000),
-          ease: "outExpo",
-          loop: true,
-          delay: random(0, 3000),
-        });
-      }
     }
 
     // Periodic glitch effect

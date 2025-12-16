@@ -2,8 +2,13 @@ import {
   HydrationAnimationsProvider,
   useHydrationAnimationRefs,
 } from "./contexts/HydrationAnimationsContext";
-import { PageDecorations } from "./components/PageDecorations";
-import { PageHeader } from "./components/PageHeader";
+import {
+  HydrationProvider,
+  useHydration,
+} from "../../contexts/HydrationContext";
+import { PageDecorationsProvider } from "../../contexts/PageDecorationsContext";
+import { PageDecorations } from "../../components/PageDecorations";
+import { PageHeader } from "../../components/PageHeader";
 import { WaterTank } from "./components/WaterTank";
 import { StatsGrid } from "./components/StatsGrid";
 import { WaterLogs } from "./components/WaterLogs";
@@ -11,6 +16,7 @@ import { QuickAdd } from "./components/QuickAdd";
 
 function HydrationContent() {
   const { containerRef } = useHydrationAnimationRefs();
+  const { totalWater, targetWater } = useHydration();
 
   return (
     <div
@@ -19,7 +25,12 @@ function HydrationContent() {
       style={{ opacity: 0 }}
     >
       <PageDecorations />
-      <PageHeader />
+      <PageHeader
+        icon="pixelarticons:drop"
+        title="HYDRATION_LOG"
+        status={`${totalWater} / ${targetWater} ML`}
+        color="cyan"
+      />
       <div className="relative min-h-0 z-10 flex-1 grid grid-cols-12 gap-6 overflow-hidden">
         <div className="col-span-4 flex flex-col items-center justify-center">
           <WaterTank />
@@ -34,8 +45,12 @@ function HydrationContent() {
 
 export function Hydration() {
   return (
-    <HydrationAnimationsProvider>
-      <HydrationContent />
-    </HydrationAnimationsProvider>
+    <HydrationProvider>
+      <PageDecorationsProvider color="cyan">
+        <HydrationAnimationsProvider>
+          <HydrationContent />
+        </HydrationAnimationsProvider>
+      </PageDecorationsProvider>
+    </HydrationProvider>
   );
 }

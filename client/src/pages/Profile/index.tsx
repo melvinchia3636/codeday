@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
-import { PageDecorations } from "./components/PageDecorations";
-import { PageHeader } from "./components/PageHeader";
+import { PageDecorationsProvider } from "../../contexts/PageDecorationsContext";
+import { PageDecorations } from "../../components/PageDecorations";
+import { PageHeader } from "../../components/PageHeader";
 import { ProfileAvatar } from "./components/ProfileAvatar";
 import { UserInfoCards } from "./components/UserInfoCards";
 import { SettingsPanel } from "./components/SettingsPanel";
@@ -8,6 +9,7 @@ import { TargetsPanel } from "./components/TargetsPanel";
 import { WaifuPanel } from "./components/WaifuPanel";
 import { ActionButtons } from "./components/ActionButtons";
 import { useUserProfile } from "../../contexts/UserProfileContext";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   ProfileAnimationsProvider,
   useProfileAnimationRefs,
@@ -20,6 +22,7 @@ import {
 function ProfileContent() {
   const { isLoading, userDataError, settingsError, saveProfile } =
     useUserProfile();
+  const { user } = useAuth();
   const { containerRef } = useProfileAnimationRefs();
 
   const error = userDataError || settingsError;
@@ -86,7 +89,12 @@ function ProfileContent() {
       style={{ opacity: 0, perspective: "1500px" }}
     >
       <PageDecorations />
-      <PageHeader />
+      <PageHeader
+        icon="pixelarticons:user"
+        title="OPERATOR_PROFILE"
+        status={`ID: ${user?.id}`}
+        color="pink"
+      />
       <div className="relative z-10 flex-1 grid grid-cols-12 gap-6 overflow-auto">
         <div className="col-span-4 flex flex-col gap-6">
           <ProfileAvatar />
@@ -121,8 +129,10 @@ function ProfileContent() {
 
 export function Profile() {
   return (
-    <ProfileAnimationsProvider>
-      <ProfileContent />
-    </ProfileAnimationsProvider>
+    <PageDecorationsProvider color="pink">
+      <ProfileAnimationsProvider>
+        <ProfileContent />
+      </ProfileAnimationsProvider>
+    </PageDecorationsProvider>
   );
 }

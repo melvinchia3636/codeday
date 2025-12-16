@@ -1,7 +1,8 @@
 import { useRef } from "react";
 import { useNutritionAnimations } from "./hooks/useNutritionAnimations";
-import { PageDecorations } from "./components/PageDecorations";
-import { PageHeader } from "./components/PageHeader";
+import { PageDecorationsProvider } from "../../contexts/PageDecorationsContext";
+import { PageDecorations } from "../../components/PageDecorations";
+import { PageHeader } from "../../components/PageHeader";
 import { MacroCircles } from "./components/MacroCircles";
 import { MealTimeline } from "./components/MealTimeline";
 import { FoodLibrary } from "./components/FoodLibrary";
@@ -66,35 +67,19 @@ const macros = [
   { label: "FAT", current: 55, target: 70, color: "fuchsia", unit: "g" },
 ];
 
-export function Nutrition() {
+function NutritionContent() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const macrosRef = useRef<HTMLDivElement>(null);
   const mealsRef = useRef<HTMLDivElement>(null);
   const foodsRef = useRef<HTMLDivElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
-  const topLineRef = useRef<HTMLDivElement>(null);
-  const bottomLineRef = useRef<HTMLDivElement>(null);
-  const orbsRef = useRef<HTMLDivElement[]>([]);
-  const cornersRef = useRef<HTMLDivElement[]>([]);
-  const particlesRef = useRef<HTMLDivElement>(null);
-  const scanlineRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
 
   useNutritionAnimations({
     containerRef,
-    headerRef,
     macrosRef,
     mealsRef,
     foodsRef,
     logRef,
-    topLineRef,
-    bottomLineRef,
-    orbsRef,
-    cornersRef,
-    particlesRef,
-    scanlineRef,
-    gridRef,
   });
 
   const totalCalories = todayMeals.reduce((s, m) => s + m.total, 0);
@@ -103,32 +88,22 @@ export function Nutrition() {
   return (
     <div
       ref={containerRef}
-      className="flex-1 flex flex-col border-[8px] border-pink-500 p-6 shadow-[0_0_30px_rgba(236,72,153,0.5)] bg-gradient-to-br from-zinc-900 via-zinc-950 to-fuchsia-950/30 relative overflow-hidden"
+      className="flex-1 flex flex-col border-8 border-pink-500 p-6 shadow-[0_0_30px_rgba(236,72,153,0.5)] bg-linear-to-br from-zinc-900 via-zinc-950 to-fuchsia-950/30 relative overflow-hidden"
       style={{ opacity: 0 }}
     >
-      <PageDecorations
-        particlesRef={particlesRef}
-        gridRef={gridRef}
-        scanlineRef={scanlineRef}
-        topLineRef={topLineRef}
-        bottomLineRef={bottomLineRef}
-        orbsRef={orbsRef}
-        cornersRef={cornersRef}
-      />
-
+      <PageDecorations />
       <PageHeader
-        headerRef={headerRef}
-        totalCalories={totalCalories}
-        targetCalories={targetCalories}
+        icon="pixelarticons:coin"
+        title="NUTRITION_LOG"
+        status={`${totalCalories} / ${targetCalories} KCAL`}
+        color="pink"
       />
-
       <MacroCircles
         macrosRef={macrosRef}
         macros={macros}
         totalCalories={totalCalories}
         targetCalories={targetCalories}
       />
-
       <div className="relative z-10 flex-1 grid grid-cols-3 gap-6 overflow-hidden">
         <MealTimeline
           mealsRef={mealsRef}
@@ -138,5 +113,13 @@ export function Nutrition() {
         <FoodLibrary foodsRef={foodsRef} foods={foodLibrary} />
       </div>
     </div>
+  );
+}
+
+export function Nutrition() {
+  return (
+    <PageDecorationsProvider color="pink">
+      <NutritionContent />
+    </PageDecorationsProvider>
   );
 }
