@@ -1,1 +1,10 @@
 @import "tailwindcss";
+@font-face {
+  font-family: Departure_Mono;
+  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
+}
+
+* {
+  font-family: Departure_Mono, monospace;
+}
+    

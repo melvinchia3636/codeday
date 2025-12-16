@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="background:#0a0a0a">
+  <defs>
+    <linearGradient id="pink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="50%" stop-color="#d946ef"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glitch">
+      <feOffset dx="2" dy="0" result="r">
+        <animate attributeName="dx" values="2;-2;2" dur="0.3s" repeatCount="indefinite"/>
+      </feOffset>
+      <feOffset dx="-2" dy="0" result="b">
+        <animate attributeName="dx" values="-2;2;-2" dur="0.3s" repeatCount="indefinite"/>
+      </feOffset>
+    </filter>
+  </defs>
+  
+  <!-- Background grid -->
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ec489920" stroke-width="0.5"/>
+  </pattern>
+  <rect width="512" height="512" fill="url(#grid)"/>
+  
+  <!-- Outer border frame -->
+  <rect x="16" y="16" width="480" height="480" fill="none" stroke="url(#pink)" stroke-width="8" filter="url(#glow)"/>
+  <rect x="32" y="32" width="448" height="448" fill="none" stroke="#ec489940" stroke-width="2"/>
+  
+  <!-- Corner brackets -->
+  <path d="M 48 80 L 48 48 L 80 48" fill="none" stroke="#ec4899" stroke-width="6" stroke-linecap="square"/>
+  <path d="M 432 48 L 464 48 L 464 80" fill="none" stroke="#ec4899" stroke-width="6" stroke-linecap="square"/>
+  <path d="M 48 432 L 48 464 L 80 464" fill="none" stroke="#ec4899" stroke-width="6" stroke-linecap="square"/>
+  <path d="M 432 464 L 464 464 L 464 432" fill="none" stroke="#ec4899" stroke-width="6" stroke-linecap="square"/>
+  
+  <!-- Heartbeat/pulse line -->
+  <path d="M 80 256 L 140 256 L 160 200 L 200 320 L 240 180 L 280 340 L 320 200 L 360 256 L 432 256" 
+        fill="none" stroke="url(#cyan)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <animate attributeName="stroke-dasharray" values="0,1000;600,400;1000,0" dur="2s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Heart shape -->
+  <path d="M 256 380 L 180 300 Q 130 250 180 200 Q 220 160 256 200 Q 292 160 332 200 Q 382 250 332 300 Z" 
+        fill="none" stroke="#ec4899" stroke-width="4" filter="url(#glow)">
+    <animate attributeName="opacity" values="1;0.6;1" dur="1.5s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Katakana characters - コード (Code) -->
+  <text x="256" y="440" font-family="monospace" font-size="36" fill="url(#pink)" text-anchor="middle" filter="url(#glow)">コード・デイ</text>
+  
+  <!-- Top label -->
+  <text x="256" y="108" font-family="monospace" font-size="24" fill="#ec489980" text-anchor="middle">HEALTH_SYS</text>
+  
+  <!-- Status bars -->
+  <rect x="80" y="120" width="40" height="8" fill="#ec4899" opacity="0.8"/>
+  <rect x="130" y="120" width="24" height="8" fill="#22d3ee" opacity="0.6"/>
+  <rect x="164" y="120" width="32" height="8" fill="#ec4899" opacity="0.4"/>
+  
+  <rect x="316" y="120" width="32" height="8" fill="#ec4899" opacity="0.4"/>
+  <rect x="358" y="120" width="24" height="8" fill="#22d3ee" opacity="0.6"/>
+  <rect x="392" y="120" width="40" height="8" fill="#ec4899" opacity="0.8"/>
+</svg>
