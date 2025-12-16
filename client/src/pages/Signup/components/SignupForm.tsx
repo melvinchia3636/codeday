@@ -9,10 +9,12 @@ interface SignupFormProps {
   terminalIndicatorRef: RefObject<HTMLSpanElement | null>;
   indicatorDotsRef: RefObject<HTMLDivElement[]>;
   username: string;
+  email: string;
   password: string;
   confirmPassword: string;
   isLoading: boolean;
   onUsernameChange: (value: string) => void;
+  onEmailChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
   onConfirmPasswordChange: (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -29,10 +31,12 @@ export function SignupForm({
   terminalIndicatorRef,
   indicatorDotsRef,
   username,
+  email,
   password,
   confirmPassword,
   isLoading,
   onUsernameChange,
+  onEmailChange,
   onPasswordChange,
   onConfirmPasswordChange,
   onSubmit,
@@ -65,7 +69,7 @@ export function SignupForm({
             </span>
           </div>
 
-          <form ref={formRef} onSubmit={onSubmit} className="space-y-5">
+          <form ref={formRef} onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-2 form-element" style={{ opacity: 0 }}>
               <label className="text-xs text-cyan-400 tracking-widest uppercase flex items-center gap-2">
                 <Icon
@@ -86,6 +90,30 @@ export function SignupForm({
                 />
                 <div className="input-icon absolute right-3 top-1/2 -translate-y-1/2 text-cyan-500/50 group-focus-within:text-pink-400 transition-colors">
                   <Icon icon="pixelarticons:at" className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2 form-element" style={{ opacity: 0 }}>
+              <label className="text-xs text-cyan-400 tracking-widest uppercase flex items-center gap-2">
+                <Icon
+                  icon="pixelarticons:mail"
+                  className="w-4 h-4 text-pink-400"
+                />{" "}
+                COMM_CHANNEL
+              </label>
+              <div className="relative group">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => onEmailChange(e.target.value)}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  placeholder="operator@nexus.io"
+                  className="w-full bg-zinc-800/50 border-2 border-cyan-500/30 px-4 py-3 text-white placeholder-zinc-600 focus:outline-none transition-all tracking-wide"
+                />
+                <div className="input-icon absolute right-3 top-1/2 -translate-y-1/2 text-cyan-500/50 group-focus-within:text-pink-400 transition-colors">
+                  <Icon icon="pixelarticons:mail" className="w-5 h-5" />
                 </div>
               </div>
             </div>
@@ -167,7 +195,7 @@ export function SignupForm({
             </button>
           </form>
 
-          <div className="mt-8 text-center form-element" style={{ opacity: 0 }}>
+          <div className="mt-6 text-center form-element" style={{ opacity: 0 }}>
             <p className="text-xs text-zinc-500 flex items-center justify-center gap-2">
               <Icon icon="pixelarticons:user" className="w-4 h-4" />{" "}
               ALREADY_REGISTERED?{" "}

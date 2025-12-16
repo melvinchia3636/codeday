@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
+import { useNavigate } from "react-router";
 import {
   useLoginAnimations,
   useInputAnimations,
@@ -8,11 +9,27 @@ import {
 import { PageDecorations } from "./components/PageDecorations";
 import { LoginHeader } from "./components/LoginHeader";
 import { LoginForm } from "./components/LoginForm";
+import { useAuth } from "../../contexts/AuthContext";
+import {
+  AuthLoadingOverlay,
+  AuthSuccessModal,
+  AuthErrorModal,
+} from "../../components/AuthFeedback";
+
+type FeedbackState = "idle" | "loading" | "success" | "error";
 
 export function Login() {
+  const navigate = useNavigate();
+  const { loginSilent, applyAuthData, error, clearError } = useAuth();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+  const [feedbackState, setFeedbackState] = useState<FeedbackState>("idle");
+
+  // Store auth data in ref to apply after loading animation
+  const authDataRef = useRef<{ token: string; user: unknown } | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLHeadingElement>(null);
@@ -51,12 +68,54 @@ export function Login() {
   const { handleButtonHover, handleButtonLeave } = useButtonAnimations();
   const { triggerSubmitAnimation } = useSubmitAnimation(cardRef);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
+    clearError();
+    authDataRef.current = null;
+
+    if (!username.trim() || !password.trim()) {
+      setLocalError("Please enter username and password");
+      return;
+    }
+
     setIsLoading(true);
+    setFeedbackState("loading");
     triggerSubmitAnimation();
-    setTimeout(() => setIsLoading(false), 2000);
+
+    try {
+      // Use loginSilent to avoid updating state immediately
+      const authData = await loginSilent({ identity: username, password });
+      // Store auth data to apply after loading animation
+      authDataRef.current = authData;
+    } catch {
+      setLocalError(error || "Login failed. Please check your credentials.");
+      setFeedbackState("error");
+      setIsLoading(false);
+    }
   };
+
+  const handleLoadingComplete = useCallback(() => {
+    if (authDataRef.current) {
+      // Now apply the auth data to context state
+      applyAuthData(authDataRef.current as Parameters<typeof applyAuthData>[0]);
+      setFeedbackState("success");
+      setIsLoading(false);
+    }
+  }, [applyAuthData]);
+
+  const handleSuccessConfirm = () => {
+    setFeedbackState("idle");
+    navigate("/");
+  };
+
+  const handleErrorClose = () => {
+    setFeedbackState("idle");
+    setLocalError(null);
+    clearError();
+  };
+
+  const displayError = feedbackState === "idle" ? localError || error : null;
 
   return (
     <div
@@ -77,6 +136,12 @@ export function Login() {
       <div className="relative z-10 w-full max-w-md">
         <LoginHeader logoRef={logoRef} cursorRef={cursorRef} />
 
+        {displayError && (
+          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 text-red-400 text-sm tracking-wider text-center">
+            {displayError}
+          </div>
+        )}
+
         <LoginForm
           formRef={formRef}
           cardRef={cardRef}
@@ -95,6 +160,33 @@ export function Login() {
           handleButtonLeave={handleButtonLeave}
         />
       </div>
+
+      {/* Auth Feedback Overlays */}
+      <AuthLoadingOverlay
+        isVisible={feedbackState === "loading"}
+        message="AUTHENTICATING..."
+        color="pink"
+        onComplete={handleLoadingComplete}
+      />
+
+      <AuthSuccessModal
+        isVisible={feedbackState === "success"}
+        title="ACCESS_GRANTED"
+        message="Neural link established. Welcome back, Operator. Redirecting to command center..."
+        buttonText="ENTER_SYSTEM"
+        onConfirm={handleSuccessConfirm}
+        color="pink"
+      />
+
+      <AuthErrorModal
+        isVisible={feedbackState === "error"}
+        title="ACCESS_DENIED"
+        message={
+          localError || error || "Authentication failed. Invalid credentials."
+        }
+        buttonText="TRY_AGAIN"
+        onClose={handleErrorClose}
+      />
     </div>
   );
 }

@@ -1,24 +1,16 @@
-import type { RefObject } from "react";
 import { Icon } from "@iconify/react";
+import { useHydrationAnimationRefs } from "../contexts/HydrationAnimationsContext";
+import { useHydration } from "../../../contexts/HydrationContext";
 
-interface StatsGridProps {
-  statsRef: RefObject<HTMLDivElement | null>;
-  totalWater: number;
-  targetWater: number;
-  logsCount: number;
-}
+export function StatsGrid() {
+  const { statsRef } = useHydrationAnimationRefs();
+  const { totalWater, targetWater, logsCount, remaining } = useHydration();
 
-export function StatsGrid({
-  statsRef,
-  totalWater,
-  targetWater,
-  logsCount,
-}: StatsGridProps) {
   const stats = [
     { label: "TODAY", value: `${totalWater}ml`, icon: "pixelarticons:drop" },
     {
       label: "REMAINING",
-      value: `${targetWater - totalWater}ml`,
+      value: `${remaining}ml`,
       icon: "pixelarticons:drop-half",
     },
     { label: "LOGS", value: logsCount, icon: "pixelarticons:chart-bar" },

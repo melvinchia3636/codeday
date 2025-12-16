@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react";
 import { useEffect, useRef } from "react";
 import { animate, random } from "animejs";
+import { Link } from "react-router";
 
 export function WaterCard() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -251,118 +252,122 @@ export function WaterCard() {
   };
 
   return (
-    <div
-      ref={containerRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="group bg-zinc-900/80 border-2 border-cyan-500/50 p-4 relative overflow-hidden transition-all duration-300 backdrop-blur-sm"
-    >
-      {/* Particles */}
+    <Link to="/hydration" className="block">
       <div
-        ref={particlesRef}
-        className="absolute inset-0 pointer-events-none"
-      ></div>
-
-      {/* Bubbles */}
-      <div
-        ref={bubblesRef}
-        className="absolute inset-0 pointer-events-none"
-      ></div>
-
-      {/* Wave effect at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 overflow-hidden pointer-events-none opacity-20">
+        ref={containerRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="group bg-zinc-900/80 border-2 border-cyan-500/50 p-4 relative overflow-hidden transition-all duration-300 backdrop-blur-sm cursor-pointer"
+      >
+        {/* Particles */}
         <div
-          ref={waveRef}
-          className="absolute bottom-0 left-0 w-[200%] h-full"
-          style={{
-            background:
-              "repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(34,211,238,0.3) 50px, rgba(34,211,238,0.3) 100px)",
-          }}
+          ref={particlesRef}
+          className="absolute inset-0 pointer-events-none"
         ></div>
-      </div>
 
-      {/* Top line */}
-      <div
-        ref={topLineRef}
-        className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-transparent"
-      ></div>
+        {/* Bubbles */}
+        <div
+          ref={bubblesRef}
+          className="absolute inset-0 pointer-events-none"
+        ></div>
 
-      {/* Orb */}
-      <div
-        ref={orbRef}
-        className="absolute -top-10 -right-10 w-20 h-20 bg-cyan-500/10 rounded-full blur-xl"
-      ></div>
-
-      {/* Corners */}
-      <div
-        ref={(el) => {
-          if (el) cornersRef.current[0] = el;
-        }}
-        className="absolute top-1 left-1 w-3 h-3 border-l border-t border-cyan-500/50"
-        style={{ opacity: 0 }}
-      ></div>
-      <div
-        ref={(el) => {
-          if (el) cornersRef.current[1] = el;
-        }}
-        className="absolute top-1 right-1 w-3 h-3 border-r border-t border-cyan-500/50"
-        style={{ opacity: 0 }}
-      ></div>
-      <div
-        ref={(el) => {
-          if (el) cornersRef.current[2] = el;
-        }}
-        className="absolute bottom-1 left-1 w-3 h-3 border-l border-b border-cyan-500/50"
-        style={{ opacity: 0 }}
-      ></div>
-      <div
-        ref={(el) => {
-          if (el) cornersRef.current[3] = el;
-        }}
-        className="absolute bottom-1 right-1 w-3 h-3 border-r border-b border-cyan-500/50"
-        style={{ opacity: 0 }}
-      ></div>
-
-      <div className="text-cyan-400 text-xs tracking-widest mb-2 flex items-center gap-2 relative z-10">
-        <span ref={iconRef}>
-          <Icon icon="pixelarticons:drop-full" className="w-4 h-4" />
-        </span>
-        HYDRO.log
-      </div>
-
-      <div
-        ref={valueRef}
-        className="text-4xl font-bold text-white mb-1 relative z-10 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]"
-        style={{ opacity: 0 }}
-      >
-        2.4L
-      </div>
-
-      <div className="text-cyan-300/60 text-xs relative z-10">WATER INTAKE</div>
-
-      <div
-        ref={barsContainerRef}
-        className="mt-3 flex gap-1 justify-center relative z-10"
-      >
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+        {/* Wave effect at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-8 overflow-hidden pointer-events-none opacity-20">
           <div
-            key={i}
-            className={`water-bar w-3 h-8 border origin-bottom ${
-              i <= 6
-                ? "bg-gradient-to-t from-cyan-500 to-blue-400 border-cyan-400"
-                : "bg-zinc-800 border-zinc-700"
-            }`}
+            ref={waveRef}
+            className="absolute bottom-0 left-0 w-[200%] h-full"
             style={{
-              transform: i <= 6 ? "scaleY(0)" : "scaleY(1)",
-              opacity: i <= 6 ? 0 : 1,
+              background:
+                "repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(34,211,238,0.3) 50px, rgba(34,211,238,0.3) 100px)",
             }}
           ></div>
-        ))}
-      </div>
+        </div>
 
-      <div className="mt-2 text-xs text-cyan-300/40 border-t border-cyan-500/20 pt-2 relative z-10">
-        ▸ TARGET: 3.0L ▸ <span className="text-cyan-400">80%</span>
+        {/* Top line */}
+        <div
+          ref={topLineRef}
+          className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-transparent"
+        ></div>
+
+        {/* Orb */}
+        <div
+          ref={orbRef}
+          className="absolute -top-10 -right-10 w-20 h-20 bg-cyan-500/10 rounded-full blur-xl"
+        ></div>
+
+        {/* Corners */}
+        <div
+          ref={(el) => {
+            if (el) cornersRef.current[0] = el;
+          }}
+          className="absolute top-1 left-1 w-3 h-3 border-l border-t border-cyan-500/50"
+          style={{ opacity: 0 }}
+        ></div>
+        <div
+          ref={(el) => {
+            if (el) cornersRef.current[1] = el;
+          }}
+          className="absolute top-1 right-1 w-3 h-3 border-r border-t border-cyan-500/50"
+          style={{ opacity: 0 }}
+        ></div>
+        <div
+          ref={(el) => {
+            if (el) cornersRef.current[2] = el;
+          }}
+          className="absolute bottom-1 left-1 w-3 h-3 border-l border-b border-cyan-500/50"
+          style={{ opacity: 0 }}
+        ></div>
+        <div
+          ref={(el) => {
+            if (el) cornersRef.current[3] = el;
+          }}
+          className="absolute bottom-1 right-1 w-3 h-3 border-r border-b border-cyan-500/50"
+          style={{ opacity: 0 }}
+        ></div>
+
+        <div className="text-cyan-400 text-xs tracking-widest mb-2 flex items-center gap-2 relative z-10">
+          <span ref={iconRef}>
+            <Icon icon="pixelarticons:drop-full" className="w-4 h-4" />
+          </span>
+          HYDRO.log
+        </div>
+
+        <div
+          ref={valueRef}
+          className="text-4xl font-bold text-white mb-1 relative z-10 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]"
+          style={{ opacity: 0 }}
+        >
+          2.4L
+        </div>
+
+        <div className="text-cyan-300/60 text-xs relative z-10">
+          WATER INTAKE
+        </div>
+
+        <div
+          ref={barsContainerRef}
+          className="mt-3 flex gap-1 justify-center relative z-10"
+        >
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div
+              key={i}
+              className={`water-bar w-3 h-8 border origin-bottom ${
+                i <= 6
+                  ? "bg-gradient-to-t from-cyan-500 to-blue-400 border-cyan-400"
+                  : "bg-zinc-800 border-zinc-700"
+              }`}
+              style={{
+                transform: i <= 6 ? "scaleY(0)" : "scaleY(1)",
+                opacity: i <= 6 ? 0 : 1,
+              }}
+            ></div>
+          ))}
+        </div>
+
+        <div className="mt-2 text-xs text-cyan-300/40 border-t border-cyan-500/20 pt-2 relative z-10">
+          ▸ TARGET: 3.0L ▸ <span className="text-cyan-400">80%</span>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }

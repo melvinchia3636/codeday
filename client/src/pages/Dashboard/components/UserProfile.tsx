@@ -2,8 +2,10 @@ import { Icon } from "@iconify/react";
 import { useEffect, useRef } from "react";
 import { animate, random } from "animejs";
 import { Link } from "react-router";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export function UserProfile() {
+  const { user } = useAuth();
   const containerRef = useRef<HTMLAnchorElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
   const avatarRingRef = useRef<HTMLDivElement>(null);
@@ -153,7 +155,7 @@ export function UserProfile() {
           ref={usernameRef}
           className="text-pink-400 font-bold tracking-widest text-sm drop-shadow-[0_0_8px_rgba(236,72,153,0.5)]"
         >
-          USER_01
+          {user?.username}
         </h2>
         <p ref={levelRef} className="text-xs text-pink-300/50 tracking-wider">
           LVL 42 // <span className="text-cyan-400">ELITE</span>

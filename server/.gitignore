@@ -1,34 +1,17 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build output
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+build/
 
-# Virtual Environment
-venv/
-env/
-ENV/
-.venv
-
-# Environment Variables
+# Environment variables
 .env
 .env.local
+.env.*.local
 
 # IDE
 .vscode/
@@ -37,15 +20,20 @@ ENV/
 *.swo
 *~
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-
 # Logs
-*.log
 logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.tsbuildinfo

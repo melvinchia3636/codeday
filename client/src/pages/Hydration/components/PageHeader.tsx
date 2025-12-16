@@ -1,18 +1,12 @@
-import type { RefObject } from "react";
 import { Link } from "react-router";
 import { Icon } from "@iconify/react";
+import { useHydrationAnimationRefs } from "../contexts/HydrationAnimationsContext";
+import { useHydration } from "../../../contexts/HydrationContext";
 
-interface PageHeaderProps {
-  headerRef: RefObject<HTMLDivElement | null>;
-  totalWater: number;
-  targetWater: number;
-}
+export function PageHeader() {
+  const { headerRef } = useHydrationAnimationRefs();
+  const { totalWater, targetWater } = useHydration();
 
-export function PageHeader({
-  headerRef,
-  totalWater,
-  targetWater,
-}: PageHeaderProps) {
   return (
     <div
       ref={headerRef}

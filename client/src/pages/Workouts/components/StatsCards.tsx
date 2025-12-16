@@ -1,18 +1,16 @@
-import type { RefObject } from "react";
 import { Icon } from "@iconify/react";
+import { useWorkoutsAnimationRefs } from "../contexts/WorkoutsAnimationsContext";
 
-interface Stat {
-  label: string;
-  value: string;
-  icon: string;
-}
+const stats = [
+  { label: "TOTAL_WORKOUTS", value: "156", icon: "pixelarticons:chart-bar" },
+  { label: "CALORIES_BURNED", value: "48.5K", icon: "pixelarticons:coin" },
+  { label: "TOTAL_DURATION", value: "72h", icon: "pixelarticons:clock" },
+  { label: "AVG_EFFORT", value: "78%", icon: "pixelarticons:zap" },
+];
 
-interface StatsCardsProps {
-  statsRef: RefObject<HTMLDivElement | null>;
-  stats: Stat[];
-}
+export function StatsCards() {
+  const { statsRef } = useWorkoutsAnimationRefs();
 
-export function StatsCards({ statsRef, stats }: StatsCardsProps) {
   return (
     <div
       ref={statsRef}

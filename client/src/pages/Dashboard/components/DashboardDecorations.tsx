@@ -1,40 +1,24 @@
-import { type RefObject } from "react";
+import { useDashboardAnimationRefs } from "../contexts/DashboardAnimationsContext";
 
-interface DashboardDecorationsProps {
-  matrixRainRef: RefObject<HTMLDivElement | null>;
-  cyberGridRef: RefObject<HTMLDivElement | null>;
-  hexGridRef: RefObject<HTMLDivElement | null>;
-  particlesRef: RefObject<HTMLDivElement | null>;
-  dataStreamRef: RefObject<HTMLDivElement | null>;
-  scanlineRef: RefObject<HTMLDivElement | null>;
-  glitchOverlayRef: RefObject<HTMLDivElement | null>;
-  energyFieldRef: RefObject<HTMLDivElement | null>;
-  orbsRef: RefObject<HTMLDivElement[]>;
-  hologramRingsRef: RefObject<HTMLDivElement[]>;
-  pulseRingsRef: RefObject<HTMLDivElement[]>;
-  neonLinesRef: RefObject<HTMLDivElement[]>;
-  cornersRef: RefObject<HTMLDivElement[]>;
-  sideBarsTopRef: RefObject<HTMLDivElement[]>;
-  sideBarsBottomRef: RefObject<HTMLDivElement[]>;
-}
+export function DashboardDecorations() {
+  const {
+    matrixRainRef,
+    cyberGridRef,
+    hexGridRef,
+    particlesRef,
+    dataStreamRef,
+    scanlineRef,
+    glitchOverlayRef,
+    energyFieldRef,
+    orbsRef,
+    hologramRingsRef,
+    pulseRingsRef,
+    neonLinesRef,
+    cornersRef,
+    sideBarsTopRef,
+    sideBarsBottomRef,
+  } = useDashboardAnimationRefs();
 
-export function DashboardDecorations({
-  matrixRainRef,
-  cyberGridRef,
-  hexGridRef,
-  particlesRef,
-  dataStreamRef,
-  scanlineRef,
-  glitchOverlayRef,
-  energyFieldRef,
-  orbsRef,
-  hologramRingsRef,
-  pulseRingsRef,
-  neonLinesRef,
-  cornersRef,
-  sideBarsTopRef,
-  sideBarsBottomRef,
-}: DashboardDecorationsProps) {
   return (
     <>
       {/* Matrix rain background */}
@@ -46,7 +30,7 @@ export function DashboardDecorations({
       {/* Cyber grid */}
       <div
         ref={cyberGridRef}
-        className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(236,72,153,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.2)_1px,transparent_1px)] bg-[size:40px_40px] z-0"
+        className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(236,72,153,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.2)_1px,transparent_1px)] bg-size-[40px_40px] z-0"
       />
 
       {/* Hex grid overlay */}
@@ -70,13 +54,13 @@ export function DashboardDecorations({
       {/* Scanline effect */}
       <div
         ref={scanlineRef}
-        className="absolute left-0 right-0 h-1 bg-gradient-to-b from-transparent via-cyan-500/30 to-transparent pointer-events-none z-50"
+        className="absolute left-0 right-0 h-1 bg-linear-to-b from-transparent via-cyan-500/30 to-transparent pointer-events-none z-50"
       />
 
       {/* Glitch overlay */}
       <div
         ref={glitchOverlayRef}
-        className="absolute inset-0 bg-gradient-to-r from-pink-500/20 via-transparent to-cyan-500/20 pointer-events-none z-40 mix-blend-overlay"
+        className="absolute inset-0 bg-linear-to-r from-pink-500/20 via-transparent to-cyan-500/20 pointer-events-none z-40 mix-blend-overlay"
         style={{ opacity: 0 }}
       />
 
@@ -149,28 +133,28 @@ export function DashboardDecorations({
         ref={(el) => {
           if (el) neonLinesRef.current[0] = el;
         }}
-        className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-fuchsia-500 to-cyan-500 z-10 origin-left shadow-[0_0_20px_rgba(236,72,153,0.8)]"
+        className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-pink-500 via-fuchsia-500 to-cyan-500 z-10 origin-left shadow-[0_0_20px_rgba(236,72,153,0.8)]"
         style={{ opacity: 0, transform: "scaleX(0)" }}
       />
       <div
         ref={(el) => {
           if (el) neonLinesRef.current[1] = el;
         }}
-        className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-fuchsia-500 to-pink-500 z-10 origin-right shadow-[0_0_20px_rgba(34,211,238,0.8)]"
+        className="absolute bottom-0 left-0 w-full h-1 bg-linear-to-r from-cyan-500 via-fuchsia-500 to-pink-500 z-10 origin-right shadow-[0_0_20px_rgba(34,211,238,0.8)]"
         style={{ opacity: 0, transform: "scaleX(0)" }}
       />
       <div
         ref={(el) => {
           if (el) neonLinesRef.current[2] = el;
         }}
-        className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-pink-500 via-fuchsia-500 to-cyan-500 z-10 origin-top shadow-[0_0_20px_rgba(236,72,153,0.8)]"
+        className="absolute top-0 left-0 w-1 h-full bg-linear-to-b from-pink-500 via-fuchsia-500 to-cyan-500 z-10 origin-top shadow-[0_0_20px_rgba(236,72,153,0.8)]"
         style={{ opacity: 0, transform: "scaleY(0)" }}
       />
       <div
         ref={(el) => {
           if (el) neonLinesRef.current[3] = el;
         }}
-        className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-cyan-500 via-fuchsia-500 to-pink-500 z-10 origin-top shadow-[0_0_20px_rgba(34,211,238,0.8)]"
+        className="absolute top-0 right-0 w-1 h-full bg-linear-to-b from-cyan-500 via-fuchsia-500 to-pink-500 z-10 origin-top shadow-[0_0_20px_rgba(34,211,238,0.8)]"
         style={{ opacity: 0, transform: "scaleY(0)" }}
       />
 

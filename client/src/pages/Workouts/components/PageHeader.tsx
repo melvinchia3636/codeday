@@ -1,12 +1,10 @@
-import type { RefObject } from "react";
 import { Link } from "react-router";
 import { Icon } from "@iconify/react";
+import { useWorkoutsAnimationRefs } from "../contexts/WorkoutsAnimationsContext";
 
-interface PageHeaderProps {
-  headerRef: RefObject<HTMLDivElement | null>;
-}
+export function PageHeader() {
+  const { headerRef } = useWorkoutsAnimationRefs();
 
-export function PageHeader({ headerRef }: PageHeaderProps) {
   return (
     <div
       ref={headerRef}

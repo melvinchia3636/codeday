@@ -1,13 +1,14 @@
-import type { RefObject } from "react";
 import { Icon } from "@iconify/react";
+import { useProfileAnimationRefs } from "../contexts/ProfileAnimationsContext";
 
 interface WaifuPanelProps {
-  waifuRef: RefObject<HTMLDivElement | null>;
   name: string;
   yandereLevel: "none" | "low" | "medium" | "high";
 }
 
-export function WaifuPanel({ waifuRef, name, yandereLevel }: WaifuPanelProps) {
+export function WaifuPanel({ name, yandereLevel }: WaifuPanelProps) {
+  const { waifuRef } = useProfileAnimationRefs();
+
   const levelConfig = {
     none: { label: "NONE", color: "zinc", icon: "pixelarticons:mood-happy" },
     low: { label: "LOW", color: "cyan", icon: "pixelarticons:mood-neutral" },
@@ -21,7 +22,7 @@ export function WaifuPanel({ waifuRef, name, yandereLevel }: WaifuPanelProps) {
       className="flex-1 bg-zinc-900/80 border-2 border-pink-500/50 p-6 backdrop-blur-sm shadow-[0_0_30px_rgba(236,72,153,0.2)] relative"
       style={{ opacity: 0 }}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.05)_1px,transparent_1px)] bg-[size:20px_20px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.05)_1px,transparent_1px)] bg-size-[20px_20px]" />
       <div className="relative h-full flex flex-col">
         <h3 className="text-xl font-bold text-pink-400 tracking-[0.2em] mb-4 flex items-center gap-3 border-b border-pink-500/30 pb-3">
           <Icon icon="pixelarticons:mood-happy" className="w-6 h-6" />

@@ -1,13 +1,12 @@
-import type { RefObject } from "react";
 import { Link } from "react-router";
 import { Icon } from "@iconify/react";
+import { useProfileAnimationRefs } from "../contexts/ProfileAnimationsContext";
+import { useAuth } from "../../../contexts/AuthContext";
 
-interface PageHeaderProps {
-  headerRef: RefObject<HTMLDivElement | null>;
-  userId: string;
-}
+export function PageHeader() {
+  const { user } = useAuth();
+  const { headerRef } = useProfileAnimationRefs();
 
-export function PageHeader({ headerRef, userId }: PageHeaderProps) {
   return (
     <div
       ref={headerRef}
@@ -28,7 +27,7 @@ export function PageHeader({ headerRef, userId }: PageHeaderProps) {
         OPERATOR_PROFILE
       </h1>
       <div className="text-xs text-pink-400/60 tracking-wider">
-        ID: {userId}
+        ID: {user?.id}
       </div>
     </div>
   );

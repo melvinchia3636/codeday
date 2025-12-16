@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react";
 import { useEffect, useRef } from "react";
 import { animate, random } from "animejs";
+import { Link } from "react-router";
 
 export function WorkoutCard() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -188,95 +189,97 @@ export function WorkoutCard() {
   };
 
   return (
-    <div
-      ref={containerRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="group bg-zinc-900/80 border-2 border-pink-500/50 p-4 relative overflow-hidden transition-all duration-300 backdrop-blur-sm"
-    >
-      {/* Floating particles */}
+    <Link to="/workouts" className="block">
       <div
-        ref={particlesRef}
-        className="absolute inset-0 pointer-events-none"
-      ></div>
-
-      {/* Top accent line */}
-      <div
-        ref={topLineRef}
-        className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-fuchsia-500 to-transparent"
-      ></div>
-
-      {/* Floating orb */}
-      <div
-        ref={orbRef}
-        className="absolute -top-10 -right-10 w-20 h-20 bg-pink-500/10 rounded-full blur-xl"
-      ></div>
-
-      {/* Corner decorations */}
-      <div
-        ref={(el) => {
-          if (el) cornersRef.current[0] = el;
-        }}
-        className="absolute top-1 left-1 w-3 h-3 border-l border-t border-pink-500/50"
-        style={{ opacity: 0 }}
-      ></div>
-      <div
-        ref={(el) => {
-          if (el) cornersRef.current[1] = el;
-        }}
-        className="absolute top-1 right-1 w-3 h-3 border-r border-t border-pink-500/50"
-        style={{ opacity: 0 }}
-      ></div>
-      <div
-        ref={(el) => {
-          if (el) cornersRef.current[2] = el;
-        }}
-        className="absolute bottom-1 left-1 w-3 h-3 border-l border-b border-pink-500/50"
-        style={{ opacity: 0 }}
-      ></div>
-      <div
-        ref={(el) => {
-          if (el) cornersRef.current[3] = el;
-        }}
-        className="absolute bottom-1 right-1 w-3 h-3 border-r border-b border-pink-500/50"
-        style={{ opacity: 0 }}
-      ></div>
-
-      <div className="text-pink-400 text-xs tracking-widest mb-2 flex items-center gap-2 relative z-10">
-        <span ref={iconRef}>
-          <Icon icon="pixelarticons:human-run" className="w-4 h-4" />
-        </span>
-        WORKOUT.exe
-      </div>
-
-      <div
-        ref={valueRef}
-        className="text-4xl font-bold text-white mb-1 relative z-10 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+        ref={containerRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="group bg-zinc-900/80 border-2 border-pink-500/50 p-4 relative overflow-hidden transition-all duration-300 backdrop-blur-sm cursor-pointer"
       >
-        0
-      </div>
+        {/* Floating particles */}
+        <div
+          ref={particlesRef}
+          className="absolute inset-0 pointer-events-none"
+        ></div>
 
-      <div className="text-pink-300/60 text-xs relative z-10">
-        CALORIES BURNED
-      </div>
+        {/* Top accent line */}
+        <div
+          ref={topLineRef}
+          className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-fuchsia-500 to-transparent"
+        ></div>
 
-      <div className="mt-3 flex items-center gap-2 relative z-10">
-        <div className="h-2 flex-1 bg-zinc-800 overflow-hidden border border-pink-500/20">
-          <div
-            ref={progressRef}
-            className="h-full bg-gradient-to-r from-pink-500 via-fuchsia-500 to-pink-400 bg-[length:200%_100%]"
-            style={{ width: "0%" }}
-          ></div>
+        {/* Floating orb */}
+        <div
+          ref={orbRef}
+          className="absolute -top-10 -right-10 w-20 h-20 bg-pink-500/10 rounded-full blur-xl"
+        ></div>
+
+        {/* Corner decorations */}
+        <div
+          ref={(el) => {
+            if (el) cornersRef.current[0] = el;
+          }}
+          className="absolute top-1 left-1 w-3 h-3 border-l border-t border-pink-500/50"
+          style={{ opacity: 0 }}
+        ></div>
+        <div
+          ref={(el) => {
+            if (el) cornersRef.current[1] = el;
+          }}
+          className="absolute top-1 right-1 w-3 h-3 border-r border-t border-pink-500/50"
+          style={{ opacity: 0 }}
+        ></div>
+        <div
+          ref={(el) => {
+            if (el) cornersRef.current[2] = el;
+          }}
+          className="absolute bottom-1 left-1 w-3 h-3 border-l border-b border-pink-500/50"
+          style={{ opacity: 0 }}
+        ></div>
+        <div
+          ref={(el) => {
+            if (el) cornersRef.current[3] = el;
+          }}
+          className="absolute bottom-1 right-1 w-3 h-3 border-r border-b border-pink-500/50"
+          style={{ opacity: 0 }}
+        ></div>
+
+        <div className="text-pink-400 text-xs tracking-widest mb-2 flex items-center gap-2 relative z-10">
+          <span ref={iconRef}>
+            <Icon icon="pixelarticons:human-run" className="w-4 h-4" />
+          </span>
+          WORKOUT.exe
         </div>
-        <span className="text-cyan-400 text-xs drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">
-          75%
-        </span>
-      </div>
 
-      <div className="mt-3 text-xs text-pink-300/40 border-t border-pink-500/20 pt-2 relative z-10">
-        ▸ HIIT SESSION: 45min
-        <br />▸ STRENGTH: 30min
+        <div
+          ref={valueRef}
+          className="text-4xl font-bold text-white mb-1 relative z-10 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+        >
+          0
+        </div>
+
+        <div className="text-pink-300/60 text-xs relative z-10">
+          CALORIES BURNED
+        </div>
+
+        <div className="mt-3 flex items-center gap-2 relative z-10">
+          <div className="h-2 flex-1 bg-zinc-800 overflow-hidden border border-pink-500/20">
+            <div
+              ref={progressRef}
+              className="h-full bg-gradient-to-r from-pink-500 via-fuchsia-500 to-pink-400 bg-[length:200%_100%]"
+              style={{ width: "0%" }}
+            ></div>
+          </div>
+          <span className="text-cyan-400 text-xs drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">
+            75%
+          </span>
+        </div>
+
+        <div className="mt-3 text-xs text-pink-300/40 border-t border-pink-500/20 pt-2 relative z-10">
+          ▸ HIIT SESSION: 45min
+          <br />▸ STRENGTH: 30min
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }

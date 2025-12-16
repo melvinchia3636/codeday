@@ -1,80 +1,198 @@
-import type { RefObject } from "react";
+import { useState } from "react";
 import { Icon } from "@iconify/react";
+import { useWorkoutsAnimationRefs } from "../contexts/WorkoutsAnimationsContext";
+import { useWorkouts } from "../../../contexts/WorkoutsContext";
+import { defaultWorkoutTypes, colorMap } from "../../../lib/workout";
+import { NumberInput } from "../../../components/NumberInput";
 
-interface WorkoutType {
-  id: string;
-  icon: string;
-  label: string;
-  color: string;
-}
+export function LogWorkout() {
+  const { logFormRef } = useWorkoutsAnimationRefs();
+  const { workoutTypes } = useWorkouts();
 
-interface LogWorkoutProps {
-  logFormRef: RefObject<HTMLDivElement | null>;
-  workoutTypes: WorkoutType[];
-}
+  const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
+  const [duration, setDuration] = useState(30);
 
-export function LogWorkout({ logFormRef, workoutTypes }: LogWorkoutProps) {
+  // Show predefined defaults + custom user types
+  const defaultDisplayTypes = defaultWorkoutTypes.map((t, i) => ({
+    id: `default-${i}`,
+    icon: t.icon,
+    label: t.name,
+    color: t.color,
+    caloriesPerMinute: t.caloriesPerMinute,
+  }));
+
+  const customDisplayTypes = workoutTypes.map((t) => ({
+    id: t.id,
+    icon: t.icon,
+    label: t.name,
+    color: t.color,
+    caloriesPerMinute: t.caloriesPerMinute,
+  }));
+
+  const displayTypes = [...defaultDisplayTypes, ...customDisplayTypes];
+
+  const selectedType = displayTypes[selectedTypeIndex] || displayTypes[0];
+  const rgba = colorMap[selectedType?.color] || colorMap.pink;
+
+  // Auto-calculate calories based on duration and type
+  const calculatedCalories = duration * (selectedType?.caloriesPerMinute || 5);
+
   return (
     <div
       ref={logFormRef}
-      className="bg-zinc-900/80 border-2 border-pink-500/50 p-5 backdrop-blur-sm"
+      className="relative bg-zinc-900/80 border-2 border-pink-500/50 p-5 backdrop-blur-sm overflow-hidden"
       style={{ opacity: 0 }}
     >
-      <h3 className="text-lg font-bold text-pink-400 tracking-[0.2em] mb-4 flex items-center gap-2 border-b border-pink-500/30 pb-2">
-        <Icon icon="pixelarticons:edit" className="w-5 h-5" />
-        LOG_NEW_WORKOUT
-      </h3>
-      <div className="space-y-4">
-        <div>
-          <label className="text-xs text-pink-400/70 tracking-widest mb-2 block">
-            WORKOUT_TYPE
-          </label>
-          <select className="w-full bg-zinc-800/80 border border-pink-500/40 px-4 py-3 text-white focus:outline-none focus:border-pink-500">
-            {workoutTypes.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
+      {/* Background grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.03)_1px,transparent_1px)] bg-size-[20px_20px] pointer-events-none" />
+
+      {/* Corner accents */}
+      <div className="absolute top-0 left-0 w-6 h-6 border-l-2 border-t-2 border-pink-500" />
+      <div className="absolute top-0 right-0 w-6 h-6 border-r-2 border-t-2 border-cyan-500" />
+      <div className="absolute bottom-0 left-0 w-6 h-6 border-l-2 border-b-2 border-cyan-500" />
+      <div className="absolute bottom-0 right-0 w-6 h-6 border-r-2 border-b-2 border-pink-500" />
+
+      <div className="relative z-10">
+        {/* Header */}
+        <h3 className="text-lg font-bold text-pink-400 tracking-[0.2em] mb-4 flex items-center gap-2 border-b border-pink-500/30 pb-2">
+          <Icon icon="pixelarticons:edit" className="w-5 h-5" />
+          LOG_NEW_WORKOUT
+          <span className="ml-auto text-[10px] text-fuchsia-400/60 tracking-wider flex items-center gap-1">
+            <span className="w-1.5 h-1.5 bg-fuchsia-400 animate-pulse" />
+            READY
+          </span>
+        </h3>
+
+        <div className="space-y-4">
+          {/* Workout Type Selector - Visual Grid */}
           <div>
-            <label className="text-xs text-pink-400/70 tracking-widest mb-2 block">
-              DURATION (MIN)
+            <label className="text-xs text-pink-400/70 tracking-widest mb-2 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-pink-400" />
+              WORKOUT_TYPE
             </label>
-            <input
-              type="number"
-              defaultValue={30}
-              className="w-full bg-zinc-800/80 border border-pink-500/40 px-4 py-3 text-white focus:outline-none focus:border-pink-500"
-            />
+            <div className="grid grid-cols-4 gap-2">
+              {/* Show first 4 defaults + up to 4 custom types to ensure user types are visible */}
+              {[
+                ...defaultDisplayTypes.slice(0, 4),
+                ...customDisplayTypes.slice(0, 4),
+              ].map((t, i) => {
+                const tRgba = colorMap[t.color] || colorMap.pink;
+                const isSelected = i === selectedTypeIndex;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setSelectedTypeIndex(i)}
+                    className={`p-2 border-2 transition-all flex flex-col items-center gap-1 ${
+                      isSelected
+                        ? ""
+                        : "border-zinc-700 hover:border-pink-500/50"
+                    }`}
+                    style={
+                      isSelected
+                        ? {
+                            borderColor: `${tRgba}1)`,
+                            backgroundColor: `${tRgba}0.2)`,
+                            boxShadow: `0 0 15px ${tRgba}0.4)`,
+                          }
+                        : undefined
+                    }
+                  >
+                    <Icon
+                      icon={t.icon}
+                      className="w-5 h-5"
+                      style={{
+                        color: isSelected
+                          ? `${tRgba}1)`
+                          : "rgba(236,72,153,0.5)",
+                      }}
+                    />
+                    <span
+                      className="text-[9px] tracking-wider"
+                      style={{
+                        color: isSelected
+                          ? `${tRgba}1)`
+                          : "rgba(255,255,255,0.4)",
+                      }}
+                    >
+                      {t.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <div>
-            <label className="text-xs text-pink-400/70 tracking-widest mb-2 block">
-              CALORIES
-            </label>
-            <input
-              type="number"
-              defaultValue={200}
-              className="w-full bg-zinc-800/80 border border-pink-500/40 px-4 py-3 text-white focus:outline-none focus:border-pink-500"
-            />
-          </div>
-        </div>
-        <div>
-          <label className="text-xs text-pink-400/70 tracking-widest mb-2 block">
-            EFFORT_LEVEL
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            defaultValue={75}
-            className="w-full accent-pink-500"
+
+          {/* Duration Input - Using NumberInput component */}
+          <NumberInput
+            label="DURATION"
+            icon="pixelarticons:clock"
+            unit="MIN"
+            value={duration}
+            onChange={(e) => setDuration(Number(e.target.value))}
           />
+
+          {/* Calculated Calories Display */}
+          <div className="p-4 bg-zinc-800/50 border border-pink-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Icon
+                  icon="pixelarticons:coin"
+                  className="w-5 h-5 text-pink-400"
+                />
+                <span className="text-xs text-pink-400/70 tracking-widest">
+                  ESTIMATED_BURN
+                </span>
+              </div>
+              <div
+                className="text-2xl font-bold tracking-wider"
+                style={{
+                  color: `${rgba}1)`,
+                  textShadow: `0 0 10px ${rgba}0.5)`,
+                }}
+              >
+                {calculatedCalories} KCAL
+              </div>
+            </div>
+            <p className="mt-2 text-[10px] text-pink-400/40 tracking-wider">
+              {selectedType?.label}: {selectedType?.caloriesPerMinute} KCAL/MIN
+              × {duration} MIN
+            </p>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            className="group relative w-full py-4 bg-linear-to-r from-pink-600 via-fuchsia-500 to-pink-600 text-white font-bold tracking-widest uppercase overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(236,72,153,0.6)]"
+            style={{ backgroundSize: "200% 100%" }}
+          >
+            {/* Shimmer effect */}
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+            <span className="relative flex items-center justify-center gap-2">
+              <Icon icon="pixelarticons:check" className="w-5 h-5" />
+              SAVE_WORKOUT
+            </span>
+          </button>
         </div>
-        <button className="w-full py-3 bg-gradient-to-r from-pink-500 to-fuchsia-500 text-white font-bold tracking-widest uppercase hover:shadow-[0_0_30px_rgba(236,72,153,0.6)] transition-all flex items-center justify-center gap-2">
-          <Icon icon="pixelarticons:check" className="w-5 h-5" />
-          SAVE_WORKOUT
-        </button>
+
+        {/* Bottom status */}
+        <div className="mt-4 flex items-center justify-between text-[10px]">
+          <span className="text-pink-400/50 tracking-widest flex items-center gap-1">
+            <Icon icon="pixelarticons:mood-happy" className="w-3 h-3" />
+            FORM_VALID
+          </span>
+          <div className="flex gap-0.5">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="w-1 h-2 bg-pink-500 animate-pulse"
+                style={{ animationDelay: `${i * 100}ms` }}
+              />
+            ))}
+          </div>
+          <span className="text-cyan-400/50 tracking-widest flex items-center gap-1">
+            DATA_READY
+            <Icon icon="pixelarticons:zap" className="w-3 h-3" />
+          </span>
+        </div>
       </div>
     </div>
   );

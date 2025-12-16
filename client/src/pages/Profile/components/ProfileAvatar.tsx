@@ -1,27 +1,30 @@
-import type { RefObject } from "react";
 import { Icon } from "@iconify/react";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useUserProfile } from "../../../contexts/UserProfileContext";
+import { useProfileAnimationRefs } from "../contexts/ProfileAnimationsContext";
 
-interface ProfileAvatarProps {
-  avatarRef: RefObject<HTMLDivElement | null>;
-  name: string;
-  email: string;
-}
+export function ProfileAvatar() {
+  const { user } = useAuth();
+  const { userData } = useUserProfile();
+  const { avatarRef } = useProfileAnimationRefs();
 
-export function ProfileAvatar({ avatarRef, name, email }: ProfileAvatarProps) {
+  const name = user?.username || userData?.name || "OPERATOR";
+  const email = user?.email || userData?.email || "unknown@nexus.io";
+
   return (
     <div
       ref={avatarRef}
       className="bg-zinc-900/80 border-2 border-pink-500/50 p-6 backdrop-blur-sm shadow-[0_0_30px_rgba(236,72,153,0.2)] relative"
       style={{ opacity: 0 }}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.1)_1px,transparent_1px)] bg-[size:15px_15px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.1)_1px,transparent_1px)] bg-size-[15px_15px]" />
       <div className="relative flex flex-col items-center">
-        <div className="w-36 h-36 rounded-full border-4 border-pink-500 bg-gradient-to-br from-zinc-800 to-zinc-900 flex items-center justify-center relative overflow-hidden shadow-[0_0_40px_rgba(236,72,153,0.5)]">
+        <div className="w-36 h-36 rounded-full border-4 border-pink-500 bg-linear-to-br from-zinc-800 to-zinc-900 flex items-center justify-center relative overflow-hidden shadow-[0_0_40px_rgba(236,72,153,0.5)]">
           <Icon
             icon="pixelarticons:avatar"
             className="w-24 h-24 text-pink-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-pink-500/30 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-pink-500/30 to-transparent" />
         </div>
         <h2 className="mt-4 text-2xl font-bold text-pink-400 tracking-widest">
           {name}

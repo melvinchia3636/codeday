@@ -72,14 +72,8 @@ export function useHydrationAnimations(props: UseHydrationAnimationsProps) {
         },
         "-=400"
       );
-      const water = tankRef.current.querySelector(".water-level");
-      if (water)
-        animate(water, {
-          height: ["0%", "67%"],
-          duration: 2000,
-          delay: 500,
-          ease: "outElastic(1, .6)",
-        });
+      // Note: Water level animation is now handled by WaterTank component
+      // to support dynamic percentage from API data
     }
 
     if (statsRef.current) {

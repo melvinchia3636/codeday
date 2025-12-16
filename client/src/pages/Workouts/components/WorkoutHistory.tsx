@@ -1,33 +1,71 @@
-import type { RefObject } from "react";
 import { Icon } from "@iconify/react";
+import { useWorkoutsAnimationRefs } from "../contexts/WorkoutsAnimationsContext";
+import { useWorkouts } from "../../../contexts/WorkoutsContext";
+import { defaultWorkoutTypes } from "../../../lib/workout";
 
-interface WorkoutType {
-  id: string;
-  icon: string;
-  label: string;
-  color: string;
-}
+const workoutHistory = [
+  {
+    id: 1,
+    type: "running",
+    duration: 45,
+    calories: 420,
+    effort: 85,
+    date: "2024-12-16 08:30",
+  },
+  {
+    id: 2,
+    type: "strength",
+    duration: 60,
+    calories: 380,
+    effort: 90,
+    date: "2024-12-15 17:00",
+  },
+  {
+    id: 3,
+    type: "walking",
+    duration: 30,
+    calories: 150,
+    effort: 40,
+    date: "2024-12-15 07:00",
+  },
+  {
+    id: 4,
+    type: "stretch",
+    duration: 20,
+    calories: 60,
+    effort: 25,
+    date: "2024-12-14 22:00",
+  },
+  {
+    id: 5,
+    type: "swimming",
+    duration: 40,
+    calories: 350,
+    effort: 75,
+    date: "2024-12-14 11:00",
+  },
+];
 
-interface WorkoutEntry {
-  id: number;
-  type: string;
-  duration: number;
-  calories: number;
-  effort: number;
-  date: string;
-}
+export function WorkoutHistory() {
+  const { historyRef } = useWorkoutsAnimationRefs();
+  const { workoutTypes } = useWorkouts();
 
-interface WorkoutHistoryProps {
-  historyRef: RefObject<HTMLDivElement | null>;
-  workoutTypes: WorkoutType[];
-  workoutHistory: WorkoutEntry[];
-}
+  // Use custom types if available, otherwise use defaults
+  const displayTypes =
+    workoutTypes.length > 0
+      ? workoutTypes.map((t) => ({
+          id: t.name.toLowerCase(),
+          icon: t.icon,
+          label: t.name,
+          color: t.color,
+        }))
+      : defaultWorkoutTypes.map((t) => ({
+          id: t.name.toLowerCase(),
+          icon: t.icon,
+          label: t.name,
+          color: t.color,
+        }));
 
-export function WorkoutHistory({
-  historyRef,
-  workoutTypes,
-  workoutHistory,
-}: WorkoutHistoryProps) {
   return (
     <div
       ref={historyRef}
@@ -46,7 +84,10 @@ export function WorkoutHistory({
             style={{ opacity: 0 }}
           >
             <Icon
-              icon={workoutTypes.find((t) => t.id === w.type)?.icon || ""}
+              icon={
+                displayTypes.find((t) => t.id === w.type)?.icon ||
+                "pixelarticons:human"
+              }
               className="w-8 h-8 text-pink-500"
             />
             <div className="flex-1">

@@ -18,6 +18,7 @@ interface UseProfileAnimationsProps {
   scanlineRef: RefObject<HTMLDivElement | null>;
   glitchOverlayRef: RefObject<HTMLDivElement | null>;
   gridRef: RefObject<HTMLDivElement | null>;
+  isReady?: boolean;
 }
 
 export function useProfileAnimations(props: UseProfileAnimationsProps) {
@@ -38,10 +39,12 @@ export function useProfileAnimations(props: UseProfileAnimationsProps) {
     scanlineRef,
     glitchOverlayRef,
     gridRef,
+    isReady = true,
   } = props;
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    // Wait until ready (data loaded) and container exists
+    if (!isReady || !containerRef.current) return;
 
     const tl = createTimeline({ defaults: { ease: "outExpo" } });
 
@@ -310,7 +313,7 @@ export function useProfileAnimations(props: UseProfileAnimationsProps) {
     return () => {
       clearInterval(glitchInterval);
     };
-  }, []);
+  }, [isReady]);
 }
 
 export function useInputAnimations() {

@@ -1,24 +1,16 @@
-import type { RefObject } from "react";
+import { useWorkoutsAnimationRefs } from "../contexts/WorkoutsAnimationsContext";
 
-interface PageDecorationsProps {
-  particlesRef: RefObject<HTMLDivElement | null>;
-  gridRef: RefObject<HTMLDivElement | null>;
-  scanlineRef: RefObject<HTMLDivElement | null>;
-  topLineRef: RefObject<HTMLDivElement | null>;
-  bottomLineRef: RefObject<HTMLDivElement | null>;
-  orbsRef: RefObject<HTMLDivElement[]>;
-  cornersRef: RefObject<HTMLDivElement[]>;
-}
+export function PageDecorations() {
+  const {
+    particlesRef,
+    gridRef,
+    scanlineRef,
+    topLineRef,
+    bottomLineRef,
+    orbsRef,
+    cornersRef,
+  } = useWorkoutsAnimationRefs();
 
-export function PageDecorations({
-  particlesRef,
-  gridRef,
-  scanlineRef,
-  topLineRef,
-  bottomLineRef,
-  orbsRef,
-  cornersRef,
-}: PageDecorationsProps) {
   return (
     <>
       <div

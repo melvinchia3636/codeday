@@ -1,19 +1,15 @@
-import type { RefObject } from "react";
 import { Icon } from "@iconify/react";
+import { useUserProfile } from "../../../contexts/UserProfileContext";
+import { useProfileAnimationRefs } from "../contexts/ProfileAnimationsContext";
 
-interface TargetsPanelProps {
-  targetsRef: RefObject<HTMLDivElement | null>;
-  currentWeight: number;
-  targetWeight: number;
-  targetType: "lose" | "gain" | "maintain";
-}
+export function TargetsPanel() {
+  const { profileForm, weightTarget } = useUserProfile();
+  const { targetsRef } = useProfileAnimationRefs();
 
-export function TargetsPanel({
-  targetsRef,
-  currentWeight,
-  targetWeight,
-  targetType,
-}: TargetsPanelProps) {
+  const currentWeight = profileForm.weightKg;
+  const targetWeight = weightTarget?.targetWeightKg || currentWeight;
+  const targetType = weightTarget?.targetType || "maintain";
+
   const targetLabels = {
     lose: "REDUCE",
     gain: "INCREASE",
@@ -26,7 +22,7 @@ export function TargetsPanel({
       className="bg-zinc-900/80 border-2 border-pink-500/50 p-6 backdrop-blur-sm shadow-[0_0_30px_rgba(236,72,153,0.2)] relative"
       style={{ opacity: 0 }}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.05)_1px,transparent_1px)] bg-[size:20px_20px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.05)_1px,transparent_1px)] bg-size-[20px_20px]" />
       <div className="relative">
         <h3 className="text-xl font-bold text-pink-400 tracking-[0.2em] mb-6 flex items-center gap-3 border-b border-pink-500/30 pb-3">
           <Icon icon="pixelarticons:target" className="w-6 h-6" />
@@ -53,7 +49,7 @@ export function TargetsPanel({
               }`}
             />
           </div>
-          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-pink-500/20 to-cyan-500/20 border border-cyan-500/50">
+          <div className="flex items-center justify-between p-4 bg-linear-to-r from-pink-500/20 to-cyan-500/20 border border-cyan-500/50">
             <span className="text-sm text-cyan-400/70 tracking-wider">
               TARGET
             </span>

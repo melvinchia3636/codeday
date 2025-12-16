@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
+import { useNavigate } from "react-router";
 import {
   useSignupAnimations,
   useInputAnimations,
@@ -8,12 +9,28 @@ import {
 import { PageDecorations } from "./components/PageDecorations";
 import { SignupHeader } from "./components/SignupHeader";
 import { SignupForm } from "./components/SignupForm";
+import { useAuth } from "../../contexts/AuthContext";
+import {
+  AuthLoadingOverlay,
+  AuthSuccessModal,
+} from "../../components/AuthFeedback";
+
+type FeedbackState = "idle" | "loading" | "success" | "error";
 
 export function Signup() {
+  const navigate = useNavigate();
+  const { signup, error, clearError } = useAuth();
+
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+  const [feedbackState, setFeedbackState] = useState<FeedbackState>("idle");
+
+  // Track signup completion for deferred feedback
+  const signupCompleteRef = useRef(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLHeadingElement>(null);
@@ -56,12 +73,61 @@ export function Signup() {
   const { handleButtonHover, handleButtonLeave } = useButtonAnimations();
   const { triggerSubmitAnimation } = useSubmitAnimation(cardRef);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
+    clearError();
+    signupCompleteRef.current = false;
+
+    // Validation
+    if (!username.trim() || !email.trim() || !password.trim()) {
+      setLocalError("Please fill in all fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setLocalError("Passwords do not match");
+      return;
+    }
+
+    if (password.length < 8) {
+      setLocalError("Password must be at least 8 characters");
+      return;
+    }
+
     setIsLoading(true);
+    setFeedbackState("loading");
     triggerSubmitAnimation();
-    setTimeout(() => setIsLoading(false), 2000);
+
+    try {
+      await signup({
+        username,
+        email,
+        password,
+        passwordConfirm: confirmPassword,
+      });
+      // Mark signup as complete - will show success after loading animation
+      signupCompleteRef.current = true;
+    } catch {
+      setLocalError(error || "Signup failed. Please try again.");
+      setFeedbackState("idle");
+      setIsLoading(false);
+    }
   };
+
+  const handleLoadingComplete = useCallback(() => {
+    if (signupCompleteRef.current) {
+      setFeedbackState("success");
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handleSuccessConfirm = () => {
+    setFeedbackState("idle");
+    navigate("/login");
+  };
+
+  const displayError = localError || error;
 
   return (
     <div
@@ -84,6 +150,12 @@ export function Signup() {
       <div className="relative z-10 w-full max-w-lg">
         <SignupHeader logoRef={logoRef} cursorRef={cursorRef} />
 
+        {displayError && (
+          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 text-red-400 text-sm tracking-wider text-center">
+            {displayError}
+          </div>
+        )}
+
         <SignupForm
           formRef={formRef}
           cardRef={cardRef}
@@ -91,10 +163,12 @@ export function Signup() {
           terminalIndicatorRef={terminalIndicatorRef}
           indicatorDotsRef={indicatorDotsRef}
           username={username}
+          email={email}
           password={password}
           confirmPassword={confirmPassword}
           isLoading={isLoading}
           onUsernameChange={setUsername}
+          onEmailChange={setEmail}
           onPasswordChange={setPassword}
           onConfirmPasswordChange={setConfirmPassword}
           onSubmit={handleSubmit}
@@ -104,6 +178,23 @@ export function Signup() {
           handleButtonLeave={handleButtonLeave}
         />
       </div>
+
+      {/* Auth Feedback Overlays */}
+      <AuthLoadingOverlay
+        isVisible={feedbackState === "loading"}
+        message="INITIALIZING_NEURAL_PROFILE..."
+        color="cyan"
+        onComplete={handleLoadingComplete}
+      />
+
+      <AuthSuccessModal
+        isVisible={feedbackState === "success"}
+        title="IDENTITY_INITIALIZED"
+        message="Neural profile created successfully. Your digital consciousness has been registered in the network. Proceed to authentication terminal."
+        buttonText="PROCEED_TO_AUTH_TERMINAL"
+        onConfirm={handleSuccessConfirm}
+        color="cyan"
+      />
     </div>
   );
 }
