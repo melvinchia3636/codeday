@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
 import { animate, stagger } from "animejs";
 import { useWorkoutsAnimationRefs } from "../contexts/WorkoutsAnimationsContext";
@@ -21,15 +21,36 @@ export function WorkoutTypes() {
     deleteType,
     isCreatingType,
     isUpdatingType,
+    isLoading,
   } = useWorkouts();
 
-  // Animate type buttons when workoutTypes changes (including initial load)
-  useEffect(() => {
-    if (!typesRef.current) return;
+  // Track previous count to detect new types being added (after initial load)
+  const prevCountRef = useRef<number | null>(null);
 
-    const types = typesRef.current.querySelectorAll(".type-btn");
-    if (types.length > 0) {
-      animate(types, {
+  // Reanimate all type buttons when a new type is added
+  useEffect(() => {
+    // Wait for initial load to complete before tracking
+    if (isLoading) return;
+
+    // Set initial count after first load (skip animation for initial load)
+    if (prevCountRef.current === null) {
+      prevCountRef.current = workoutTypes.length;
+      return;
+    }
+
+    const prevCount = prevCountRef.current;
+    const currentCount = workoutTypes.length;
+
+    // Only reanimate if a new type was added
+    if (currentCount > prevCount && typesRef.current) {
+      const allButtons = typesRef.current.querySelectorAll(".type-btn");
+
+      // Reset opacity and animate all together
+      allButtons.forEach((btn) => {
+        (btn as HTMLElement).style.opacity = "0";
+      });
+
+      animate(allButtons, {
         opacity: [0, 1],
         scale: [0.5, 1],
         delay: stagger(50),
@@ -37,16 +58,9 @@ export function WorkoutTypes() {
         ease: "outBack",
       });
     }
-  }, [workoutTypes.length, typesRef]);
-  const {
-    workoutTypes,
-    createType,
-    updateType,
-    deleteType,
-    isCreatingType,
-    isUpdatingType,
-    isDeletingType,
-  } = useWorkouts();
+
+    prevCountRef.current = currentCount;
+  }, [isLoading, workoutTypes.length, typesRef]);
 
   // Modal states
   const [showModal, setShowModal] = useState(false);
@@ -160,12 +174,12 @@ export function WorkoutTypes() {
     <>
       {/* Click outside to close context menu */}
       {contextMenu && (
-        <div className="fixed inset-0 z-40" onClick={handleCloseContextMenu} />
+        <div className="fixed inset-0 z-10" onClick={handleCloseContextMenu} />
       )}
 
       <div
         ref={typesRef}
-        className="relative z-10 flex gap-3 mb-6 flex-wrap justify-center"
+        className="relative z-20 flex gap-3 mb-6 flex-wrap justify-center"
       >
         {displayTypes.map((t) => {
           const rgba = getColorRgba(t.color);
@@ -202,7 +216,7 @@ export function WorkoutTypes() {
               {/* Context Menu */}
               {contextMenu?.id === t.id && t.original && (
                 <div
-                  className="fixed z-50 bg-zinc-900 border-2 border-pink-500/50 shadow-[0_0_20px_rgba(236,72,153,0.3)] min-w-[140px]"
+                  className="fixed z-40 bg-zinc-900 border-2 border-pink-500/50 shadow-[0_0_20px_rgba(236,72,153,0.3)] min-w-[140px]"
                   style={{ left: contextMenu.x, top: contextMenu.y }}
                 >
                   <button

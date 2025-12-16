@@ -1,11 +1,15 @@
 import { createContext, useContext, type ReactNode } from "react";
 import {
   useWorkoutTypesQuery,
+  useWorkoutsQuery,
+  useCreateWorkoutMutation,
   useCreateWorkoutTypeMutation,
   useUpdateWorkoutTypeMutation,
   useDeleteWorkoutTypeMutation,
 } from "../hooks/useWorkoutQueries";
 import type {
+  Workout,
+  CreateWorkoutDto,
   WorkoutType,
   CreateWorkoutTypeDto,
   UpdateWorkoutTypeDto,
@@ -14,14 +18,18 @@ import type {
 interface WorkoutsContextValue {
   // Data
   workoutTypes: WorkoutType[];
+  workouts: Workout[];
 
   // Loading states
   isLoading: boolean;
+  isLoadingWorkouts: boolean;
+  isCreatingWorkout: boolean;
   isCreatingType: boolean;
   isUpdatingType: boolean;
   isDeletingType: boolean;
 
   // Actions
+  createWorkout: (data: CreateWorkoutDto) => void;
   createType: (data: CreateWorkoutTypeDto) => void;
   updateType: (id: string, data: UpdateWorkoutTypeDto) => void;
   deleteType: (id: string) => void;
@@ -36,13 +44,20 @@ interface WorkoutsProviderProps {
 export function WorkoutsProvider({ children }: WorkoutsProviderProps) {
   // Fetch data
   const { data: workoutTypes = [], isLoading } = useWorkoutTypesQuery();
+  const { data: workouts = [], isLoading: isLoadingWorkouts } =
+    useWorkoutsQuery();
 
   // Mutations
+  const createWorkoutMutation = useCreateWorkoutMutation();
   const createTypeMutation = useCreateWorkoutTypeMutation();
   const updateTypeMutation = useUpdateWorkoutTypeMutation();
   const deleteTypeMutation = useDeleteWorkoutTypeMutation();
 
   // Actions
+  const createWorkout = (data: CreateWorkoutDto) => {
+    createWorkoutMutation.mutate(data);
+  };
+
   const createType = (data: CreateWorkoutTypeDto) => {
     createTypeMutation.mutate(data);
   };
@@ -58,14 +73,18 @@ export function WorkoutsProvider({ children }: WorkoutsProviderProps) {
   const value: WorkoutsContextValue = {
     // Data
     workoutTypes,
+    workouts,
 
     // Loading states
     isLoading,
+    isLoadingWorkouts,
+    isCreatingWorkout: createWorkoutMutation.isPending,
     isCreatingType: createTypeMutation.isPending,
     isUpdatingType: updateTypeMutation.isPending,
     isDeletingType: deleteTypeMutation.isPending,
 
     // Actions
+    createWorkout,
     createType,
     updateType,
     deleteType,

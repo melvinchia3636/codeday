@@ -46,7 +46,14 @@ async function request<T>(
     headers,
   });
 
-  const data = await response.json();
+  // Handle 204 No Content (no body)
+  if (response.status === 204) {
+    return {} as T;
+  }
+
+  // Check if response has content before parsing
+  const text = await response.text();
+  const data = text ? JSON.parse(text) : {};
 
   if (!response.ok) {
     throw new ApiClientError(

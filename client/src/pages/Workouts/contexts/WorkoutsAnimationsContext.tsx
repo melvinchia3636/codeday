@@ -6,6 +6,7 @@ import {
   type RefObject,
 } from "react";
 import { useWorkoutsAnimations } from "../hooks/useWorkoutsAnimations";
+import { useWorkouts } from "../../../contexts/WorkoutsContext";
 
 // Animation ref types
 interface WorkoutsAnimationRefs {
@@ -56,7 +57,10 @@ export function WorkoutsAnimationsProvider({
   const scanlineRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Run the animations hook
+  // Get loading state from WorkoutsContext
+  const { isLoading } = useWorkouts();
+
+  // Run the animations hook - waits for data to load
   useWorkoutsAnimations({
     containerRef,
     headerRef,
@@ -71,6 +75,7 @@ export function WorkoutsAnimationsProvider({
     particlesRef,
     scanlineRef,
     gridRef,
+    isLoading,
   });
 
   const value: WorkoutsAnimationsContextType = {

@@ -29,6 +29,78 @@ export interface UpdateWorkoutTypeDto {
 }
 
 // ============================================
+// Workout Interfaces
+// ============================================
+export interface Workout {
+  id: string;
+  type: string;
+  durationMin: number;
+  caloriesBurned: number;
+  effortUnits: number;
+  userId: string;
+  created: string;
+  updated: string;
+}
+
+export interface CreateWorkoutDto {
+  type: string;
+  durationMin: number;
+  caloriesBurned?: number;
+  effortUnits?: number;
+}
+
+export interface UpdateWorkoutDto {
+  type?: string;
+  durationMin?: number;
+  caloriesBurned?: number;
+  effortUnits?: number;
+}
+
+// ============================================
+// Workout API Client
+// ============================================
+export const workoutApi = {
+  /**
+   * Get all workouts for the current user
+   */
+  getAll: async (): Promise<Workout[]> => {
+    const response = await api.get<Workout[]>("/workouts");
+    return response.data;
+  },
+
+  /**
+   * Get a specific workout by ID
+   */
+  getById: async (id: string): Promise<Workout> => {
+    const response = await api.get<Workout>(`/workouts/${id}`);
+    return response.data;
+  },
+
+  /**
+   * Create a new workout entry
+   */
+  create: async (data: CreateWorkoutDto): Promise<Workout> => {
+    const response = await api.post<Workout>("/workouts", data);
+    return response.data;
+  },
+
+  /**
+   * Update a workout entry
+   */
+  update: async (id: string, data: UpdateWorkoutDto): Promise<Workout> => {
+    const response = await api.put<Workout>(`/workouts/${id}`, data);
+    return response.data;
+  },
+
+  /**
+   * Delete a workout entry
+   */
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/workouts/${id}`);
+  },
+};
+
+// ============================================
 // Workout Type API Client
 // ============================================
 export const workoutTypeApi = {

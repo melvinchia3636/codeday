@@ -258,6 +258,28 @@ export const createHealthRoutes = (pb: PocketBase): Router => {
   // ==========================================
   // Workouts - /workouts
   // ==========================================
+  // Get all workouts for user (history)
+  router.get('/workouts', authMiddleware, (req, res, next) =>
+    workoutController.getHistory(req as AuthenticatedRequest, res, next)
+  );
+  // Get workout by ID
+  router.get('/workouts/:id', authMiddleware, (req, res, next) =>
+    workoutController.getById(req as AuthenticatedRequest, res, next)
+  );
+  // Create new workout
+  router.post('/workouts', authMiddleware, validate(createWorkoutSchema), (req, res, next) =>
+    workoutController.create(req as AuthenticatedRequest, res, next)
+  );
+  // Update workout by ID
+  router.put('/workouts/:id', authMiddleware, validate(updateWorkoutSchema), (req, res, next) =>
+    workoutController.updateById(req as AuthenticatedRequest, res, next)
+  );
+  // Delete workout by ID
+  router.delete('/workouts/:id', authMiddleware, (req, res, next) =>
+    workoutController.deleteById(req as AuthenticatedRequest, res, next)
+  );
+
+  // Effort Units (today's summary)
   router.get('/workouts/effort-units', authMiddleware, (req, res, next) =>
     workoutController.getAll(req as AuthenticatedRequest, res, next)
   );

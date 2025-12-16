@@ -7,7 +7,7 @@ import { NumberInput } from "../../../components/NumberInput";
 
 export function LogWorkout() {
   const { logFormRef } = useWorkoutsAnimationRefs();
-  const { workoutTypes } = useWorkouts();
+  const { workoutTypes, createWorkout, isCreatingWorkout } = useWorkouts();
 
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
   const [duration, setDuration] = useState(30);
@@ -36,6 +36,19 @@ export function LogWorkout() {
 
   // Auto-calculate calories based on duration and type
   const calculatedCalories = duration * (selectedType?.caloriesPerMinute || 5);
+
+  // Handle save workout
+  const handleSave = () => {
+    if (!selectedType) return;
+    createWorkout({
+      type: selectedType.label.toLowerCase(),
+      durationMin: duration,
+      caloriesBurned: calculatedCalories,
+    });
+    // Reset form after save
+    setSelectedTypeIndex(0);
+    setDuration(30);
+  };
 
   return (
     <div
@@ -70,12 +83,8 @@ export function LogWorkout() {
               <span className="w-1.5 h-1.5 bg-pink-400" />
               WORKOUT_TYPE
             </label>
-            <div className="grid grid-cols-4 gap-2">
-              {/* Show first 4 defaults + up to 4 custom types to ensure user types are visible */}
-              {[
-                ...defaultDisplayTypes.slice(0, 4),
-                ...customDisplayTypes.slice(0, 4),
-              ].map((t, i) => {
+            <div className="grid grid-cols-4 gap-2 max-h-40 overflow-y-auto">
+              {displayTypes.map((t, i) => {
                 const tRgba = colorMap[t.color] || colorMap.pink;
                 const isSelected = i === selectedTypeIndex;
                 return (
@@ -161,14 +170,23 @@ export function LogWorkout() {
 
           {/* Submit Button */}
           <button
-            className="group relative w-full py-4 bg-linear-to-r from-pink-600 via-fuchsia-500 to-pink-600 text-white font-bold tracking-widest uppercase overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(236,72,153,0.6)]"
+            onClick={handleSave}
+            disabled={isCreatingWorkout}
+            className="group relative w-full py-4 bg-linear-to-r from-pink-600 via-fuchsia-500 to-pink-600 text-white font-bold tracking-widest uppercase overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(236,72,153,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundSize: "200% 100%" }}
           >
             {/* Shimmer effect */}
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
             <span className="relative flex items-center justify-center gap-2">
-              <Icon icon="pixelarticons:check" className="w-5 h-5" />
-              SAVE_WORKOUT
+              <Icon
+                icon={
+                  isCreatingWorkout
+                    ? "pixelarticons:loader"
+                    : "pixelarticons:check"
+                }
+                className={`w-5 h-5 ${isCreatingWorkout ? "animate-spin" : ""}`}
+              />
+              {isCreatingWorkout ? "SAVING..." : "SAVE_WORKOUT"}
             </span>
           </button>
         </div>

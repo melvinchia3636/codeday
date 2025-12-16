@@ -5,7 +5,6 @@ const stats = [
   { label: "TOTAL_WORKOUTS", value: "156", icon: "pixelarticons:chart-bar" },
   { label: "CALORIES_BURNED", value: "48.5K", icon: "pixelarticons:coin" },
   { label: "TOTAL_DURATION", value: "72h", icon: "pixelarticons:clock" },
-  { label: "AVG_EFFORT", value: "78%", icon: "pixelarticons:zap" },
 ];
 
 export function StatsCards() {
@@ -14,7 +13,7 @@ export function StatsCards() {
   return (
     <div
       ref={statsRef}
-      className="relative z-10 grid grid-cols-4 gap-4 mb-6"
+      className="relative z-10 grid grid-cols-3 gap-4 mb-6"
       style={{ transformStyle: "preserve-3d" }}
     >
       {stats.map((s, i) => (

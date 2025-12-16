@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import { animate, createTimeline, stagger, random } from "animejs";
 
 interface UseWorkoutsAnimationsProps {
@@ -15,6 +15,7 @@ interface UseWorkoutsAnimationsProps {
   particlesRef: RefObject<HTMLDivElement | null>;
   scanlineRef: RefObject<HTMLDivElement | null>;
   gridRef: RefObject<HTMLDivElement | null>;
+  isLoading: boolean;
 }
 
 export function useWorkoutsAnimations(props: UseWorkoutsAnimationsProps) {
@@ -32,10 +33,16 @@ export function useWorkoutsAnimations(props: UseWorkoutsAnimationsProps) {
     particlesRef,
     scanlineRef,
     gridRef,
+    isLoading,
   } = props;
 
+  // Track if animation has run
+  const hasAnimatedRef = useRef(false);
+
   useEffect(() => {
-    if (!containerRef.current) return;
+    // Wait for loading to complete and only run once
+    if (isLoading || hasAnimatedRef.current || !containerRef.current) return;
+    hasAnimatedRef.current = true;
 
     const tl = createTimeline({ defaults: { ease: "outExpo" } });
     tl.add(containerRef.current, {
@@ -196,5 +203,5 @@ export function useWorkoutsAnimations(props: UseWorkoutsAnimationsProps) {
         ease: "linear",
         loop: true,
       });
-  }, []);
+  }, [isLoading]);
 }
