@@ -9,6 +9,7 @@ import { FoodLibrary } from "./components/FoodLibrary";
 import { useTodayMealsQuery } from "../../hooks/useMealQueries";
 import { useTodayMealItemsQuery } from "../../hooks/useMealItemQueries";
 import { calculateCalories } from "../../lib/mealItem";
+import { useUserProfile } from "../../contexts/UserProfileContext";
 
 const mealTypes = [
   {
@@ -27,11 +28,12 @@ const mealTypes = [
   { id: "snack", icon: "pixelarticons:coin", label: "SNACK", time: "15:00" },
 ];
 
-// Target values - could be made dynamic/configurable later
-const TARGET_PROTEIN = 120;
-const TARGET_CARBS = 250;
-const TARGET_FAT = 70;
-const TARGET_CALORIES = 2200;
+// Protein: 25% of calories (4 cal/g)
+// Carbs: 50% of calories (4 cal/g)
+// Fat: 25% of calories (9 cal/g)
+const PROTEIN_RATIO = 0.25;
+const CARBS_RATIO = 0.5;
+const FAT_RATIO = 0.25;
 
 function NutritionContent() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -40,6 +42,7 @@ function NutritionContent() {
   const foodsRef = useRef<HTMLDivElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
 
+  const { settings } = useUserProfile();
   const { data: todayMeals = [] } = useTodayMealsQuery();
   const { data: foodLibrary = [] } = useTodayMealItemsQuery();
 
@@ -50,6 +53,17 @@ function NutritionContent() {
     foodsRef,
     logRef,
   });
+
+  // Get calorie target from user settings (default 2000)
+  const targetCalories = settings?.dietCalorieTarget || 2000;
+
+  // Derive macro targets from calorie target
+  // Protein: 4 calories per gram
+  // Carbs: 4 calories per gram
+  // Fat: 9 calories per gram
+  const targetProtein = Math.round((targetCalories * PROTEIN_RATIO) / 4);
+  const targetCarbs = Math.round((targetCalories * CARBS_RATIO) / 4);
+  const targetFat = Math.round((targetCalories * FAT_RATIO) / 9);
 
   // Calculate actual totals from today's meals
   const { totalProtein, totalCarbs, totalFat, totalCalories } = useMemo(() => {
@@ -86,21 +100,21 @@ function NutritionContent() {
     {
       label: "PROTEIN",
       current: totalProtein,
-      target: TARGET_PROTEIN,
+      target: targetProtein,
       color: "pink",
       unit: "g",
     },
     {
       label: "CARBS",
       current: totalCarbs,
-      target: TARGET_CARBS,
+      target: targetCarbs,
       color: "cyan",
       unit: "g",
     },
     {
       label: "FAT",
       current: totalFat,
-      target: TARGET_FAT,
+      target: targetFat,
       color: "fuchsia",
       unit: "g",
     },
@@ -116,14 +130,14 @@ function NutritionContent() {
       <PageHeader
         icon="pixelarticons:coin"
         title="NUTRITION_LOG"
-        status={`${totalCalories} / ${TARGET_CALORIES} KCAL`}
+        status={`${totalCalories} / ${targetCalories} KCAL`}
         color="pink"
       />
       <MacroCircles
         macrosRef={macrosRef}
         macros={macros}
         totalCalories={totalCalories}
-        targetCalories={TARGET_CALORIES}
+        targetCalories={targetCalories}
       />
       <div className="relative z-10 flex-1 grid grid-cols-3 gap-6 overflow-hidden">
         <MealTimeline mealsRef={mealsRef} mealTypes={mealTypes} />
