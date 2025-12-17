@@ -146,4 +146,22 @@ export class WaterLogController extends BaseController<WaterLog> {
       next(error);
     }
   }
+
+  /**
+   * Delete a specific water log by ID
+   * DELETE /water-logs/:id
+   */
+  async deleteById(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    try {
+      const { id } = req.params;
+      await this.waterLogService.deleteLog(id);
+      return res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  }
 }

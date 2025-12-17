@@ -97,4 +97,11 @@ export const hydrationApi = {
   resetTodayLogs: async (): Promise<void> => {
     await api.delete<void>("/water-logs/amount");
   },
+
+  /**
+   * Delete a specific water log entry
+   */
+  deleteWaterLog: async (id: string): Promise<void> => {
+    await api.delete<void>(`/water-logs/${id}`);
+  },
 };

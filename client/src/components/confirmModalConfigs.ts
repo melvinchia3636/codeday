@@ -52,3 +52,16 @@ export const deleteWorkoutTypeModalConfig: ConfirmModalConfig = {
   warningText: "WARNING",
   irreversibleText: "IRREVERSIBLE",
 };
+
+export const deleteActivityModalConfig: ConfirmModalConfig = {
+  title: "DELETE_ACTIVITY",
+  message: "Are you sure you want to delete this activity log?",
+  subMessage: "This action cannot be undone.",
+  statusText: "CONFIRM_DELETE",
+  icon: "pixelarticons:trash",
+  confirmText: "DELETE",
+  cancelText: "CANCEL",
+  theme: "danger",
+  warningText: "WARNING",
+  irreversibleText: "IRREVERSIBLE",
+};

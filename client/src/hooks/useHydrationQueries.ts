@@ -137,3 +137,46 @@ export function useResetWaterLogsMutation() {
     },
   });
 }
+
+/**
+ * Mutation hook for deleting a single water log
+ */
+export function useDeleteWaterLogMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => hydrationApi.deleteWaterLog(id),
+    onMutate: async (id: string) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: hydrationQueryKeys.logs() });
+
+      // Snapshot previous logs
+      const previousLogs = queryClient.getQueryData<WaterLog[]>(
+        hydrationQueryKeys.logs()
+      );
+
+      // Optimistically remove the log
+      if (previousLogs) {
+        queryClient.setQueryData<WaterLog[]>(
+          hydrationQueryKeys.logs(),
+          previousLogs.filter((log) => log.id !== id)
+        );
+      }
+
+      return { previousLogs };
+    },
+    onError: (_err, _vars, context) => {
+      // Rollback on error
+      if (context?.previousLogs) {
+        queryClient.setQueryData(
+          hydrationQueryKeys.logs(),
+          context.previousLogs
+        );
+      }
+    },
+    onSettled: () => {
+      // Always refetch after mutation
+      queryClient.invalidateQueries({ queryKey: hydrationQueryKeys.all });
+    },
+  });
+}

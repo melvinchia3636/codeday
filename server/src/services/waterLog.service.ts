@@ -174,4 +174,11 @@ export class WaterLogService extends BaseService<WaterLog> {
     }
     return true;
   }
+
+  /**
+   * Delete a specific water log by ID
+   */
+  async deleteLog(id: string): Promise<boolean> {
+    return await this.delete(id);
+  }
 }

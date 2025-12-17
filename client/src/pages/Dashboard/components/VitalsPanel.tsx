@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react";
 import { useEffect, useRef } from "react";
 import { animate, stagger, random } from "animejs";
+import { useUserProfile } from "../../../contexts/UserProfileContext";
 
 export function VitalsPanel() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -10,6 +11,9 @@ export function VitalsPanel() {
   const pulseRingRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<HTMLDivElement>(null);
+
+  const { userData } = useUserProfile();
+  const currentWeight = userData?.weightKg || 0;
 
   useEffect(() => {
     if (titleRef.current) {
@@ -284,7 +288,7 @@ export function VitalsPanel() {
           </div>
           <div className="flex items-baseline gap-2">
             <span className="vital-value text-2xl font-bold text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">
-              72.4
+              {currentWeight > 0 ? currentWeight.toFixed(1) : "--"}
             </span>
             <span className="text-xs text-cyan-300/60">KG</span>
             <Icon
@@ -307,7 +311,7 @@ export function VitalsPanel() {
           </div>
           <div className="flex items-baseline gap-2">
             <span className="vital-value text-2xl font-bold text-fuchsia-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]">
-              68.0
+              {currentWeight > 0 ? currentWeight.toFixed(1) : "--"}
             </span>
             <span className="text-xs text-fuchsia-300/60">KG</span>
             <Icon

@@ -31,5 +31,10 @@ export const createWaterLogRoutes = (pb: PocketBase): Router => {
     controller.delete(req as AuthenticatedRequest, res, next)
   );
 
+  // Delete a specific water log by ID
+  router.delete('/:id', authMiddleware, (req, res, next) =>
+    controller.deleteById(req as AuthenticatedRequest, res, next)
+  );
+
   return router;
 };
