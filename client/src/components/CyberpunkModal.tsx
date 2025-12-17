@@ -2,13 +2,27 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { Icon } from "@iconify/react";
 import { animate, random } from "animejs";
 
+// Color configuration for all supported colors
+const colorConfig = {
+  pink: { primary: "pink", glow: "rgba(236,72,153,", rgb: "236,72,153" },
+  cyan: { primary: "cyan", glow: "rgba(34,211,238,", rgb: "34,211,238" },
+  fuchsia: { primary: "fuchsia", glow: "rgba(217,70,239,", rgb: "217,70,239" },
+  purple: { primary: "purple", glow: "rgba(168,85,247,", rgb: "168,85,247" },
+  green: { primary: "green", glow: "rgba(34,197,94,", rgb: "34,197,94" },
+  orange: { primary: "orange", glow: "rgba(249,115,22,", rgb: "249,115,22" },
+  amber: { primary: "amber", glow: "rgba(245,158,11,", rgb: "245,158,11" },
+  red: { primary: "red", glow: "rgba(239,68,68,", rgb: "239,68,68" },
+};
+
+export type ModalColor = keyof typeof colorConfig;
+
 interface CyberpunkModalProps {
   isVisible: boolean;
   onClose: () => void;
   title: string;
   titleIcon?: string;
-  /** Color theme: 'pink' or 'cyan' */
-  color?: "pink" | "cyan";
+  /** Color theme for the modal */
+  color?: ModalColor;
   /** Whether the modal is in loading state (prevents closing) */
   isLoading?: boolean;
   /** Status text shown at top */
@@ -35,10 +49,11 @@ export function CyberpunkModal({
   const particlesRef = useRef<HTMLDivElement>(null);
   const matrixRef = useRef<HTMLDivElement>(null);
 
-  const isPink = color === "pink";
-  const primaryColor = isPink ? "pink" : "cyan";
-  const primaryGlow = isPink ? "rgba(236,72,153," : "rgba(34,211,238,";
-  const accentGlow = isPink ? "rgba(217,70,239," : "rgba(236,72,153,";
+  const config = colorConfig[color];
+  const primaryColor = config.primary;
+  const primaryGlow = config.glow;
+  const primaryRgb = config.rgb;
+  const accentGlow = colorConfig.fuchsia.glow;
 
   useEffect(() => {
     if (!isVisible) return;
@@ -172,11 +187,7 @@ export function CyberpunkModal({
 
       {/* Cyberpunk grid */}
       <div
-        className={`absolute inset-0 bg-[linear-gradient(rgba(${
-          isPink ? "236,72,153" : "34,211,238"
-        },0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(${
-          isPink ? "236,72,153" : "34,211,238"
-        },0.03)_1px,transparent_1px)] bg-[size:30px_30px] pointer-events-none`}
+        className={`absolute inset-0 bg-[linear-gradient(rgba(${primaryRgb},0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(${primaryRgb},0.03)_1px,transparent_1px)] bg-size-[30px_30px] pointer-events-none`}
       />
 
       {/* Particles */}

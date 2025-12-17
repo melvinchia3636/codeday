@@ -23,30 +23,53 @@ export function SummaryCards({
   emotionIcons,
   emotionColors,
 }: SummaryCardsProps) {
+  // Calculate how "red" the diet bar should be based on overconsumption
+  // 100% = normal, 200% = full red
+  const getDietBarGradient = (value: number) => {
+    if (value <= 100) {
+      return "from-pink-500 to-fuchsia-500";
+    }
+    // Interpolate from pink/fuchsia to orange/red based on excess
+    const excess = Math.min(100, value - 100); // cap at 200% total
+    const redPercent = excess; // 0-100 maps to 100%-200%
+
+    if (redPercent < 30) {
+      return "from-orange-400 to-pink-500";
+    } else if (redPercent < 60) {
+      return "from-orange-500 to-red-400";
+    } else {
+      return "from-red-500 to-red-600";
+    }
+  };
+
   const cards = [
     {
       label: "DIET_SCORE",
       value: today.diet,
       icon: "pixelarticons:coin",
-      color: "pink",
+      color: today.diet > 100 ? "red" : "pink",
+      barGradient: getDietBarGradient(today.diet),
     },
     {
       label: "HYDRO_SCORE",
       value: today.hydro,
       icon: "pixelarticons:drop",
       color: "cyan",
+      barGradient: "from-cyan-500 to-pink-500",
     },
     {
       label: "EFFORT_SCORE",
       value: today.effort,
       icon: "pixelarticons:zap",
       color: "fuchsia",
+      barGradient: "from-fuchsia-500 to-cyan-500",
     },
     {
       label: "TOTAL_SCORE",
       value: today.total,
       icon: "pixelarticons:chart-bar",
       color: "pink",
+      barGradient: "from-pink-500 to-fuchsia-500",
     },
     {
       label: "WAIFU_MOOD",
@@ -74,20 +97,20 @@ export function SummaryCards({
               {s.label}
             </span>
           </div>
-          <p className="text-2xl font-bold text-white">
+          <p
+            className={`text-2xl font-bold ${
+              typeof s.value === "number" && s.value > 100
+                ? "text-red-400"
+                : "text-white"
+            }`}
+          >
             {typeof s.value === "number" ? `${s.value}%` : s.value}
           </p>
-          {typeof s.value === "number" && (
+          {typeof s.value === "number" && s.barGradient && (
             <div className="mt-2 h-1.5 bg-zinc-700 rounded overflow-hidden">
               <div
-                className={`h-full bg-gradient-to-r from-${s.color}-500 to-${
-                  s.color === "pink"
-                    ? "fuchsia"
-                    : s.color === "cyan"
-                    ? "pink"
-                    : "cyan"
-                }-500`}
-                style={{ width: `${s.value}%` }}
+                className={`h-full bg-gradient-to-r ${s.barGradient}`}
+                style={{ width: `${Math.min(100, s.value)}%` }}
               />
             </div>
           )}

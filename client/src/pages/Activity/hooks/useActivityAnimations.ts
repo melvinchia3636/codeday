@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import { animate, createTimeline, stagger } from "animejs";
 
 interface UseActivityAnimationsProps {
@@ -6,6 +6,7 @@ interface UseActivityAnimationsProps {
   summaryRef: RefObject<HTMLDivElement | null>;
   timelineRef: RefObject<HTMLDivElement | null>;
   calendarRef: RefObject<HTMLDivElement | null>;
+  itemsCount?: number;
 }
 
 /**
@@ -14,11 +15,20 @@ interface UseActivityAnimationsProps {
  * Decoration animations are handled by usePageDecorationsAnimations.
  */
 export function useActivityAnimations(props: UseActivityAnimationsProps) {
-  const { containerRef, summaryRef, timelineRef, calendarRef } = props;
+  const {
+    containerRef,
+    summaryRef,
+    timelineRef,
+    calendarRef,
+    itemsCount = 0,
+  } = props;
+  const hasAnimatedContainerRef = useRef(false);
 
+  // Container and summary animation (runs once)
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || hasAnimatedContainerRef.current) return;
 
+    hasAnimatedContainerRef.current = true;
     const tl = createTimeline({ defaults: { ease: "outExpo" } });
     tl.add(containerRef.current, {
       opacity: [0, 1],
@@ -46,21 +56,6 @@ export function useActivityAnimations(props: UseActivityAnimationsProps) {
         { opacity: [0, 1], translateX: [-30, 0], duration: 600 },
         "-=400"
       );
-      const items = timelineRef.current.querySelectorAll(".timeline-item");
-      const line = timelineRef.current.querySelector(".timeline-line");
-      if (line)
-        animate(line, {
-          scaleY: [0, 1],
-          duration: 1500,
-          delay: 600,
-          ease: "outExpo",
-        });
-      animate(items, {
-        opacity: [0, 1],
-        translateX: [-20, 0],
-        delay: stagger(100, { start: 800 }),
-        duration: 400,
-      });
     }
 
     if (calendarRef.current) {
@@ -77,5 +72,29 @@ export function useActivityAnimations(props: UseActivityAnimationsProps) {
         duration: 300,
       });
     }
-  }, []);
+  }, [containerRef, summaryRef, timelineRef, calendarRef]);
+
+  // Timeline items animation (runs when items change)
+  useEffect(() => {
+    if (!timelineRef.current || itemsCount === 0) return;
+
+    const items = timelineRef.current.querySelectorAll(".timeline-item");
+    const line = timelineRef.current.querySelector(".timeline-line");
+
+    if (line) {
+      animate(line, {
+        scaleY: [0, 1],
+        duration: 1500,
+        delay: 200,
+        ease: "outExpo",
+      });
+    }
+
+    animate(items, {
+      opacity: [0, 1],
+      translateX: [-20, 0],
+      delay: stagger(100, { start: 300 }),
+      duration: 400,
+    });
+  }, [timelineRef, itemsCount]);
 }

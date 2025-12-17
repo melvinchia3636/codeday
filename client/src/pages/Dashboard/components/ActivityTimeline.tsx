@@ -65,9 +65,9 @@ export function ActivityTimeline() {
       });
     });
 
-    // Sort by timestamp descending (newest first) and take 25
+    // Sort by timestamp ascending (oldest first) and take 25
     return items
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+      .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
       .slice(0, 25);
   }, [workouts, meals, waterLogs]);
 

@@ -7,6 +7,7 @@ import { Workouts } from "./pages/Workouts";
 import { Nutrition } from "./pages/Nutrition";
 import { Hydration } from "./pages/Hydration";
 import { Activity } from "./pages/Activity";
+import { Chat } from "./pages/Chat";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       { path: "/nutrition", element: <Nutrition /> },
       { path: "/hydration", element: <Hydration /> },
       { path: "/activity", element: <Activity /> },
+      { path: "/chat", element: <Chat /> },
     ],
   },
   // Guest routes - redirect if already logged in

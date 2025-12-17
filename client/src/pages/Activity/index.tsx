@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useActivityAnimations } from "./hooks/useActivityAnimations";
 import { PageDecorationsProvider } from "../../contexts/PageDecorationsContext";
 import { PageDecorations } from "../../components/PageDecorations";
@@ -6,115 +6,10 @@ import { PageHeader } from "../../components/PageHeader";
 import { SummaryCards } from "./components/SummaryCards";
 import { ActivityTimeline } from "./components/ActivityTimeline";
 import { HistoryCalendar } from "./components/HistoryCalendar";
-
-const dailySummaries = [
-  {
-    date: "2024-12-16",
-    diet: 85,
-    hydro: 67,
-    effort: 78,
-    total: 77,
-    emotion: "happy",
-  },
-  {
-    date: "2024-12-15",
-    diet: 92,
-    hydro: 100,
-    effort: 90,
-    total: 94,
-    emotion: "happy",
-  },
-  {
-    date: "2024-12-14",
-    diet: 70,
-    hydro: 80,
-    effort: 60,
-    total: 70,
-    emotion: "neutral",
-  },
-  {
-    date: "2024-12-13",
-    diet: 45,
-    hydro: 40,
-    effort: 30,
-    total: 38,
-    emotion: "tsundere",
-  },
-  {
-    date: "2024-12-12",
-    diet: 88,
-    hydro: 95,
-    effort: 85,
-    total: 89,
-    emotion: "happy",
-  },
-];
-
-const activityTimeline = [
-  {
-    id: 1,
-    type: "workout",
-    title: "Running",
-    desc: "45 min • 420 kcal",
-    time: "08:30",
-    icon: "pixelarticons:human-run",
-    color: "pink",
-  },
-  {
-    id: 2,
-    type: "water",
-    title: "Hydration",
-    desc: "500 ml",
-    time: "10:00",
-    icon: "pixelarticons:drop",
-    color: "cyan",
-  },
-  {
-    id: 3,
-    type: "meal",
-    title: "Lunch",
-    desc: "630 kcal • Chicken, Rice",
-    time: "12:15",
-    icon: "pixelarticons:coin",
-    color: "fuchsia",
-  },
-  {
-    id: 4,
-    type: "water",
-    title: "Hydration",
-    desc: "350 ml",
-    time: "14:45",
-    icon: "pixelarticons:drop",
-    color: "cyan",
-  },
-  {
-    id: 5,
-    type: "workout",
-    title: "Strength Training",
-    desc: "60 min • 380 kcal",
-    time: "17:00",
-    icon: "pixelarticons:trophy",
-    color: "pink",
-  },
-  {
-    id: 6,
-    type: "meal",
-    title: "Dinner",
-    desc: "720 kcal • Salmon, Vegetables",
-    time: "19:30",
-    icon: "pixelarticons:coin",
-    color: "fuchsia",
-  },
-  {
-    id: 7,
-    type: "water",
-    title: "Hydration",
-    desc: "400 ml",
-    time: "21:00",
-    icon: "pixelarticons:drop",
-    color: "cyan",
-  },
-];
+import { useWorkoutsQuery } from "../../hooks/useWorkoutQueries";
+import { useTodayMealsQuery } from "../../hooks/useMealQueries";
+import { useTodayLogsQuery } from "../../hooks/useHydrationQueries";
+import { useUserProfile } from "../../contexts/UserProfileContext";
 
 const emotionIcons: Record<string, string> = {
   happy: "pixelarticons:mood-happy",
@@ -138,14 +33,166 @@ function ActivityContent() {
   const timelineRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
 
+  const { data: workouts = [] } = useWorkoutsQuery();
+  const { data: meals = [] } = useTodayMealsQuery();
+  const { data: waterLogs = [] } = useTodayLogsQuery();
+  const { settings } = useUserProfile();
+
+  // Build activity timeline from real data (TODAY only)
+  const activityTimeline = useMemo(() => {
+    const items: {
+      id: number;
+      type: string;
+      title: string;
+      desc: string;
+      time: string;
+      icon: string;
+      color: string;
+      timestamp: number;
+    }[] = [];
+
+    let idCounter = 1;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const isToday = (dateStr: string) => {
+      const date = new Date(dateStr);
+      return date >= today && date < tomorrow;
+    };
+
+    const formatTime = (date: Date) =>
+      date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "UTC",
+      });
+
+    // Add workouts (filter to today only)
+    workouts
+      .filter((w) => isToday(w.created))
+      .forEach((w) => {
+        const date = new Date(w.created);
+        items.push({
+          id: idCounter++,
+          type: "workout",
+          title: w.type,
+          desc: `${w.durationMin} min • ${w.caloriesBurned} kcal`,
+          time: formatTime(date),
+          icon: "pixelarticons:human-run",
+          color: "pink",
+          timestamp: date.getTime(),
+        });
+      });
+
+    // Add meals (already filtered to today by useTodayMealsQuery)
+    meals.forEach((m) => {
+      const date = new Date(m.created);
+      const mealTypeLabel = m.type.charAt(0).toUpperCase() + m.type.slice(1);
+      const itemCount = m.items?.length || 0;
+      items.push({
+        id: idCounter++,
+        type: "meal",
+        title: mealTypeLabel,
+        desc: `${itemCount} items logged`,
+        time: formatTime(date),
+        icon: "pixelarticons:coin",
+        color: "fuchsia",
+        timestamp: date.getTime(),
+      });
+    });
+
+    // Add water logs (already filtered to today by useTodayLogsQuery)
+    waterLogs.forEach((w) => {
+      const date = new Date(w.timestamp || w.created || new Date());
+      items.push({
+        id: idCounter++,
+        type: "water",
+        title: "Hydration",
+        desc: `${w.amountMl} ml`,
+        time: formatTime(date),
+        icon: "pixelarticons:drop",
+        color: "cyan",
+        timestamp: date.getTime(),
+      });
+    });
+
+    // Sort descending (newest first)
+    return items.sort((a, b) => b.timestamp - a.timestamp);
+  }, [workouts, meals, waterLogs]);
+
+  // Run animations with itemsCount dependency
   useActivityAnimations({
     containerRef,
     summaryRef,
     timelineRef,
     calendarRef,
+    itemsCount: activityTimeline.length,
   });
 
-  const today = dailySummaries[0];
+  // Calculate today's summary from real data
+  const today = useMemo(() => {
+    // Calculate diet score (simplified - based on meals logged)
+    // Raw score can exceed 100, but display is capped
+    const mealsLogged = meals.length;
+    const rawDietScore = mealsLogged * 25;
+
+    // Calculate hydration score
+    const totalWater = waterLogs.reduce((sum, w) => sum + (w.amountMl || 0), 0);
+    const waterGoal = settings?.hydroTargetMl || 2500;
+    const rawHydroScore = Math.round((totalWater / waterGoal) * 100);
+    const hydroScore = Math.min(100, rawHydroScore);
+
+    // Calculate effort score (based on workouts)
+    const totalWorkoutTime = workouts.reduce(
+      (sum, w) => sum + (w.durationMin || 0),
+      0
+    );
+    const rawEffortScore = Math.round((totalWorkoutTime / 60) * 100);
+    const effortScore = Math.min(100, rawEffortScore);
+
+    // Diminishing returns function: scores above 100 have reduced impact
+    // Returns 100 + log10(excess) * 10, capped at 120
+    const applyDiminishingReturns = (raw: number) => {
+      if (raw <= 100) return raw;
+      const excess = raw - 100;
+      // Logarithmic diminishing returns: excess of 100 gives ~20 points, excess of 1000 gives ~30
+      const bonus = Math.log10(excess + 1) * 10;
+      return Math.min(120, 100 + bonus);
+    };
+
+    // Apply diminishing returns for total score calculation
+    const adjustedDiet = applyDiminishingReturns(rawDietScore);
+    const adjustedHydro = applyDiminishingReturns(rawHydroScore);
+    const adjustedEffort = applyDiminishingReturns(rawEffortScore);
+
+    // Overall score using adjusted values, capped at 100
+    const totalScore = Math.min(
+      100,
+      Math.round((adjustedDiet + adjustedHydro + adjustedEffort) / 3)
+    );
+
+    // Determine emotion based on score
+    let emotion = "neutral";
+    if (totalScore >= 80) emotion = "happy";
+    else if (totalScore >= 60) emotion = "neutral";
+    else if (totalScore >= 40) emotion = "tsundere";
+    else emotion = "angry";
+
+    return {
+      date: new Date().toISOString().split("T")[0],
+      diet: rawDietScore, // Allow exceeding 100% for display
+      hydro: hydroScore,
+      effort: effortScore,
+      total: totalScore,
+      emotion,
+    };
+  }, [meals, waterLogs, workouts, settings]);
+
+  // Daily summaries placeholder (would need historical data endpoint)
+  const dailySummaries = [today];
 
   return (
     <div

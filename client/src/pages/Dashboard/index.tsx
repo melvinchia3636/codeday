@@ -31,7 +31,7 @@ function DashboardContent() {
       style={{ opacity: 0, perspective: "1500px" }}
     >
       <DashboardDecorations />
-      <section className="flex-1 flex gap-4 relative z-30">
+      <section className="flex-1 flex min-h-0 gap-4 relative z-30">
         <section
           ref={mainPanelRef}
           className="border-4 border-pink-500 w-8/12 bg-linear-to-br from-zinc-900/95 via-zinc-950/95 to-fuchsia-950/40 p-6 relative overflow-hidden flex flex-col backdrop-blur-sm shadow-[0_0_40px_rgba(236,72,153,0.3)]"
@@ -66,7 +66,7 @@ function DashboardContent() {
           </div>
           <div
             ref={timelinePanelRef}
-            className="relative z-10 mt-4 flex gap-4 flex-1"
+            className="relative z-10 min-h-0 mt-4 flex gap-4 flex-1"
             style={{ opacity: 0 }}
           >
             <ActivityTimeline />

@@ -32,7 +32,7 @@ export function ActivityTimeline({
       </h3>
       <div className="relative pl-8">
         <div
-          className="timeline-line absolute left-3 top-0 bottom-0 w-0.5 bg-gradient-to-b from-pink-500 via-fuchsia-500 to-cyan-500 origin-top"
+          className="timeline-line absolute left-3 top-0 bottom-0 w-0.5 bg-zinc-600 origin-top"
           style={{ transform: "scaleY(0)" }}
         />
         <div className="space-y-4">

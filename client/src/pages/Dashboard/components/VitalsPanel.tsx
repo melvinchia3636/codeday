@@ -205,7 +205,7 @@ export function VitalsPanel() {
   return (
     <div
       ref={containerRef}
-      className="w-48 bg-zinc-900/50 border border-pink-500/30 p-4 relative overflow-hidden backdrop-blur-sm"
+      className="w-48 bg-zinc-900/50 border border-pink-500/30 p-4 relative overflow-hidden backdrop-blur-sm flex flex-col"
     >
       {/* Particles */}
       <div
@@ -261,51 +261,76 @@ export function VitalsPanel() {
         VITALS
       </div>
 
-      <div ref={itemsRef} className="space-y-2 relative z-10">
+      <div ref={itemsRef} className="flex flex-col gap-2 relative z-10 flex-1">
+        {/* Streak */}
         <div
-          className="vital-item bg-zinc-800/50 p-2 border-l-2 border-pink-500"
+          className="vital-item bg-zinc-800/50 p-3 border-l-2 border-pink-500 flex-1 flex flex-col justify-center"
           style={{ opacity: 0 }}
         >
-          <div className="flex justify-between text-xs">
-            <span className="text-zinc-400 flex items-center gap-1">
-              <Icon icon="pixelarticons:zap" className="vital-icon w-3 h-3" />{" "}
-              STREAK
+          <div className="flex items-center gap-2 text-[10px] text-zinc-500 tracking-widest mb-1">
+            <Icon
+              icon="pixelarticons:zap"
+              className="vital-icon w-3 h-3 text-pink-500"
+            />
+            STREAK
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="vital-value text-2xl font-bold text-pink-400 drop-shadow-[0_0_8px_rgba(236,72,153,0.5)]">
+              14
             </span>
-            <span className="vital-value text-pink-400 font-bold flex items-center gap-1">
-              14 DAYS <Icon icon="pixelarticons:sun-alt" className="w-3 h-3" />
-            </span>
+            <span className="text-xs text-pink-300/60">DAYS</span>
+            <Icon
+              icon="pixelarticons:sun-alt"
+              className="w-4 h-4 text-yellow-400 ml-auto"
+            />
           </div>
         </div>
+
+        {/* Weight */}
         <div
-          className="vital-item bg-zinc-800/50 p-2 border-l-2 border-cyan-500"
+          className="vital-item bg-zinc-800/50 p-3 border-l-2 border-cyan-500 flex-1 flex flex-col justify-center"
           style={{ opacity: 0 }}
         >
-          <div className="flex justify-between text-xs">
-            <span className="text-zinc-400 flex items-center gap-1">
-              <Icon icon="pixelarticons:scale" className="vital-icon w-3 h-3" />{" "}
-              WEIGHT
+          <div className="flex items-center gap-2 text-[10px] text-zinc-500 tracking-widest mb-1">
+            <Icon
+              icon="pixelarticons:scale"
+              className="vital-icon w-3 h-3 text-cyan-500"
+            />
+            WEIGHT
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="vital-value text-2xl font-bold text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">
+              72.4
             </span>
-            <span className="vital-value text-cyan-400 font-bold flex items-center gap-1">
-              72.4 KG{" "}
-              <Icon icon="pixelarticons:trending-down" className="w-3 h-3" />
-            </span>
+            <span className="text-xs text-cyan-300/60">KG</span>
+            <Icon
+              icon="pixelarticons:trending-down"
+              className="w-4 h-4 text-green-400 ml-auto"
+            />
           </div>
         </div>
+
+        {/* Goal */}
         <div
-          className="vital-item bg-zinc-800/50 p-2 border-l-2 border-fuchsia-500"
+          className="vital-item bg-zinc-800/50 p-3 border-l-2 border-fuchsia-500 flex-1 flex flex-col justify-center"
           style={{ opacity: 0 }}
         >
-          <div className="flex justify-between text-xs">
-            <span className="text-zinc-400 flex items-center gap-1">
-              <Icon
-                icon="pixelarticons:bullseye"
-                className="vital-icon w-3 h-3"
-              />{" "}
-              GOAL
+          <div className="flex items-center gap-2 text-[10px] text-zinc-500 tracking-widest mb-1">
+            <Icon
+              icon="pixelarticons:bullseye"
+              className="vital-icon w-3 h-3 text-fuchsia-500"
+            />
+            GOAL
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="vital-value text-2xl font-bold text-fuchsia-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]">
+              68.0
             </span>
-            <span className="vital-value text-fuchsia-400 font-bold flex items-center gap-1">
-              68.0 KG <Icon icon="pixelarticons:trophy" className="w-3 h-3" />
-            </span>
+            <span className="text-xs text-fuchsia-300/60">KG</span>
+            <Icon
+              icon="pixelarticons:trophy"
+              className="w-4 h-4 text-yellow-400 ml-auto"
+            />
           </div>
         </div>
       </div>
