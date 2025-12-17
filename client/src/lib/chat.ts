@@ -5,6 +5,14 @@ export interface ChatMessage {
   content: string;
 }
 
+export interface ChatHistoryEntry {
+  id: string;
+  userId: string;
+  role: "user" | "assistant";
+  content: string;
+  created: string;
+}
+
 export interface ChatRequest {
   message: string;
   yandereLevel: number;
@@ -49,5 +57,34 @@ export const chatApi = {
       request
     );
     return response.data.greeting;
+  },
+
+  /**
+   * Get chat history from database
+   */
+  getHistory: async (): Promise<ChatHistoryEntry[]> => {
+    const response = await api.get<ChatHistoryEntry[]>("/chat/history");
+    return response.data ?? [];
+  },
+
+  /**
+   * Save a message to chat history
+   */
+  saveMessage: async (
+    role: "user" | "assistant",
+    content: string
+  ): Promise<ChatHistoryEntry> => {
+    const response = await api.post<ChatHistoryEntry>("/chat/history", {
+      role,
+      content,
+    });
+    return response.data;
+  },
+
+  /**
+   * Clear all chat history
+   */
+  clearHistory: async (): Promise<void> => {
+    await api.delete<void>("/chat/history");
   },
 };

@@ -2,11 +2,14 @@ import { useEffect } from "react";
 import { animate, stagger } from "animejs";
 import { useChatAnimationRefs } from "../contexts/ChatAnimationsContext";
 
-export function useChatAnimations() {
+export function useChatAnimations(isLoading: boolean = false) {
   const { containerRef, messagesRef, inputRef, avatarRef } =
     useChatAnimationRefs();
 
   useEffect(() => {
+    // Don't animate until loading is complete
+    if (isLoading) return;
+
     // Container entrance
     if (containerRef.current) {
       animate(containerRef.current, {
@@ -92,5 +95,5 @@ export function useChatAnimations() {
         }
       }, 1200);
     }
-  }, [containerRef, messagesRef, inputRef, avatarRef]);
+  }, [containerRef, messagesRef, inputRef, avatarRef, isLoading]);
 }

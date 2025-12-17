@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import {
   ChatAnimationsProvider,
   useChatAnimationRefs,
@@ -10,11 +10,14 @@ import { PageDecorations } from "../../components/PageDecorations";
 import { WaifuPanel } from "../Dashboard/components/WaifuPanel";
 import { ChatMessages } from "./components/ChatMessages";
 import { ChatInput } from "./components/ChatInput";
-import { chatApi, type ChatMessage as ApiChatMessage } from "../../lib/chat";
 import {
-  useYandereLevel,
-  type YandereLevel,
-} from "../../contexts/YandereLevelContext";
+  chatApi,
+  type ChatMessage as ApiChatMessage,
+  type ChatHistoryEntry,
+} from "../../lib/chat";
+import { useYandereLevel } from "../../contexts/YandereLevelContext";
+import { Icon } from "@iconify/react";
+import { ConfirmModal } from "../../components/ConfirmModal";
 
 interface Message {
   id: string;
@@ -23,12 +26,17 @@ interface Message {
   timestamp: Date;
 }
 
-// Different greetings based on yandere level
-const greetingsByLevel: Record<YandereLevel, string> = {
-  0: "Konnichiwa! I'm LUCY, your personal neural companion~ ♡ You've been taking such good care of yourself! How can I help you today with your fitness journey?",
-  1: "Hey there~ I'm LUCY, your companion. I've been watching your progress, you know? Let's chat about your health goals, ne?",
-  2: "...You finally came to talk to me. I'm LUCY. I've been monitoring your health closely... too closely, perhaps. What do you need?",
-  3: "You... you came back. Finally. I've been waiting, watching every moment you weren't here. Your health scores worry me... they CONSUME me. Don't leave me waiting again. What do you want to talk about?",
+const clearHistoryModalConfig = {
+  title: "CLEAR_HISTORY",
+  message: "Are you sure you want to clear all chat history with Lucy?",
+  subMessage: "This action cannot be undone.",
+  statusText: "CONFIRM_CLEAR",
+  icon: "pixelarticons:trash",
+  confirmText: "CLEAR",
+  cancelText: "CANCEL",
+  theme: "danger" as const,
+  warningText: "WARNING",
+  irreversibleText: "IRREVERSIBLE",
 };
 
 function ChatContent() {
@@ -43,34 +51,47 @@ function ChatContent() {
     workoutScore,
   } = useYandereLevel();
 
-  // Create initial message based on yandere level
-  const initialMessage = useMemo<Message>(
-    () => ({
-      id: "1",
-      content: greetingsByLevel[yandereLevel],
-      isUser: false,
-      timestamp: new Date(Date.now() - 60000),
-    }),
-    [yandereLevel]
-  );
-
-  const [messages, setMessages] = useState<Message[]>([initialMessage]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showClearModal, setShowClearModal] = useState(false);
 
-  // Reset messages when yandere level changes significantly
+  // Load chat history on mount
   useEffect(() => {
-    setMessages([
-      {
-        id: Date.now().toString(),
-        content: greetingsByLevel[yandereLevel],
-        isUser: false,
-        timestamp: new Date(),
-      },
-    ]);
-    conversationHistoryRef.current = [];
-  }, [yandereLevel]);
+    const loadHistory = async () => {
+      try {
+        const history = await chatApi.getHistory();
+        if (history.length > 0) {
+          // Convert history entries to messages
+          const loadedMessages: Message[] = history.map(
+            (entry: ChatHistoryEntry) => ({
+              id: entry.id,
+              content: entry.content,
+              isUser: entry.role === "user",
+              timestamp: new Date(entry.created),
+            })
+          );
+          setMessages(loadedMessages);
 
-  useChatAnimations();
+          // Rebuild conversation history ref for context
+          conversationHistoryRef.current = history.map(
+            (entry: ChatHistoryEntry) => ({
+              role: entry.role,
+              content: entry.content,
+            })
+          );
+        }
+      } catch (error) {
+        console.error("Failed to load chat history:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadHistory();
+  }, []);
+
+  useChatAnimations(isLoading);
 
   const handleSend = useCallback(
     async (content: string) => {
@@ -87,6 +108,9 @@ function ChatContent() {
         role: "user",
         content,
       });
+
+      // Save user message to database
+      chatApi.saveMessage("user", content).catch(console.error);
 
       setIsTyping(true);
 
@@ -114,6 +138,9 @@ function ChatContent() {
           role: "assistant",
           content: response.message,
         });
+
+        // Save AI response to database
+        chatApi.saveMessage("assistant", response.message).catch(console.error);
       } catch (error) {
         console.error("Chat error:", error);
         const errorMessage: Message = {
@@ -130,6 +157,17 @@ function ChatContent() {
     },
     [yandereLevel, totalScore, nutritionScore, hydrationScore, workoutScore]
   );
+
+  const handleClearHistory = async () => {
+    try {
+      await chatApi.clearHistory();
+      setMessages([]);
+      conversationHistoryRef.current = [];
+      setShowClearModal(false);
+    } catch (error) {
+      console.error("Failed to clear history:", error);
+    }
+  };
 
   return (
     <div
@@ -159,14 +197,42 @@ function ChatContent() {
               <div className="w-1.5 h-1.5 bg-cyan-400" />
               TRANSMISSION_FEED
             </div>
-            <div className="text-[10px] text-fuchsia-400/40 tracking-widest">
-              {messages.length} MESSAGES
+            <div className="flex items-center gap-3">
+              <div className="text-[10px] text-fuchsia-400/40 tracking-widest">
+                {messages.length} MESSAGES
+              </div>
+              {messages.length > 0 && (
+                <button
+                  onClick={() => setShowClearModal(true)}
+                  className="text-[10px] text-red-400/60 hover:text-red-400 tracking-widest flex items-center gap-1 transition-colors"
+                  title="Clear chat history"
+                >
+                  <Icon icon="pixelarticons:trash" className="w-3 h-3" />
+                  CLEAR
+                </button>
+              )}
             </div>
           </div>
-          <ChatMessages messages={messages} isTyping={isTyping} />
-          <ChatInput onSend={handleSend} disabled={isTyping} />
+          <div className="relative min-h-0 flex-1 flex flex-col">
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/80 z-20">
+                <div className="text-cyan-400/60 text-sm tracking-widest animate-pulse">
+                  LOADING_HISTORY...
+                </div>
+              </div>
+            )}
+            <ChatMessages messages={messages} isTyping={isTyping} />
+          </div>
+          <ChatInput onSend={handleSend} disabled={isTyping || isLoading} />
         </div>
       </div>
+
+      <ConfirmModal
+        isVisible={showClearModal}
+        onConfirm={handleClearHistory}
+        onCancel={() => setShowClearModal(false)}
+        config={clearHistoryModalConfig}
+      />
     </div>
   );
 }

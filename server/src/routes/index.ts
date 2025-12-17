@@ -13,7 +13,7 @@ import { createWaterLogRoutes } from './waterLog.routes';
 import { createWeightTargetRoutes } from './weightTarget.routes';
 import { createWorkoutRoutes } from './workout.routes';
 import { createWorkoutTypeRoutes } from './workoutType.routes';
-import chatRoutes from './chat.routes';
+import { createChatRoutes } from './chat.routes';
 
 /**
  * Create main router with all API routes
@@ -39,7 +39,7 @@ export const createRoutes = (pb: PocketBase): Router => {
   router.use('/workout-types', createWorkoutTypeRoutes(pb));
 
   // Chat routes (Lucy AI)
-  router.use('/chat', chatRoutes);
+  router.use('/chat', createChatRoutes(pb));
 
   // Health check
   router.get('/health', (req, res) => {

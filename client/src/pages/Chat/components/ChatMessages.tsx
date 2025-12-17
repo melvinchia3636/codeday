@@ -33,23 +33,41 @@ export function ChatMessages({
     if (!messagesRef.current) return;
 
     const currentIds = new Set(messages.map((m) => m.id));
-    const newIds = messages.filter((m) => !prevMessageIdsRef.current.has(m.id));
+    const newMessages = messages.filter(
+      (m) => !prevMessageIdsRef.current.has(m.id)
+    );
 
-    if (newIds.length > 0 && prevMessageIdsRef.current.size > 0) {
-      newIds.forEach((msg) => {
-        const element = messagesRef.current?.querySelector(
-          `[data-message-id="${msg.id}"]`
-        );
-        if (element) {
-          animate(element, {
+    if (newMessages.length > 0) {
+      // If this is the initial load (no previous messages), animate all with stagger
+      if (prevMessageIdsRef.current.size === 0 && newMessages.length > 1) {
+        const elements = messagesRef.current?.querySelectorAll(".chat-message");
+        if (elements && elements.length > 0) {
+          animate(elements, {
             opacity: [0, 1],
             translateY: [20, 0],
             scale: [0.9, 1],
             duration: 400,
+            delay: stagger(80),
             ease: "outBack",
           });
         }
-      });
+      } else {
+        // Animate only new messages individually
+        newMessages.forEach((msg) => {
+          const element = messagesRef.current?.querySelector(
+            `[data-message-id="${msg.id}"]`
+          );
+          if (element) {
+            animate(element, {
+              opacity: [0, 1],
+              translateY: [20, 0],
+              scale: [0.9, 1],
+              duration: 400,
+              ease: "outBack",
+            });
+          }
+        });
+      }
     }
 
     prevMessageIdsRef.current = currentIds;
@@ -72,7 +90,7 @@ export function ChatMessages({
           ).current = el;
         }
       }}
-      className="flex-1 overflow-y-auto p-4 space-y-4"
+      className="flex-1 overflow-y-auto p-4 min-h-0 space-y-4"
       style={{ opacity: 0 }}
     >
       <div className="flex items-center gap-3 mb-4">
