@@ -6,6 +6,7 @@ import {
   useWorkoutsQuery,
   useWorkoutTypesQuery,
 } from "../../../hooks/useWorkoutQueries";
+import { useYandereLevel } from "../../../contexts/YandereLevelContext";
 
 export function WorkoutCard() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -20,6 +21,7 @@ export function WorkoutCard() {
 
   const { data: workouts = [] } = useWorkoutsQuery();
   const { data: workoutTypes = [] } = useWorkoutTypesQuery();
+  const { workoutScore } = useYandereLevel();
 
   const todayStats = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
@@ -31,8 +33,6 @@ export function WorkoutCard() {
       (sum, w) => sum + (w.caloriesBurned || 0),
       0
     );
-    const targetCalories = 500;
-    const progress = Math.min((totalCalories / targetCalories) * 100, 100);
 
     const workoutSummary: string[] = [];
     const workoutsByType: { [key: string]: number } = {};
@@ -48,7 +48,7 @@ export function WorkoutCard() {
         workoutSummary.push(`${name.toUpperCase()}: ${duration}min`);
       });
 
-    return { totalCalories, progress, workoutSummary };
+    return { totalCalories, workoutSummary };
   }, [workouts, workoutTypes]);
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export function WorkoutCard() {
 
     if (progressRef.current) {
       animate(progressRef.current, {
-        width: [`0%`, `${todayStats.progress}%`],
+        width: [`0%`, `${workoutScore}%`],
         duration: 1500,
         delay: 500,
         ease: "outExpo",
@@ -154,7 +154,7 @@ export function WorkoutCard() {
         loop: true,
       });
     }
-  }, [todayStats]);
+  }, [todayStats, workoutScore]);
 
   const handleMouseEnter = () => {
     if (containerRef.current) {
@@ -257,7 +257,7 @@ export function WorkoutCard() {
             ></div>
           </div>
           <span className="text-cyan-400 text-xs drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">
-            {Math.round(todayStats.progress)}%
+            {Math.round(workoutScore)}%
           </span>
         </div>
 
