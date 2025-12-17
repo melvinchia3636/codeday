@@ -81,7 +81,7 @@ export function WorkoutHistory() {
     const [datePart, timePart] = dateStr.split(" ");
     const [year, month, day] = datePart.split("-").map(Number);
     const [hour, minute] = timePart ? timePart.split(":").map(Number) : [0, 0];
-    
+
     const date = new Date(year, month - 1, day, hour, minute);
     return date.toLocaleString("en-US", {
       month: "short",
