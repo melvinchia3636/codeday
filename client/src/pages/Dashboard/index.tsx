@@ -29,7 +29,6 @@ function DashboardContent() {
 
   const { yandereLevel } = useYandereLevel();
 
-  // Shake effect when yandere level is 3
   useEffect(() => {
     if (yandereLevel === 3 && containerRef.current) {
       const container = containerRef.current;

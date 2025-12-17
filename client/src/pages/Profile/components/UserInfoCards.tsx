@@ -13,7 +13,6 @@ const genderOptions = [
   { value: "prefer_not_to_say", label: "CLASSIFIED" },
 ];
 
-// BMI category configuration
 const bmiCategories = [
   {
     min: 0,
@@ -54,7 +53,7 @@ function getBmiCategory(bmi: number) {
 
 function getBmiPosition(bmi: number): number {
   if (bmi <= 0) return 0;
-  // Map BMI 10-40 to 0-100%
+
   const clamped = Math.max(10, Math.min(40, bmi));
   return ((clamped - 10) / 30) * 100;
 }

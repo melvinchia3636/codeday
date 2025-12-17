@@ -77,7 +77,6 @@ export function WorkoutHistory() {
   };
 
   const formatDate = (dateStr: string) => {
-    // Parse date string without timezone conversion
     const [datePart, timePart] = dateStr.split(" ");
     const [year, month, day] = datePart.split("-").map(Number);
     const [hour, minute] = timePart ? timePart.split(":").map(Number) : [0, 0];

@@ -18,7 +18,7 @@ import { deleteActivityModalConfig } from "../../../components/confirmModalConfi
 
 type ActivityItem = {
   id: string;
-  originalId: string; // The actual ID without prefix
+  originalId: string;
   timestamp: Date;
   type: "workout" | "meal" | "water";
   description: string;
@@ -42,14 +42,12 @@ export function ActivityTimeline() {
   const deleteMealMutation = useDeleteMealMutation();
   const deleteWaterLogMutation = useDeleteWaterLogMutation();
 
-  // Context menu state
   const [contextMenu, setContextMenu] = useState<{
     id: string;
     x: number;
     y: number;
   } | null>(null);
 
-  // Delete confirmation modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingActivity, setDeletingActivity] = useState<ActivityItem | null>(
     null

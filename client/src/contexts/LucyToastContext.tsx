@@ -9,7 +9,6 @@ import {
 } from "react";
 import { useYandereLevel, type YandereLevel } from "./YandereLevelContext";
 
-// Action types matching JSON structure
 export type WorkoutAction =
   | "light_workout"
   | "moderate_workout"
@@ -48,7 +47,6 @@ const LucyToastContext = createContext<LucyToastContextType | undefined>(
   undefined
 );
 
-// Cache for loaded messages
 const messagesCache: Record<
   YandereLevel,
   Record<string, Record<string, string[]>> | null
@@ -88,26 +86,22 @@ export function LucyToastProvider({ children }: { children: ReactNode }) {
   const { yandereLevel } = useYandereLevel();
   const [toast, setToast] = useState<ToastMessage | null>(null);
 
-  // Use ref to always get latest yandere level in callbacks
   const yandereLevelRef = useRef(yandereLevel);
   useEffect(() => {
     yandereLevelRef.current = yandereLevel;
   }, [yandereLevel]);
 
-  // Preload current level messages
   useEffect(() => {
     loadMessages(yandereLevel);
   }, [yandereLevel]);
 
   const handleTypingComplete = useCallback((id: string) => {
-    // Hide after 5 seconds from typing completion
     setTimeout(() => {
       setToast((prev) =>
         prev?.id === id ? { ...prev, visible: false } : prev
       );
     }, 5000);
 
-    // Remove from DOM after animation
     setTimeout(() => {
       setToast((prev) => (prev?.id === id ? null : prev));
     }, 5500);
@@ -115,9 +109,7 @@ export function LucyToastProvider({ children }: { children: ReactNode }) {
 
   const showToast = useCallback(
     async (category: ActionCategory, action: ActionType) => {
-      // Wait for yandere level to update after data invalidation
       setTimeout(async () => {
-        // Get the CURRENT yandere level from ref, not the stale closure value
         const currentLevel = yandereLevelRef.current;
 
         const messages = await loadMessages(currentLevel);
@@ -163,7 +155,6 @@ export function useLucyToast() {
   return context;
 }
 
-// Toast notification component
 function LucyToastNotification({
   toast,
   onTypingComplete,
@@ -172,7 +163,7 @@ function LucyToastNotification({
   onTypingComplete: () => void;
 }) {
   const [displayedText, setDisplayedText] = useState("");
-  const typingSpeed = 30; // ms per character
+  const typingSpeed = 30;
 
   useEffect(() => {
     setDisplayedText("");

@@ -88,7 +88,6 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
       quantity: i.quantity,
     }));
 
-    // Map meal type to NutritionAction
     const getMealAction = (type: string): NutritionAction => {
       const normalizedType = type.toLowerCase();
       if (normalizedType === "breakfast") return "breakfast";
@@ -103,7 +102,7 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
       setIsModalOpen(false);
       setSelectedMealType(null);
       setEditingMeal(null);
-      // Show Lucy toast for meal logging
+
       showToast("logged_nutrition", getMealAction(mealType));
     };
 

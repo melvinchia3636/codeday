@@ -24,7 +24,6 @@ import {
 } from "../../contexts/YandereLevelContext";
 import { useLucyToast, type BmiAction } from "../../contexts/LucyToastContext";
 
-// Map yandere level (0-3) to display string
 const levelToDisplayString: Record<
   YandereLevel,
   "in love" | "friendly" | "tsundere" | "yandere"
@@ -49,7 +48,6 @@ function ProfileContent() {
   const [showSuccess, setShowSuccess] = useState(false);
   const saveCompleteRef = useRef(false);
 
-  // Determine BMI category based on BMI value
   const getBmiCategory = (bmi: number): BmiAction => {
     if (bmi < 18.5) return "underweight";
     if (bmi < 25) return "normal";
@@ -64,7 +62,7 @@ function ProfileContent() {
     try {
       await saveProfile();
       saveCompleteRef.current = true;
-      // Show BMI toast after successful save
+
       if (formBmi > 0) {
         showToast("logged_bmi", getBmiCategory(formBmi));
       }

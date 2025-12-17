@@ -17,7 +17,6 @@ interface SummaryCardsProps {
   emotionColors: Record<string, string>;
 }
 
-// Static class lookups for Tailwind (can't dynamically interpolate)
 const borderClasses: Record<string, string> = {
   pink: "border-pink-500/40 hover:border-pink-400/60",
   cyan: "border-cyan-500/40 hover:border-cyan-400/60",

@@ -38,7 +38,6 @@ export function ChatMessages({
     );
 
     if (newMessages.length > 0) {
-      // If this is the initial load (no previous messages), animate all with stagger
       if (prevMessageIdsRef.current.size === 0 && newMessages.length > 1) {
         const elements = messagesRef.current?.querySelectorAll(".chat-message");
         if (elements && elements.length > 0) {
@@ -52,7 +51,6 @@ export function ChatMessages({
           });
         }
       } else {
-        // Animate only new messages individually
         newMessages.forEach((msg) => {
           const element = messagesRef.current?.querySelector(
             `[data-message-id="${msg.id}"]`

@@ -40,7 +40,6 @@ export function LogWorkout() {
 
   const calculatedCalories = duration * (selectedType?.caloriesPerMinute || 5);
 
-  // Determine workout intensity based on duration
   const getWorkoutIntensity = (durationMin: number): WorkoutAction => {
     if (durationMin >= 45) return "heavy_workout";
     if (durationMin >= 20) return "moderate_workout";
@@ -55,7 +54,6 @@ export function LogWorkout() {
       caloriesBurned: calculatedCalories,
     });
 
-    // Show Lucy toast based on workout intensity
     showToast("logged_workout", getWorkoutIntensity(duration));
 
     setSelectedTypeIndex(0);

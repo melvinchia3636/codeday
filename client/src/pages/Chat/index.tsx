@@ -56,13 +56,11 @@ function ChatContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [showClearModal, setShowClearModal] = useState(false);
 
-  // Load chat history on mount
   useEffect(() => {
     const loadHistory = async () => {
       try {
         const history = await chatApi.getHistory();
         if (history.length > 0) {
-          // Convert history entries to messages
           const loadedMessages: Message[] = history.map(
             (entry: ChatHistoryEntry) => ({
               id: entry.id,
@@ -73,7 +71,6 @@ function ChatContent() {
           );
           setMessages(loadedMessages);
 
-          // Rebuild conversation history ref for context
           conversationHistoryRef.current = history.map(
             (entry: ChatHistoryEntry) => ({
               role: entry.role,
@@ -103,13 +100,11 @@ function ChatContent() {
       };
       setMessages((prev) => [...prev, userMessage]);
 
-      // Add to conversation history
       conversationHistoryRef.current.push({
         role: "user",
         content,
       });
 
-      // Save user message to database
       chatApi.saveMessage("user", content).catch(console.error);
 
       setIsTyping(true);
@@ -133,13 +128,11 @@ function ChatContent() {
         };
         setMessages((prev) => [...prev, aiMessage]);
 
-        // Add AI response to history
         conversationHistoryRef.current.push({
           role: "assistant",
           content: response.message,
         });
 
-        // Save AI response to database
         chatApi.saveMessage("assistant", response.message).catch(console.error);
       } catch (error) {
         console.error("Chat error:", error);

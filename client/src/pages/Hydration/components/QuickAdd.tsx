@@ -28,21 +28,16 @@ export function QuickAdd() {
   const [customAmount, setCustomAmount] = useState(250);
   const [showResetModal, setShowResetModal] = useState(false);
 
-  // Determine hydration action based on current state
   const getHydrationAction = (amountToAdd: number): HydrationAction => {
     const newTotal = totalWater + amountToAdd;
 
-    // First log of the day
     if (logsCount === 0) return "first_time";
 
-    // Would exceed 120% of target (overdrinking)
     if (newTotal > targetWater * 1.2) return "overdrink_time";
 
-    // Just reached the goal (was below, now at or above)
     if (totalWater < targetWater && newTotal >= targetWater)
       return "reached_time";
 
-    // Subsequent normal log
     return "subsequent_time";
   };
 

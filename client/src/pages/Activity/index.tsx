@@ -35,8 +35,6 @@ const emotionColors: Record<string, string> = {
   yandere: "red",
 };
 
-// Helper to get date string from a date (module level for reuse)
-// Use UTC methods to avoid timezone offset shifting dates
 const getDateString = (dateStr: string) => {
   const date = new Date(dateStr);
   const year = date.getUTCFullYear();
@@ -51,7 +49,6 @@ function ActivityContent() {
   const timelineRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
 
-  // Use queries that fetch ALL data, not just today's
   const { data: workouts = [] } = useWorkoutsQuery();
   const { data: meals = [] } = useMealsQuery();
   const { data: waterLogs = [] } = useAllLogsQuery();
@@ -87,7 +84,6 @@ function ActivityContent() {
         timeZone: "UTC",
       });
 
-    // Add all workouts
     workouts.forEach((w) => {
       const date = new Date(w.timestamp);
       items.push({
@@ -103,7 +99,6 @@ function ActivityContent() {
       });
     });
 
-    // Add all meals
     meals.forEach((m) => {
       const date = new Date(m.timestamp);
       const mealTypeLabel = m.type.charAt(0).toUpperCase() + m.type.slice(1);
@@ -121,7 +116,6 @@ function ActivityContent() {
       });
     });
 
-    // Add all water logs
     waterLogs.forEach((w) => {
       const dateValue = w.timestamp || w.timestamp || new Date().toISOString();
       const date = new Date(dateValue);
@@ -138,13 +132,10 @@ function ActivityContent() {
       });
     });
 
-    // Sort by timestamp descending (newest first)
     return items.sort((a, b) => b.timestamp - a.timestamp);
   }, [workouts, meals, waterLogs]);
 
-  // Group activities by date
   const groupedActivities = useMemo(() => {
-    // Helper to format date as a readable label
     const formatDateLabel = (dateStr: string) => {
       const date = new Date(dateStr);
       const today = new Date();
@@ -175,7 +166,6 @@ function ActivityContent() {
       groups[item.dateStr].push(item);
     });
 
-    // Convert to array sorted by date (newest first)
     return Object.entries(groups)
       .sort(([dateA], [dateB]) => dateB.localeCompare(dateA))
       .map(([dateStr, items]) => ({
@@ -188,44 +178,35 @@ function ActivityContent() {
   const emotion = levelToEmotion[yandereLevel];
   const todayDateStr = new Date().toISOString().split("T")[0];
 
-  // Compute daily summaries for all days in the history
   const dailySummaries = useMemo(() => {
     return groupedActivities.map((group) => {
-      // Count activities by type for this day
       const dayMeals = group.items.filter((i) => i.type === "meal");
       const dayWorkouts = group.items.filter((i) => i.type === "workout");
       const dayWater = group.items.filter((i) => i.type === "water");
 
-      // Simple scoring based on activity counts
-      // Diet score: based on number of meals (4 meals = 100%)
       const dietScore = Math.min(100, Math.round((dayMeals.length / 4) * 100));
 
-      // Hydro score: based on water intake count (8+ entries = 100%)
       const hydroScore = Math.min(100, Math.round((dayWater.length / 8) * 100));
 
-      // Effort score: based on workout count (2+ workouts = 100%)
       const effortScore = Math.min(
         100,
         Math.round((dayWorkouts.length / 2) * 100)
       );
 
-      // Total is weighted average
       const totalScore = Math.round((dietScore + hydroScore + effortScore) / 3);
 
-      // Determine emotion based on total score
       let dayEmotion = "yandere";
       if (totalScore >= 80) dayEmotion = "in love";
       else if (totalScore >= 60) dayEmotion = "friendly";
       else if (totalScore >= 40) dayEmotion = "tsundere";
 
-      // Use today's actual scores (with time factor) if this is today
       if (group.dateStr === todayDateStr) {
         return {
           date: group.dateStr,
           diet: nutritionScore,
           hydro: hydrationScore,
           effort: workoutScore,
-          total: contextTotalScore, // Use context's totalScore which has time factor
+          total: contextTotalScore,
           emotion,
         };
       }

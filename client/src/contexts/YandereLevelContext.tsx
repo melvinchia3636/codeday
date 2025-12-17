@@ -91,29 +91,22 @@ export function YandereLevelProvider({ children }: YandereLevelProviderProps) {
       const hours = now.getHours();
       const minutes = now.getMinutes();
 
-      // Active time window: 8am (8) to 12am (24)
       const activeStartHour = 8;
       const activeEndHour = 24;
-      const totalActiveHours = activeEndHour - activeStartHour; // 16 hours
+      const totalActiveHours = activeEndHour - activeStartHour;
 
-      // Calculate elapsed time since active start
       const currentHour = hours + minutes / 60;
       let elapsedHours = currentHour - activeStartHour;
 
-      // Clamp to active window
       if (elapsedHours < 0) elapsedHours = 0;
       if (elapsedHours > totalActiveHours) elapsedHours = totalActiveHours;
 
-      // Step 1: Time progress (0-1)
       const timeProgress = elapsedHours / totalActiveHours;
 
-      // Step 2: Expected percentage (0-100)
       const expectedPercentage = timeProgress * 100;
 
-      // Step 3: Tolerance window - at least 20%, or 60% of expected
       const tolerance = Math.max(20, expectedPercentage * 0.6);
 
-      // Step 4: Effective percentage - don't punish below (expected - tolerance)
       const effectivePercentage = Math.max(
         actualPercentage,
         expectedPercentage - tolerance
@@ -122,7 +115,6 @@ export function YandereLevelProvider({ children }: YandereLevelProviderProps) {
       return effectivePercentage;
     };
 
-    // --- NUTRITION ---
     const caloriesTarget = settings?.dietCalorieTarget || 2000;
     let caloriesConsumed = 0;
     for (const meal of meals) {
@@ -137,12 +129,11 @@ export function YandereLevelProvider({ children }: YandereLevelProviderProps) {
     }
     const nutritionPercentage =
       caloriesTarget > 0 ? (caloriesConsumed / caloriesTarget) * 100 : 0;
-    // Apply time adjustment to nutrition
+
     const adjustedNutritionPercentage =
       calculateTimeAdjustedPercentage(nutritionPercentage);
     const nutritionScore = calculateZoneScore(adjustedNutritionPercentage);
 
-    // --- HYDRATION ---
     const waterConsumed = waterLogs.reduce(
       (sum, w) => sum + (w.amountMl || 0),
       0
@@ -150,20 +141,17 @@ export function YandereLevelProvider({ children }: YandereLevelProviderProps) {
     const waterTarget = settings?.hydroTargetMl || 2500;
     const hydrationPercentage =
       waterTarget > 0 ? (waterConsumed / waterTarget) * 100 : 0;
-    // Apply time adjustment to hydration
+
     const adjustedHydrationPercentage =
       calculateTimeAdjustedPercentage(hydrationPercentage);
     const hydrationScore = calculateZoneScore(adjustedHydrationPercentage);
 
-    // --- WORKOUT ---
-    // Get today's date string in YYYY-MM-DD format (ignoring timezone)
     const now = new Date();
     const todayDateStr = `${now.getFullYear()}-${String(
       now.getMonth() + 1
     ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
     const todayWorkouts = workouts.filter((w) => {
-      // Extract date part from timestamp without timezone conversion
       const workoutDateStr =
         w.timestamp?.split(" ")[0] || w.timestamp?.split("T")[0] || "";
       return workoutDateStr === todayDateStr;
@@ -178,8 +166,7 @@ export function YandereLevelProvider({ children }: YandereLevelProviderProps) {
       workoutCalorieTarget > 0
         ? (workoutCaloriesBurned / workoutCalorieTarget) * 100
         : 0;
-    // No diminishing return for workout - just cap at 100
-    // Also apply time adjustment for fair early-day scoring
+
     const adjustedWorkoutPercentage =
       calculateTimeAdjustedPercentage(workoutPercentage);
     const workoutScore = Math.min(100, Math.round(adjustedWorkoutPercentage));

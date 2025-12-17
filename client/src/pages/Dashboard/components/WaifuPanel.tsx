@@ -7,7 +7,6 @@ import {
 } from "../../../contexts/YandereLevelContext";
 import { chatApi } from "../../../lib/chat";
 
-// Level-based styling and images
 const levelConfig: Record<
   YandereLevel,
   {
@@ -48,7 +47,6 @@ const levelConfig: Record<
   },
 };
 
-// Fallback greetings by level
 const fallbackGreetings: Record<YandereLevel, string> = {
   0: "You're doing great today~ ♡",
   1: "I've got my eyes on you~",
@@ -83,7 +81,6 @@ export function WaifuPanel() {
   const pulseRingsRef = useRef<HTMLDivElement[]>([]);
   const particlesRef = useRef<HTMLDivElement>(null);
 
-  // Fetch AI greeting on mount
   useEffect(() => {
     const fetchGreeting = async () => {
       try {
@@ -104,7 +101,7 @@ export function WaifuPanel() {
     };
 
     fetchGreeting();
-  }, []); // Only run on mount
+  }, []);
 
   useEffect(() => {
     if (heartRef.current) {
