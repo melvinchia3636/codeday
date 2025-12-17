@@ -31,7 +31,7 @@ export class ChatHistoryService extends BaseService<ChatHistory> {
    * Get all chat history for a user, ordered by creation time
    */
   async getHistory(userId: string): Promise<ChatHistory[]> {
-    return await this.findByFilter(`userId="${userId}"`, { sort: 'timestamp' });
+    return await this.findByFilter(`userId="${userId}"`, { sort: 'created' });
   }
 
   /**
