@@ -1,6 +1,17 @@
 import { Icon } from "@iconify/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { animate, stagger, random } from "animejs";
+import { useWorkoutsQuery } from "../../../hooks/useWorkoutQueries";
+import { useTodayMealsQuery } from "../../../hooks/useMealQueries";
+import { useTodayLogsQuery } from "../../../hooks/useHydrationQueries";
+
+type ActivityItem = {
+  id: string;
+  timestamp: Date;
+  type: "workout" | "meal" | "water";
+  description: string;
+  value: string;
+};
 
 export function ActivityTimeline() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -11,80 +22,120 @@ export function ActivityTimeline() {
   const cornersRef = useRef<HTMLDivElement[]>([]);
   const dataStreamRef = useRef<HTMLDivElement>(null);
 
+  const { data: workouts = [] } = useWorkoutsQuery();
+  const { data: meals = [] } = useTodayMealsQuery();
+  const { data: waterLogs = [] } = useTodayLogsQuery();
+
+  // Combine and sort all activities
+  const activities = useMemo(() => {
+    const items: ActivityItem[] = [];
+
+    // Add workouts
+    workouts.forEach((w) => {
+      items.push({
+        id: `workout-${w.id}`,
+        timestamp: new Date(w.created),
+        type: "workout",
+        description: `${w.type} workout completed`,
+        value: `+${w.caloriesBurned} cal`,
+      });
+    });
+
+    // Add meals
+    meals.forEach((m) => {
+      const mealTypeLabel = m.type.charAt(0).toUpperCase() + m.type.slice(1);
+      const itemCount = m.items?.length || 0;
+      items.push({
+        id: `meal-${m.id}`,
+        timestamp: new Date(m.created),
+        type: "meal",
+        description: `${mealTypeLabel} logged (${itemCount} items)`,
+        value: `logged`,
+      });
+    });
+
+    // Add water logs
+    waterLogs.forEach((w) => {
+      items.push({
+        id: `water-${w.id}`,
+        timestamp: new Date(w.timestamp || w.created || new Date()),
+        type: "water",
+        description: `Hydration logged`,
+        value: `+${w.amountMl}ml`,
+      });
+    });
+
+    // Sort by timestamp descending (newest first) and take 25
+    return items
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+      .slice(0, 25);
+  }, [workouts, meals, waterLogs]);
+
+  const formatTime = (date: Date) => {
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `[${hours}:${minutes}]`;
+  };
+
+  const getTypeStyles = (type: ActivityItem["type"]) => {
+    switch (type) {
+      case "workout":
+        return {
+          border: "border-pink-500/50",
+          dot: "bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)]",
+          value: "text-pink-500",
+        };
+      case "meal":
+        return {
+          border: "border-fuchsia-500/50",
+          dot: "bg-fuchsia-500 shadow-[0_0_8px_rgba(168,85,247,0.8)]",
+          value: "text-fuchsia-500",
+        };
+      case "water":
+        return {
+          border: "border-cyan-500/50",
+          dot: "bg-cyan-500 shadow-[0_0_8px_rgba(34,211,238,0.8)]",
+          value: "text-cyan-500",
+        };
+    }
+  };
+
   useEffect(() => {
-    // Title animation
+    // Title animation - wait for parent container
     if (titleRef.current) {
       animate(titleRef.current, {
         opacity: [0, 1],
         translateX: [-20, 0],
         duration: 600,
-        delay: 200,
+        delay: 1200, // Wait for parent container animation
         ease: "outExpo",
       });
-
-      // Continuous pulse
-      setTimeout(() => {
-        if (titleRef.current) {
-          animate(titleRef.current, {
-            opacity: [1, 0.7, 1],
-            duration: 2000,
-            ease: "inOutSine",
-            loop: true,
-          });
-        }
-      }, 800);
     }
 
-    // Timeline items stagger animation
+    // Timeline items stagger animation - wait for parent container
     if (itemsRef.current) {
       const items = itemsRef.current.querySelectorAll(".timeline-item");
 
-      // Entrance animation
       animate(items, {
         opacity: [0, 1],
         translateX: [-30, 0],
-        delay: stagger(200, { start: 400 }),
-        duration: 600,
+        delay: stagger(80, { start: 1400 }), // Start after parent container + title
+        duration: 400,
         ease: "outExpo",
       });
 
-      // Continuous subtle hover effect
-      setTimeout(() => {
-        items.forEach((item, i) => {
-          animate(item, {
-            translateX: [0, 3, 0],
-            duration: 3000,
-            delay: i * 500,
-            ease: "inOutSine",
-            loop: true,
-          });
-        });
-      }, 1400);
-
-      // Pulse dots
+      // Pulse dots - start after items animate
       const dots = itemsRef.current.querySelectorAll(".activity-dot");
-      animate(dots, {
-        scale: [1, 1.5, 1],
-        opacity: [1, 0.5, 1],
-        delay: stagger(300, { start: 600 }),
-        duration: 1500,
-        ease: "inOutSine",
-        loop: true,
-      });
-
-      // Value highlights
-      const values = itemsRef.current.querySelectorAll(".activity-value");
-      animate(values, {
-        textShadow: [
-          "0 0 0 transparent",
-          "0 0 10px currentColor",
-          "0 0 0 transparent",
-        ],
-        delay: stagger(200, { start: 800 }),
-        duration: 2000,
-        ease: "inOutSine",
-        loop: true,
-      });
+      setTimeout(() => {
+        animate(dots, {
+          scale: [1, 1.3, 1],
+          opacity: [1, 0.6, 1],
+          delay: stagger(150),
+          duration: 2000,
+          ease: "inOutSine",
+          loop: true,
+        });
+      }, 2500);
     }
 
     // Scanline effect
@@ -117,25 +168,17 @@ export function ActivityTimeline() {
           delay: 400 + i * 100,
           ease: "outBack",
         });
-
-        setTimeout(() => {
-          animate(corner, {
-            opacity: [1, 0.3, 1],
-            duration: 2000,
-            delay: i * 200,
-            ease: "inOutSine",
-            loop: true,
-          });
-        }, 900 + i * 100);
       }
     });
 
     // Data stream background
     if (dataStreamRef.current) {
+      // Clear existing streams
+      dataStreamRef.current.innerHTML = "";
       for (let i = 0; i < 6; i++) {
         const stream = document.createElement("div");
         stream.className =
-          "absolute h-px bg-gradient-to-r from-transparent via-pink-500/20 to-transparent";
+          "absolute h-px bg-linear-to-r from-transparent via-pink-500/20 to-transparent";
         stream.style.width = `${random(30, 80)}%`;
         stream.style.left = `${random(-10, 50)}%`;
         stream.style.top = `${random(10, 90)}%`;
@@ -160,22 +203,17 @@ export function ActivityTimeline() {
           "rgba(34,211,238,0.4)",
           "rgba(236,72,153,0.3)",
         ],
-        boxShadow: [
-          "inset 0 0 20px rgba(236,72,153,0.05)",
-          "inset 0 0 30px rgba(34,211,238,0.1)",
-          "inset 0 0 20px rgba(236,72,153,0.05)",
-        ],
         duration: 5000,
         ease: "inOutSine",
         loop: true,
       });
     }
-  }, []);
+  }, [activities]);
 
   return (
     <div
       ref={containerRef}
-      className="flex-1 bg-zinc-900/50 border border-pink-500/30 p-4 relative overflow-hidden backdrop-blur-sm"
+      className="flex-1 bg-zinc-900/50 border border-pink-500/30 p-4 relative overflow-hidden backdrop-blur-sm flex flex-col"
     >
       {/* Data streams background */}
       <div
@@ -186,7 +224,7 @@ export function ActivityTimeline() {
       {/* Scanline */}
       <div
         ref={scanlineRef}
-        className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent pointer-events-none z-10"
+        className="absolute left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-cyan-500/30 to-transparent pointer-events-none z-10"
       ></div>
 
       {/* Background glow */}
@@ -234,44 +272,39 @@ export function ActivityTimeline() {
         ACTIVITY_STREAM
       </div>
 
-      <div ref={itemsRef} className="space-y-2 relative z-10">
-        <div
-          className="timeline-item flex items-center gap-3 text-xs bg-zinc-800/30 p-1.5 border-l-2 border-pink-500/50"
-          style={{ opacity: 0 }}
-        >
-          <span className="text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
-            [08:30]
-          </span>
-          <span className="activity-dot w-2 h-2 bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)]"></span>
-          <span className="text-zinc-400">Morning workout completed</span>
-          <span className="activity-value text-pink-500 ml-auto">+320 cal</span>
-        </div>
-        <div
-          className="timeline-item flex items-center gap-3 text-xs bg-zinc-800/30 p-1.5 border-l-2 border-fuchsia-500/50"
-          style={{ opacity: 0 }}
-        >
-          <span className="text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
-            [12:15]
-          </span>
-          <span className="activity-dot w-2 h-2 bg-fuchsia-500 shadow-[0_0_8px_rgba(168,85,247,0.8)]"></span>
-          <span className="text-zinc-400">
-            Lunch logged: Grilled chicken bowl
-          </span>
-          <span className="activity-value text-fuchsia-500 ml-auto">
-            580 kcal
-          </span>
-        </div>
-        <div
-          className="timeline-item flex items-center gap-3 text-xs bg-zinc-800/30 p-1.5 border-l-2 border-cyan-500/50"
-          style={{ opacity: 0 }}
-        >
-          <span className="text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
-            [14:00]
-          </span>
-          <span className="activity-dot w-2 h-2 bg-cyan-500 shadow-[0_0_8px_rgba(34,211,238,0.8)]"></span>
-          <span className="text-zinc-400">Hydration checkpoint reached</span>
-          <span className="activity-value text-cyan-500 ml-auto">+500ml</span>
-        </div>
+      <div
+        ref={itemsRef}
+        className="space-y-2 relative z-10 overflow-y-auto flex-1"
+      >
+        {activities.length > 0 ? (
+          activities.map((activity) => {
+            const styles = getTypeStyles(activity.type);
+            return (
+              <div
+                key={activity.id}
+                className={`timeline-item flex items-center gap-3 text-xs bg-zinc-800/30 p-1.5 border-l-2 ${styles.border}`}
+                style={{ opacity: 0 }}
+              >
+                <span className="text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
+                  {formatTime(activity.timestamp)}
+                </span>
+                <span className={`activity-dot w-2 h-2 ${styles.dot}`}></span>
+                <span className="text-zinc-400 truncate flex-1">
+                  {activity.description}
+                </span>
+                <span
+                  className={`activity-value ${styles.value} ml-auto whitespace-nowrap`}
+                >
+                  {activity.value}
+                </span>
+              </div>
+            );
+          })
+        ) : (
+          <div className="text-zinc-500 text-xs text-center py-4">
+            No activity recorded yet
+          </div>
+        )}
       </div>
     </div>
   );

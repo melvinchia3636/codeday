@@ -47,6 +47,7 @@ export class WaterLogService extends BaseService<WaterLog> {
     const logs = await this.pb.collection(this.collectionName).getFullList<WaterLog>({
       filter: `userId="${userId}" && timestamp~"${today}"`,
       sort: 'timestamp',
+      requestKey: Math.random().toString(),
     });
     return logs;
   }
@@ -123,7 +124,7 @@ export class WaterLogService extends BaseService<WaterLog> {
     return {
       totalMl,
       targetMl,
-      percentage: Math.min(100, Math.round((totalMl / targetMl) * 100)),
+      percentage: Math.round((totalMl / targetMl) * 100),
       logsCount: logs.length,
       shouldDrinkNow: drinkStatus.shouldDrink,
       minutesSinceLastDrink:

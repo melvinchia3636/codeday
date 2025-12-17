@@ -1,7 +1,11 @@
 import { Icon } from "@iconify/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { animate, random } from "animejs";
 import { Link } from "react-router";
+import {
+  useWorkoutsQuery,
+  useWorkoutTypesQuery,
+} from "../../../hooks/useWorkoutQueries";
 
 export function WorkoutCard() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -12,15 +16,55 @@ export function WorkoutCard() {
   const topLineRef = useRef<HTMLDivElement>(null);
   const cornersRef = useRef<HTMLDivElement[]>([]);
   const particlesRef = useRef<HTMLDivElement>(null);
+  const lastCaloriesRef = useRef<number>(0);
+
+  const { data: workouts = [] } = useWorkoutsQuery();
+  const { data: workoutTypes = [] } = useWorkoutTypesQuery();
+
+  // Filter today's workouts and calculate totals
+  const todayStats = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const todayWorkouts = workouts.filter(
+      (w) => w.created?.slice(0, 10) === today
+    );
+
+    const totalCalories = todayWorkouts.reduce(
+      (sum, w) => sum + (w.caloriesBurned || 0),
+      0
+    );
+    const targetCalories = 500;
+    const progress = Math.min((totalCalories / targetCalories) * 100, 100);
+
+    // Get workout summaries by type
+    const workoutSummary: string[] = [];
+    const workoutsByType: { [key: string]: number } = {};
+    todayWorkouts.forEach((w) => {
+      const typeName = w.type || "Unknown";
+      workoutsByType[typeName] =
+        (workoutsByType[typeName] || 0) + w.durationMin;
+    });
+
+    Object.entries(workoutsByType)
+      .slice(0, 2)
+      .forEach(([name, duration]) => {
+        workoutSummary.push(`${name.toUpperCase()}: ${duration}min`);
+      });
+
+    return { totalCalories, progress, workoutSummary };
+  }, [workouts, workoutTypes]);
 
   useEffect(() => {
-    // Number counting animation
+    // Animate counter from last value to new value
     if (valueRef.current) {
-      const counter = { value: 0 };
+      const startValue = lastCaloriesRef.current;
+      const endValue = todayStats.totalCalories;
+      lastCaloriesRef.current = endValue;
+
+      const counter = { value: startValue };
       animate(counter, {
-        value: [0, 847],
-        duration: 2000,
-        delay: 500,
+        value: [startValue, endValue],
+        duration: 1500,
+        delay: 300,
         ease: "outExpo",
         onUpdate: function () {
           if (valueRef.current) {
@@ -39,30 +83,18 @@ export function WorkoutCard() {
         duration: 2000,
         ease: "inOutSine",
         loop: true,
-        delay: 2500,
+        delay: 2000,
       });
     }
 
     // Progress bar animation
     if (progressRef.current) {
       animate(progressRef.current, {
-        width: ["0%", "75%"],
+        width: [`0%`, `${todayStats.progress}%`],
         duration: 1500,
-        delay: 800,
+        delay: 500,
         ease: "outExpo",
       });
-
-      // Continuous shimmer effect
-      setTimeout(() => {
-        if (progressRef.current) {
-          animate(progressRef.current, {
-            backgroundPosition: ["0% 0%", "200% 0%"],
-            duration: 2000,
-            ease: "linear",
-            loop: true,
-          });
-        }
-      }, 2300);
     }
 
     // Icon animation
@@ -116,42 +148,10 @@ export function WorkoutCard() {
           delay: 200 + i * 100,
           ease: "outBack",
         });
-
-        setTimeout(() => {
-          animate(corner, {
-            opacity: [1, 0.3, 1],
-            duration: 2000,
-            delay: i * 200,
-            ease: "inOutSine",
-            loop: true,
-          });
-        }, 700 + i * 100);
       }
     });
 
-    // Create floating particles
-    if (particlesRef.current) {
-      for (let i = 0; i < 8; i++) {
-        const particle = document.createElement("div");
-        particle.className = "absolute w-1 h-1 bg-pink-500/50 rounded-full";
-        particle.style.left = `${random(10, 90)}%`;
-        particle.style.top = `${random(10, 90)}%`;
-        particlesRef.current.appendChild(particle);
-
-        animate(particle, {
-          translateY: [0, random(-30, -60)],
-          translateX: [0, random(-20, 20)],
-          opacity: [0.6, 0],
-          scale: [1, 0],
-          duration: random(2000, 4000),
-          ease: "outExpo",
-          loop: true,
-          delay: random(0, 2000),
-        });
-      }
-    }
-
-    // Container hover-like effect
+    // Container animation
     if (containerRef.current) {
       animate(containerRef.current, {
         borderColor: [
@@ -164,7 +164,7 @@ export function WorkoutCard() {
         loop: true,
       });
     }
-  }, []);
+  }, [todayStats]);
 
   const handleMouseEnter = () => {
     if (containerRef.current) {
@@ -205,7 +205,7 @@ export function WorkoutCard() {
         {/* Top accent line */}
         <div
           ref={topLineRef}
-          className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-fuchsia-500 to-transparent"
+          className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-pink-500 via-fuchsia-500 to-transparent"
         ></div>
 
         {/* Floating orb */}
@@ -266,18 +266,26 @@ export function WorkoutCard() {
           <div className="h-2 flex-1 bg-zinc-800 overflow-hidden border border-pink-500/20">
             <div
               ref={progressRef}
-              className="h-full bg-gradient-to-r from-pink-500 via-fuchsia-500 to-pink-400 bg-[length:200%_100%]"
+              className="h-full bg-linear-to-r from-pink-500 via-fuchsia-500 to-pink-400 bg-size-[200%_100%]"
               style={{ width: "0%" }}
             ></div>
           </div>
           <span className="text-cyan-400 text-xs drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">
-            75%
+            {Math.round(todayStats.progress)}%
           </span>
         </div>
 
         <div className="mt-3 text-xs text-pink-300/40 border-t border-pink-500/20 pt-2 relative z-10">
-          ▸ HIIT SESSION: 45min
-          <br />▸ STRENGTH: 30min
+          {todayStats.workoutSummary.length > 0 ? (
+            todayStats.workoutSummary.map((line, i) => (
+              <span key={i}>
+                ▸ {line}
+                {i < todayStats.workoutSummary.length - 1 ? <br /> : null}
+              </span>
+            ))
+          ) : (
+            <span>▸ NO WORKOUTS TODAY</span>
+          )}
         </div>
       </div>
     </Link>

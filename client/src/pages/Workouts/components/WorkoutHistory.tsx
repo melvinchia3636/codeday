@@ -7,10 +7,15 @@ import { defaultWorkoutTypes, colorMap } from "../../../lib/workout";
 
 export function WorkoutHistory() {
   const { historyRef } = useWorkoutsAnimationRefs();
-  const { workoutTypes, workouts, isLoadingWorkouts } = useWorkouts();
-  const prevWorkoutsLengthRef = useRef(workouts.length);
+  const {
+    workoutTypes,
+    filteredWorkouts,
+    isLoadingWorkouts,
+    selectedTypeFilter,
+  } = useWorkouts();
+  const prevWorkoutsLengthRef = useRef(filteredWorkouts.length);
 
-  // Animate history items when workouts change
+  // Animate history items when workouts change or filter changes
   useEffect(() => {
     if (!historyRef.current || isLoadingWorkouts) return;
 
@@ -18,8 +23,9 @@ export function WorkoutHistory() {
     if (items.length === 0) return;
 
     // Check if new items were added
-    const isNewItemAdded = workouts.length > prevWorkoutsLengthRef.current;
-    prevWorkoutsLengthRef.current = workouts.length;
+    const isNewItemAdded =
+      filteredWorkouts.length > prevWorkoutsLengthRef.current;
+    prevWorkoutsLengthRef.current = filteredWorkouts.length;
 
     if (isNewItemAdded) {
       // Animate only the first item (newest) with a pop effect
@@ -38,15 +44,15 @@ export function WorkoutHistory() {
         (items[i] as HTMLElement).style.opacity = "1";
       }
     } else {
-      // Initial load animation
+      // Initial load or filter change animation
       animate(items, {
         opacity: [0, 1],
         translateY: [20, 0],
-        delay: stagger(100),
-        duration: 400,
+        delay: stagger(60),
+        duration: 300,
       });
     }
-  }, [workouts, isLoadingWorkouts, historyRef]);
+  }, [filteredWorkouts, isLoadingWorkouts, historyRef, selectedTypeFilter]);
 
   // Combine default and custom types for display
   const allTypes = [
@@ -88,7 +94,7 @@ export function WorkoutHistory() {
   };
 
   // Sort workouts by created date (newest first)
-  const sortedWorkouts = [...workouts].sort(
+  const sortedWorkouts = [...filteredWorkouts].sort(
     (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
   );
 
@@ -102,7 +108,7 @@ export function WorkoutHistory() {
         <Icon icon="pixelarticons:calendar" className="w-5 h-5" />
         WORKOUT_HISTORY
         <span className="ml-auto text-[10px] text-fuchsia-400/60 tracking-wider">
-          {workouts.length} RECORDS
+          {filteredWorkouts.length} RECORDS
         </span>
       </h3>
 

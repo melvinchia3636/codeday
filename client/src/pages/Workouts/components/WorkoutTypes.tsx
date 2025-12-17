@@ -22,6 +22,8 @@ export function WorkoutTypes() {
     isCreatingType,
     isUpdatingType,
     isLoading,
+    selectedTypeFilter,
+    setSelectedTypeFilter,
   } = useWorkouts();
 
   // Track previous count to detect new types being added (after initial load)
@@ -67,9 +69,6 @@ export function WorkoutTypes() {
   const [editingType, setEditingType] = useState<WorkoutType | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingType, setDeletingType] = useState<WorkoutType | null>(null);
-
-  // Selection state for LogWorkout
-  const [selectedType, setSelectedType] = useState<string | null>(null);
 
   // Context menu state
   const [contextMenu, setContextMenu] = useState<{
@@ -174,23 +173,25 @@ export function WorkoutTypes() {
     <>
       {/* Click outside to close context menu */}
       {contextMenu && (
-        <div className="fixed inset-0 z-10" onClick={handleCloseContextMenu} />
+        <div
+          className="fixed inset-0 z-40 w-full h-dvh top-0 left-0"
+          onClick={handleCloseContextMenu}
+        />
       )}
 
-      <div
-        ref={typesRef}
-        className="relative z-20 flex gap-3 mb-6 flex-wrap justify-center"
-      >
+      <div ref={typesRef} className="flex gap-3 mb-6 flex-wrap justify-center">
         {displayTypes.map((t) => {
           const rgba = getColorRgba(t.color);
-          const isSelected = selectedType === t.id;
+          const isSelected = selectedTypeFilter === t.label;
           const isCustomType = !!t.original;
 
           return (
-            <div key={t.id} className="relative">
+            <div key={t.id} className="relative z-50">
               <button
                 onClick={() =>
-                  setSelectedType(t.id === selectedType ? null : t.id)
+                  setSelectedTypeFilter(
+                    t.label === selectedTypeFilter ? null : t.label
+                  )
                 }
                 onContextMenu={(e) => handleContextMenu(e, t.id)}
                 className="type-btn px-5 py-3 font-bold tracking-widest text-sm transition-all flex items-center gap-2 border-2"
@@ -216,7 +217,7 @@ export function WorkoutTypes() {
               {/* Context Menu */}
               {contextMenu?.id === t.id && t.original && (
                 <div
-                  className="fixed z-40 bg-zinc-900 border-2 border-pink-500/50 shadow-[0_0_20px_rgba(236,72,153,0.3)] min-w-[140px]"
+                  className="fixed bg-zinc-900 border-2 border-pink-500/50 shadow-[0_0_20px_rgba(236,72,153,0.3)] min-w-[140px]"
                   style={{ left: contextMenu.x, top: contextMenu.y }}
                 >
                   <button

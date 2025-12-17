@@ -1,7 +1,11 @@
 import { Icon } from "@iconify/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { animate, stagger, random } from "animejs";
 import { Link } from "react-router";
+import { useTodayMealsQuery } from "../../../hooks/useMealQueries";
+import { useTodayMealItemsQuery } from "../../../hooks/useMealItemQueries";
+import { useUserProfile } from "../../../contexts/UserProfileContext";
+import { calculateCalories } from "../../../lib/mealItem";
 
 export function DietCard() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -13,16 +17,56 @@ export function DietCard() {
   const cornersRef = useRef<HTMLDivElement[]>([]);
   const particlesRef = useRef<HTMLDivElement>(null);
   const hologramRef = useRef<HTMLDivElement>(null);
+  const lastCaloriesRef = useRef<number>(0);
+
+  const { settings } = useUserProfile();
+  const { data: todayMeals = [] } = useTodayMealsQuery();
+  const { data: foodLibrary = [] } = useTodayMealItemsQuery();
+
+  // Calculate nutrition totals from today's meals
+  const nutritionStats = useMemo(() => {
+    let protein = 0;
+    let carbs = 0;
+    let fat = 0;
+    let calories = 0;
+
+    for (const meal of todayMeals) {
+      if (!meal.items) continue;
+      for (const item of meal.items) {
+        const foodItem = foodLibrary.find((f) => f.id === item.foodId);
+        if (foodItem) {
+          const ratio = item.quantity / 100;
+          protein += foodItem.protein * ratio;
+          carbs += foodItem.carbs * ratio;
+          fat += foodItem.fat * ratio;
+          calories += calculateCalories(foodItem) * ratio;
+        }
+      }
+    }
+
+    const targetCalories = settings?.dietCalorieTarget || 2000;
+
+    return {
+      protein: Math.round(protein),
+      carbs: Math.round(carbs),
+      fat: Math.round(fat),
+      calories: Math.round(calories),
+      targetCalories,
+    };
+  }, [todayMeals, foodLibrary, settings]);
 
   useEffect(() => {
     // Animated counter
     if (valueRef.current) {
-      const target = 1842;
-      const counter = { value: 0 };
+      const startValue = lastCaloriesRef.current;
+      const endValue = nutritionStats.calories;
+      lastCaloriesRef.current = endValue;
+
+      const counter = { value: startValue };
       animate(counter, {
-        value: [0, target],
-        duration: 2500,
-        delay: 600,
+        value: [startValue, endValue],
+        duration: 1500,
+        delay: 300,
         ease: "outExpo",
         onUpdate: function () {
           if (valueRef.current) {
@@ -47,33 +91,20 @@ export function DietCard() {
             loop: true,
           });
         }
-      }, 3100);
+      }, 2000);
     }
 
-    // Macros animation with counting
+    // Macros animation
     if (macrosRef.current) {
       const macroItems = macrosRef.current.querySelectorAll(".macro-item");
-
-      // Stagger entrance
       animate(macroItems, {
         opacity: [0, 1],
         translateY: [20, 0],
         scale: [0.8, 1],
-        delay: stagger(150, { start: 800 }),
+        delay: stagger(150, { start: 500 }),
         duration: 600,
         ease: "outBack",
       });
-
-      // Continuous pulse
-      setTimeout(() => {
-        animate(macroItems, {
-          scale: [1, 1.05, 1],
-          delay: stagger(200),
-          duration: 2000,
-          ease: "inOutSine",
-          loop: true,
-        });
-      }, 1600);
     }
 
     // Icon rotation
@@ -82,13 +113,6 @@ export function DietCard() {
         rotate: [0, 360],
         duration: 4000,
         ease: "linear",
-        loop: true,
-      });
-
-      animate(iconRef.current, {
-        scale: [1, 1.2, 1],
-        duration: 2000,
-        ease: "inOutSine",
         loop: true,
       });
     }
@@ -131,55 +155,8 @@ export function DietCard() {
           delay: 300 + i * 100,
           ease: "outBack",
         });
-
-        setTimeout(() => {
-          animate(corner, {
-            opacity: [1, 0.4, 1],
-            borderColor: [
-              "rgba(168,85,247,0.5)",
-              "rgba(236,72,153,0.7)",
-              "rgba(168,85,247,0.5)",
-            ],
-            duration: 2500,
-            delay: i * 200,
-            ease: "inOutSine",
-            loop: true,
-          });
-        }, 800 + i * 100);
       }
     });
-
-    // Particles
-    if (particlesRef.current) {
-      for (let i = 0; i < 10; i++) {
-        const particle = document.createElement("div");
-        particle.className = "absolute w-1 h-1 bg-fuchsia-500/50 rounded-full";
-        particle.style.left = `${random(10, 90)}%`;
-        particle.style.top = `${random(10, 90)}%`;
-        particlesRef.current.appendChild(particle);
-
-        animate(particle, {
-          translateY: [0, random(-40, -80)],
-          translateX: [0, random(-30, 30)],
-          opacity: [0.7, 0],
-          scale: [1, 0],
-          duration: random(2500, 4500),
-          ease: "outExpo",
-          loop: true,
-          delay: random(0, 2500),
-        });
-      }
-    }
-
-    // Hologram effect
-    if (hologramRef.current) {
-      animate(hologramRef.current, {
-        opacity: [0.02, 0.08, 0.02],
-        duration: 3000,
-        ease: "inOutSine",
-        loop: true,
-      });
-    }
 
     // Container animation
     if (containerRef.current) {
@@ -194,7 +171,7 @@ export function DietCard() {
         loop: true,
       });
     }
-  }, []);
+  }, [nutritionStats]);
 
   const handleMouseEnter = () => {
     if (containerRef.current) {
@@ -242,7 +219,7 @@ export function DietCard() {
         {/* Top line */}
         <div
           ref={topLineRef}
-          className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-fuchsia-500 via-pink-500 to-transparent"
+          className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-fuchsia-500 via-pink-500 to-transparent"
         ></div>
 
         {/* Orb */}
@@ -308,26 +285,32 @@ export function DietCard() {
             style={{ opacity: 0 }}
           >
             <div className="text-pink-400 text-xs">P</div>
-            <div className="text-white text-sm font-bold">124g</div>
+            <div className="text-white text-sm font-bold">
+              {nutritionStats.protein}g
+            </div>
           </div>
           <div
             className="macro-item bg-zinc-800/50 p-1 border border-cyan-500/20"
             style={{ opacity: 0 }}
           >
             <div className="text-cyan-400 text-xs">C</div>
-            <div className="text-white text-sm font-bold">186g</div>
+            <div className="text-white text-sm font-bold">
+              {nutritionStats.carbs}g
+            </div>
           </div>
           <div
             className="macro-item bg-zinc-800/50 p-1 border border-fuchsia-500/20"
             style={{ opacity: 0 }}
           >
             <div className="text-fuchsia-400 text-xs">F</div>
-            <div className="text-white text-sm font-bold">62g</div>
+            <div className="text-white text-sm font-bold">
+              {nutritionStats.fat}g
+            </div>
           </div>
         </div>
 
         <div className="mt-2 text-xs text-fuchsia-300/40 border-t border-fuchsia-500/20 pt-2 relative z-10">
-          ▸ GOAL: 2,100 kcal
+          ▸ GOAL: {nutritionStats.targetCalories.toLocaleString()} kcal
         </div>
       </div>
     </Link>

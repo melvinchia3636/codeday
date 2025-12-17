@@ -1,4 +1,10 @@
-import { createContext, useContext, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  type ReactNode,
+} from "react";
 import {
   useWorkoutTypesQuery,
   useWorkoutsQuery,
@@ -19,6 +25,11 @@ interface WorkoutsContextValue {
   // Data
   workoutTypes: WorkoutType[];
   workouts: Workout[];
+  filteredWorkouts: Workout[];
+
+  // Filter state
+  selectedTypeFilter: string | null;
+  setSelectedTypeFilter: (typeId: string | null) => void;
 
   // Loading states
   isLoading: boolean;
@@ -47,6 +58,18 @@ export function WorkoutsProvider({ children }: WorkoutsProviderProps) {
   const { data: workouts = [], isLoading: isLoadingWorkouts } =
     useWorkoutsQuery();
 
+  // Filter state
+  const [selectedTypeFilter, setSelectedTypeFilter] = useState<string | null>(
+    null
+  );
+
+  // Compute filtered workouts
+  const filteredWorkouts = useMemo(() => {
+    if (!selectedTypeFilter) return workouts;
+    const filterLower = selectedTypeFilter.toLowerCase();
+    return workouts.filter((w) => w.type.toLowerCase() === filterLower);
+  }, [workouts, selectedTypeFilter]);
+
   // Mutations
   const createWorkoutMutation = useCreateWorkoutMutation();
   const createTypeMutation = useCreateWorkoutTypeMutation();
@@ -74,6 +97,11 @@ export function WorkoutsProvider({ children }: WorkoutsProviderProps) {
     // Data
     workoutTypes,
     workouts,
+    filteredWorkouts,
+
+    // Filter state
+    selectedTypeFilter,
+    setSelectedTypeFilter,
 
     // Loading states
     isLoading,

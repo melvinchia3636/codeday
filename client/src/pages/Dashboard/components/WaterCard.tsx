@@ -1,7 +1,9 @@
 import { Icon } from "@iconify/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { animate, random } from "animejs";
 import { Link } from "react-router";
+import { useWaterSummaryQuery } from "../../../hooks/useHydrationQueries";
+import { useUserProfile } from "../../../contexts/UserProfileContext";
 
 export function WaterCard() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -14,16 +16,43 @@ export function WaterCard() {
   const particlesRef = useRef<HTMLDivElement>(null);
   const waveRef = useRef<HTMLDivElement>(null);
   const bubblesRef = useRef<HTMLDivElement>(null);
+  const lastAmountRef = useRef<number>(0);
+
+  const { settings } = useUserProfile();
+  const targetMl = settings?.hydroTargetMl || 3000;
+  const { data: summary } = useWaterSummaryQuery(targetMl);
+
+  // Calculate hydration stats from summary
+  const hydrationStats = useMemo(() => {
+    const currentMl = summary?.totalMl || 0;
+    const progress = summary?.percentage || 0;
+    const liters = (currentMl / 1000).toFixed(1);
+    const targetLiters = (targetMl / 1000).toFixed(1);
+
+    // Calculate filled bars (8 bars total)
+    const filledBars = Math.round((progress / 100) * 8);
+
+    return { currentMl, targetMl, progress, liters, targetLiters, filledBars };
+  }, [summary, targetMl]);
 
   useEffect(() => {
     // Animated value
     if (valueRef.current) {
-      animate(valueRef.current, {
-        opacity: [0, 1],
-        scale: [0.5, 1],
-        duration: 800,
-        delay: 400,
-        ease: "outElastic(1, .5)",
+      const startValue = lastAmountRef.current;
+      const endValue = hydrationStats.currentMl;
+      lastAmountRef.current = endValue;
+
+      const counter = { value: startValue / 1000 };
+      animate(counter, {
+        value: [startValue / 1000, endValue / 1000],
+        duration: 1200,
+        delay: 300,
+        ease: "outExpo",
+        onUpdate: function () {
+          if (valueRef.current) {
+            valueRef.current.textContent = `${counter.value.toFixed(1)}L`;
+          }
+        },
       });
 
       // Glow pulse
@@ -40,40 +69,22 @@ export function WaterCard() {
             loop: true,
           });
         }
-      }, 1200);
+      }, 1500);
     }
 
     // Water bars fill animation
     if (barsContainerRef.current) {
       const bars = barsContainerRef.current.querySelectorAll(".water-bar");
-
-      // Stagger fill animation
       bars.forEach((bar, i) => {
-        if (i < 6) {
-          animate(bar, {
-            scaleY: [0, 1],
-            opacity: [0, 1],
-            duration: 500,
-            delay: 600 + i * 100,
-            ease: "outBack",
-          });
-        }
-      });
-
-      // Continuous wave effect on filled bars
-      setTimeout(() => {
-        bars.forEach((bar, i) => {
-          if (i < 6) {
-            animate(bar, {
-              scaleY: [1, 0.9, 1],
-              delay: i * 100,
-              duration: 1500,
-              ease: "inOutSine",
-              loop: true,
-            });
-          }
+        const isFilled = i < hydrationStats.filledBars;
+        animate(bar, {
+          scaleY: isFilled ? [0, 1] : 1,
+          opacity: isFilled ? [0, 1] : 1,
+          duration: 500,
+          delay: 400 + i * 80,
+          ease: "outBack",
         });
-      }, 1200);
+      });
     }
 
     // Icon water drop animation
@@ -82,18 +93,6 @@ export function WaterCard() {
         translateY: [0, -5, 0],
         scale: [1, 1.2, 1],
         duration: 1000,
-        ease: "inOutSine",
-        loop: true,
-      });
-
-      // Ripple glow effect
-      animate(iconRef.current, {
-        filter: [
-          "drop-shadow(0 0 0 transparent)",
-          "drop-shadow(0 0 10px rgba(34,211,238,0.8))",
-          "drop-shadow(0 0 0 transparent)",
-        ],
-        duration: 1500,
         ease: "inOutSine",
         loop: true,
       });
@@ -137,72 +136,8 @@ export function WaterCard() {
           delay: 300 + i * 100,
           ease: "outBack",
         });
-
-        setTimeout(() => {
-          animate(corner, {
-            opacity: [1, 0.4, 1],
-            borderColor: [
-              "rgba(34,211,238,0.5)",
-              "rgba(59,130,246,0.7)",
-              "rgba(34,211,238,0.5)",
-            ],
-            duration: 2500,
-            delay: i * 200,
-            ease: "inOutSine",
-            loop: true,
-          });
-        }, 800 + i * 100);
       }
     });
-
-    // Particles (bubbles)
-    if (particlesRef.current) {
-      for (let i = 0; i < 12; i++) {
-        const particle = document.createElement("div");
-        const size = random(2, 4);
-        particle.className = "absolute rounded-full bg-cyan-500/40";
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.left = `${random(10, 90)}%`;
-        particle.style.bottom = `${random(10, 30)}%`;
-        particlesRef.current.appendChild(particle);
-
-        animate(particle, {
-          translateY: [0, random(-60, -120)],
-          translateX: [0, random(-15, 15)],
-          opacity: [0.6, 0],
-          scale: [1, 0.5],
-          duration: random(2000, 4000),
-          ease: "outQuad",
-          loop: true,
-          delay: random(0, 2000),
-        });
-      }
-    }
-
-    // Create bubbles effect
-    if (bubblesRef.current) {
-      for (let i = 0; i < 8; i++) {
-        const bubble = document.createElement("div");
-        bubble.className = "absolute rounded-full border border-cyan-500/30";
-        const size = random(4, 8);
-        bubble.style.width = `${size}px`;
-        bubble.style.height = `${size}px`;
-        bubble.style.left = `${random(20, 80)}%`;
-        bubble.style.bottom = "10%";
-        bubblesRef.current.appendChild(bubble);
-
-        animate(bubble, {
-          translateY: [0, random(-80, -150)],
-          opacity: [0.5, 0],
-          scale: [1, 1.5],
-          duration: random(3000, 5000),
-          ease: "outQuad",
-          loop: true,
-          delay: random(0, 3000),
-        });
-      }
-    }
 
     // Wave effect
     if (waveRef.current) {
@@ -227,7 +162,7 @@ export function WaterCard() {
         loop: true,
       });
     }
-  }, []);
+  }, [hydrationStats]);
 
   const handleMouseEnter = () => {
     if (containerRef.current) {
@@ -286,7 +221,7 @@ export function WaterCard() {
         {/* Top line */}
         <div
           ref={topLineRef}
-          className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-transparent"
+          className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-cyan-500 via-blue-500 to-transparent"
         ></div>
 
         {/* Orb */}
@@ -335,9 +270,8 @@ export function WaterCard() {
         <div
           ref={valueRef}
           className="text-4xl font-bold text-white mb-1 relative z-10 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]"
-          style={{ opacity: 0 }}
         >
-          2.4L
+          0.0L
         </div>
 
         <div className="text-cyan-300/60 text-xs relative z-10">
@@ -348,24 +282,30 @@ export function WaterCard() {
           ref={barsContainerRef}
           className="mt-3 flex gap-1 justify-center relative z-10"
         >
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div
-              key={i}
-              className={`water-bar w-3 h-8 border origin-bottom ${
-                i <= 6
-                  ? "bg-gradient-to-t from-cyan-500 to-blue-400 border-cyan-400"
-                  : "bg-zinc-800 border-zinc-700"
-              }`}
-              style={{
-                transform: i <= 6 ? "scaleY(0)" : "scaleY(1)",
-                opacity: i <= 6 ? 0 : 1,
-              }}
-            ></div>
-          ))}
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => {
+            const isFilled = i <= hydrationStats.filledBars;
+            return (
+              <div
+                key={i}
+                className={`water-bar w-3 h-8 border origin-bottom ${
+                  isFilled
+                    ? "bg-linear-to-t from-cyan-500 to-blue-400 border-cyan-400"
+                    : "bg-zinc-800 border-zinc-700"
+                }`}
+                style={{
+                  transform: isFilled ? "scaleY(0)" : "scaleY(1)",
+                  opacity: isFilled ? 0 : 1,
+                }}
+              ></div>
+            );
+          })}
         </div>
 
         <div className="mt-2 text-xs text-cyan-300/40 border-t border-cyan-500/20 pt-2 relative z-10">
-          ▸ TARGET: 3.0L ▸ <span className="text-cyan-400">80%</span>
+          ▸ TARGET: {hydrationStats.targetLiters}L ▸{" "}
+          <span className="text-cyan-400">
+            {Math.round(hydrationStats.progress)}%
+          </span>
         </div>
       </div>
     </Link>
