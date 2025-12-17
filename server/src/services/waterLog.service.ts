@@ -20,11 +20,15 @@ export class WaterLogService extends BaseService<WaterLog> {
   }
 
   /**
-   * Get today's date string in YYYY-MM-DD format
+   * Get today's date string in YYYY-MM-DD format (local timezone)
    */
   private getTodayDateString(): string {
     const now = new Date();
-    return now.toISOString().split('T')[0]; // e.g., "2025-12-16"
+    // Use local date components to avoid timezone issues
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`; // e.g., "2025-12-17"
   }
 
   /**
@@ -128,13 +132,27 @@ export class WaterLogService extends BaseService<WaterLog> {
   }
 
   /**
+   * Get current timestamp in local timezone format (YYYY-MM-DD HH:mm:ss)
+   */
+  private getLocalTimestamp(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
+  /**
    * Create a water log entry
    */
   async createLog(userId: string, data: CreateWaterLogDto): Promise<WaterLog> {
     return await this.create({
       ...data,
       userId,
-      timestamp: data.timestamp || new Date().toISOString(),
+      timestamp: data.timestamp || this.getLocalTimestamp(),
     });
   }
 

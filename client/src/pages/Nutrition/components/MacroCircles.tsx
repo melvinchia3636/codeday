@@ -22,10 +22,7 @@ export function MacroCircles({
   targetCalories,
 }: MacroCirclesProps) {
   return (
-    <div
-      ref={macrosRef}
-      className="relative z-10 flex justify-center gap-8 mb-6"
-    >
+    <div ref={macrosRef} className="relative z-10 grid grid-cols-4 gap-4 mb-6">
       {macros.map((m, i) => (
         <div
           key={i}

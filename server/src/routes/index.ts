@@ -5,6 +5,7 @@ import { createDailySummaryRoutes } from './dailySummary.routes';
 import { createFoodLogRoutes } from './foodLog.routes';
 import { createProfileRoutes } from './profile.routes';
 import { createMealRoutes } from './meal.routes';
+import { createMealItemRoutes } from './mealItem.routes';
 import { createSettingsRoutes } from './settings.routes';
 import { createStreaksRoutes } from './streaks.routes';
 import { createWaifuRoutes } from './waifu.routes';
@@ -27,6 +28,7 @@ export const createRoutes = (pb: PocketBase): Router => {
   router.use('/food-logs', createFoodLogRoutes(pb));
   router.use('/me', createProfileRoutes(pb));
   router.use('/meals', createMealRoutes(pb));
+  router.use('/meal-items', createMealItemRoutes(pb));
   router.use('/settings', createSettingsRoutes(pb));
   router.use('/streaks', createStreaksRoutes(pb));
   router.use('/waifu', createWaifuRoutes(pb));

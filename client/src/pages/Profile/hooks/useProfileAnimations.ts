@@ -3,7 +3,6 @@ import { animate, createTimeline, stagger, random } from "animejs";
 
 interface UseProfileAnimationsProps {
   containerRef: RefObject<HTMLDivElement | null>;
-  headerRef: RefObject<HTMLDivElement | null>;
   avatarRef: RefObject<HTMLDivElement | null>;
   userInfoRef: RefObject<HTMLDivElement | null>;
   settingsRef: RefObject<HTMLDivElement | null>;
@@ -16,12 +15,12 @@ interface UseProfileAnimationsProps {
 
 /**
  * Profile page-specific animations.
- * Decoration animations (grid, particles, corners, etc.) are handled by usePageDecorationsAnimations.
+ * Header animation is handled by PageHeader component.
+ * Decoration animations are handled by usePageDecorationsAnimations.
  */
 export function useProfileAnimations(props: UseProfileAnimationsProps) {
   const {
     containerRef,
-    headerRef,
     avatarRef,
     userInfoRef,
     settingsRef,
@@ -44,15 +43,6 @@ export function useProfileAnimations(props: UseProfileAnimationsProps) {
       scale: [0.95, 1],
       duration: 800,
     });
-
-    // Header entrance
-    if (headerRef.current) {
-      tl.add(
-        headerRef.current,
-        { opacity: [0, 1], translateY: [-30, 0], duration: 800 },
-        "-=600"
-      );
-    }
 
     // Avatar epic entrance
     if (avatarRef.current) {

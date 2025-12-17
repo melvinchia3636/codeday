@@ -3,7 +3,6 @@ import { animate, createTimeline, stagger } from "animejs";
 
 interface UseWorkoutsAnimationsProps {
   containerRef: RefObject<HTMLDivElement | null>;
-  headerRef: RefObject<HTMLDivElement | null>;
   statsRef: RefObject<HTMLDivElement | null>;
   historyRef: RefObject<HTMLDivElement | null>;
   typesRef: RefObject<HTMLDivElement | null>;
@@ -13,12 +12,12 @@ interface UseWorkoutsAnimationsProps {
 
 /**
  * Workouts page-specific animations.
- * Decoration animations (grid, particles, corners, etc.) are handled by usePageDecorationsAnimations.
+ * Header animation is handled by PageHeader component.
+ * Decoration animations are handled by usePageDecorationsAnimations.
  */
 export function useWorkoutsAnimations(props: UseWorkoutsAnimationsProps) {
   const {
     containerRef,
-    headerRef,
     statsRef,
     historyRef,
     typesRef,
@@ -40,13 +39,6 @@ export function useWorkoutsAnimations(props: UseWorkoutsAnimationsProps) {
       scale: [0.95, 1],
       duration: 800,
     });
-
-    if (headerRef.current)
-      tl.add(
-        headerRef.current,
-        { opacity: [0, 1], translateY: [-30, 0], duration: 800 },
-        "-=600"
-      );
 
     if (statsRef.current) {
       const cards = statsRef.current.querySelectorAll(".stat-card");

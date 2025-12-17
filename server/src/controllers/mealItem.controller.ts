@@ -1,25 +1,25 @@
 import { Response, NextFunction } from 'express';
 import { BaseController } from './base.controller';
-import { MealService } from '../services/meal.service';
-import { Meal, CreateMealDto, UpdateMealDto } from '../models/health.model';
+import { MealItemService } from '../services/mealItem.service';
+import { MealItem, CreateMealItemDto, UpdateMealItemDto } from '../models/health.model';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
 import PocketBase from 'pocketbase';
 
 /**
- * Meal Controller
- * Handles meal log HTTP requests
+ * Meal Item Controller
+ * Handles meal item/food logging HTTP requests
  */
-export class MealController extends BaseController<Meal> {
-  private mealService: MealService;
+export class MealItemController extends BaseController<MealItem> {
+  private mealItemService: MealItemService;
 
   constructor(pb: PocketBase) {
     super();
-    this.mealService = new MealService(pb);
+    this.mealItemService = new MealItemService(pb);
   }
 
   /**
-   * Get all meals for authenticated user
-   * GET /meals
+   * Get all meal items for authenticated user
+   * GET /meal-items
    */
   async getAll(
     req: AuthenticatedRequest,
@@ -28,16 +28,16 @@ export class MealController extends BaseController<Meal> {
   ): Promise<Response | void> {
     try {
       const userId = req.userId!;
-      const meals = await this.mealService.getByUserId(userId);
-      return this.success(res, meals);
+      const items = await this.mealItemService.getByUserId(userId);
+      return this.success(res, items);
     } catch (error) {
       next(error);
     }
   }
 
   /**
-   * Get today's meals for authenticated user
-   * GET /meals/today
+   * Get today's meal items for authenticated user
+   * GET /meal-items/today
    */
   async getToday(
     req: AuthenticatedRequest,
@@ -46,16 +46,16 @@ export class MealController extends BaseController<Meal> {
   ): Promise<Response | void> {
     try {
       const userId = req.userId!;
-      const meals = await this.mealService.getTodayMeals(userId);
-      return this.success(res, meals);
+      const items = await this.mealItemService.getTodayItems(userId);
+      return this.success(res, items);
     } catch (error) {
       next(error);
     }
   }
 
   /**
-   * Get meal by ID
-   * GET /meals/:id
+   * Get meal item by ID
+   * GET /meal-items/:id
    */
   async getById(
     req: AuthenticatedRequest,
@@ -65,22 +65,22 @@ export class MealController extends BaseController<Meal> {
     try {
       const { id } = req.params;
       const userId = req.userId!;
-      const meal = await this.mealService.getById(id);
+      const item = await this.mealItemService.getById(id);
 
       // Check ownership
-      if (meal.userId !== userId) {
+      if (item.userId !== userId) {
         return res.status(403).json({ error: 'Forbidden' });
       }
 
-      return this.success(res, meal);
+      return this.success(res, item);
     } catch (error) {
       next(error);
     }
   }
 
   /**
-   * Create meal
-   * POST /meals
+   * Create meal item
+   * POST /meal-items
    */
   async create(
     req: AuthenticatedRequest,
@@ -89,17 +89,17 @@ export class MealController extends BaseController<Meal> {
   ): Promise<Response | void> {
     try {
       const userId = req.userId!;
-      const data: CreateMealDto = req.body;
-      const meal = await this.mealService.createMeal(userId, data);
-      return this.success(res, meal, 'Meal created', 201);
+      const data: CreateMealItemDto = req.body;
+      const item = await this.mealItemService.createItem(userId, data);
+      return this.success(res, item, 'Meal item created', 201);
     } catch (error) {
       next(error);
     }
   }
 
   /**
-   * Update meal
-   * PUT /meals/:id
+   * Update meal item
+   * PUT /meal-items/:id
    */
   async update(
     req: AuthenticatedRequest,
@@ -111,21 +111,21 @@ export class MealController extends BaseController<Meal> {
       const userId = req.userId!;
 
       // Check ownership
-      if (!(await this.mealService.isOwnedBy(id, userId))) {
+      if (!(await this.mealItemService.isOwnedBy(id, userId))) {
         return res.status(403).json({ error: 'Forbidden' });
       }
 
-      const data: UpdateMealDto = req.body;
-      const meal = await this.mealService.updateMeal(id, data);
-      return this.success(res, meal, 'Meal updated');
+      const data: UpdateMealItemDto = req.body;
+      const item = await this.mealItemService.updateItem(id, data);
+      return this.success(res, item, 'Meal item updated');
     } catch (error) {
       next(error);
     }
   }
 
   /**
-   * Delete meal
-   * DELETE /meals/:id
+   * Delete meal item
+   * DELETE /meal-items/:id
    */
   async delete(
     req: AuthenticatedRequest,
@@ -137,11 +137,11 @@ export class MealController extends BaseController<Meal> {
       const userId = req.userId!;
 
       // Check ownership
-      if (!(await this.mealService.isOwnedBy(id, userId))) {
+      if (!(await this.mealItemService.isOwnedBy(id, userId))) {
         return res.status(403).json({ error: 'Forbidden' });
       }
 
-      await this.mealService.deleteMeal(id);
+      await this.mealItemService.deleteItem(id);
       return res.status(204).send();
     } catch (error) {
       next(error);

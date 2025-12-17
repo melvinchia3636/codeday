@@ -24,43 +24,6 @@ const mealTypes = [
   { id: "snack", icon: "pixelarticons:coin", label: "SNACK", time: "15:00" },
 ];
 
-const todayMeals = [
-  {
-    id: 1,
-    type: "breakfast",
-    items: [
-      { name: "Oatmeal", cal: 150 },
-      { name: "Banana", cal: 90 },
-    ],
-    total: 240,
-  },
-  {
-    id: 2,
-    type: "lunch",
-    items: [
-      { name: "Grilled Chicken", cal: 350 },
-      { name: "Brown Rice", cal: 200 },
-      { name: "Salad", cal: 80 },
-    ],
-    total: 630,
-  },
-  {
-    id: 3,
-    type: "snack",
-    items: [{ name: "Protein Bar", cal: 180 }],
-    total: 180,
-  },
-];
-
-const foodLibrary = [
-  { id: 1, name: "Chicken Breast", cal: 165, icon: "pixelarticons:coin" },
-  { id: 2, name: "Brown Rice", cal: 112, icon: "pixelarticons:coin" },
-  { id: 3, name: "Broccoli", cal: 34, icon: "pixelarticons:coin" },
-  { id: 4, name: "Salmon", cal: 208, icon: "pixelarticons:coin" },
-  { id: 5, name: "Egg", cal: 78, icon: "pixelarticons:coin" },
-  { id: 6, name: "Avocado", cal: 160, icon: "pixelarticons:coin" },
-];
-
 const macros = [
   { label: "PROTEIN", current: 95, target: 120, color: "pink", unit: "g" },
   { label: "CARBS", current: 180, target: 250, color: "cyan", unit: "g" },
@@ -82,7 +45,8 @@ function NutritionContent() {
     logRef,
   });
 
-  const totalCalories = todayMeals.reduce((s, m) => s + m.total, 0);
+  // TODO: Calculate from actual meal data
+  const totalCalories = 1050;
   const targetCalories = 2200;
 
   return (
@@ -105,12 +69,8 @@ function NutritionContent() {
         targetCalories={targetCalories}
       />
       <div className="relative z-10 flex-1 grid grid-cols-3 gap-6 overflow-hidden">
-        <MealTimeline
-          mealsRef={mealsRef}
-          mealTypes={mealTypes}
-          todayMeals={todayMeals}
-        />
-        <FoodLibrary foodsRef={foodsRef} foods={foodLibrary} />
+        <MealTimeline mealsRef={mealsRef} mealTypes={mealTypes} />
+        <FoodLibrary foodsRef={foodsRef} />
       </div>
     </div>
   );

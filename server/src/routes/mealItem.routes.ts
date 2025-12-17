@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import PocketBase from 'pocketbase';
 import { authMiddleware, AuthenticatedRequest } from '../middleware/auth.middleware';
-import { MealController } from '../controllers/meal.controller';
+import { MealItemController } from '../controllers/mealItem.controller';
 
-export const createMealRoutes = (pb: PocketBase): Router => {
+export const createMealItemRoutes = (pb: PocketBase): Router => {
   const router = Router();
-  const controller = new MealController(pb);
+  const controller = new MealItemController(pb);
 
   router.get('/', authMiddleware, (req, res, next) =>
     controller.getAll(req as AuthenticatedRequest, res, next)

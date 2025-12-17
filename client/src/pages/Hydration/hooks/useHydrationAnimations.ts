@@ -3,7 +3,6 @@ import { animate, createTimeline, stagger, random } from "animejs";
 
 interface UseHydrationAnimationsProps {
   containerRef: RefObject<HTMLDivElement | null>;
-  headerRef: RefObject<HTMLDivElement | null>;
   tankRef: RefObject<HTMLDivElement | null>;
   statsRef: RefObject<HTMLDivElement | null>;
   historyRef: RefObject<HTMLDivElement | null>;
@@ -13,18 +12,12 @@ interface UseHydrationAnimationsProps {
 
 /**
  * Hydration page-specific animations.
- * Decoration animations (grid, particles, corners, etc.) are handled by usePageDecorationsAnimations.
+ * Header animation is handled by PageHeader component.
+ * Decoration animations are handled by usePageDecorationsAnimations.
  */
 export function useHydrationAnimations(props: UseHydrationAnimationsProps) {
-  const {
-    containerRef,
-    headerRef,
-    tankRef,
-    statsRef,
-    historyRef,
-    logRef,
-    bubblesRef,
-  } = props;
+  const { containerRef, tankRef, statsRef, historyRef, logRef, bubblesRef } =
+    props;
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -35,13 +28,6 @@ export function useHydrationAnimations(props: UseHydrationAnimationsProps) {
       scale: [0.95, 1],
       duration: 800,
     });
-
-    if (headerRef.current)
-      tl.add(
-        headerRef.current,
-        { opacity: [0, 1], translateY: [-30, 0], duration: 800 },
-        "-=600"
-      );
 
     if (tankRef.current) {
       tl.add(

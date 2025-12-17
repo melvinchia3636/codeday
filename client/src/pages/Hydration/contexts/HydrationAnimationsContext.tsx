@@ -7,10 +7,11 @@ import {
 } from "react";
 import { useHydrationAnimations } from "../hooks/useHydrationAnimations";
 
-// Animation ref types (page-specific only, decoration refs come from PageDecorationsContext)
+// Animation ref types (page-specific only)
+// Header animation is now handled by PageHeader component
+// Decoration refs come from PageDecorationsContext
 interface HydrationAnimationRefs {
   containerRef: RefObject<HTMLDivElement | null>;
-  headerRef: RefObject<HTMLDivElement | null>;
   tankRef: RefObject<HTMLDivElement | null>;
   statsRef: RefObject<HTMLDivElement | null>;
   historyRef: RefObject<HTMLDivElement | null>;
@@ -35,7 +36,6 @@ export function HydrationAnimationsProvider({
 }: HydrationAnimationsProviderProps) {
   // Main layout refs
   const containerRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const tankRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const historyRef = useRef<HTMLDivElement>(null);
@@ -47,7 +47,6 @@ export function HydrationAnimationsProvider({
   // Run the animations hook
   useHydrationAnimations({
     containerRef,
-    headerRef,
     tankRef,
     statsRef,
     historyRef,
@@ -57,7 +56,6 @@ export function HydrationAnimationsProvider({
 
   const value: HydrationAnimationsContextType = {
     containerRef,
-    headerRef,
     tankRef,
     statsRef,
     historyRef,

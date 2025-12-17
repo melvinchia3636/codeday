@@ -8,10 +8,11 @@ import {
 import { useUserProfile } from "../../../contexts/UserProfileContext";
 import { useProfileAnimations } from "../hooks/useProfileAnimations";
 
-// Animation ref types (page-specific only, decoration refs come from PageDecorationsContext)
+// Animation ref types (page-specific only)
+// Header animation is now handled by PageHeader component
+// Decoration refs come from PageDecorationsContext
 interface ProfileAnimationRefs {
   containerRef: RefObject<HTMLDivElement | null>;
-  headerRef: RefObject<HTMLDivElement | null>;
   avatarRef: RefObject<HTMLDivElement | null>;
   userInfoRef: RefObject<HTMLDivElement | null>;
   settingsRef: RefObject<HTMLDivElement | null>;
@@ -40,7 +41,6 @@ export function ProfileAnimationsProvider({
 
   // Page-specific animation refs
   const containerRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
   const userInfoRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
@@ -56,7 +56,6 @@ export function ProfileAnimationsProvider({
   // Run the animations hook
   useProfileAnimations({
     containerRef,
-    headerRef,
     avatarRef,
     userInfoRef,
     settingsRef,
@@ -69,7 +68,6 @@ export function ProfileAnimationsProvider({
 
   const value: ProfileAnimationsContextType = {
     containerRef,
-    headerRef,
     avatarRef,
     userInfoRef,
     settingsRef,

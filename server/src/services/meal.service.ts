@@ -1,77 +1,84 @@
 import { BaseService } from './base.service';
-import { MealItem, CreateMealItemDto, UpdateMealItemDto, Meal } from '../models/health.model';
+import { Meal, CreateMealDto, UpdateMealDto } from '../models/health.model';
 import PocketBase from 'pocketbase';
 
 /**
  * Meal Service
- * Handles meal and meal item operations
+ * Handles meal log operations (breakfast, lunch, dinner, snack entries)
  */
-export class MealService extends BaseService<MealItem> {
+export class MealService extends BaseService<Meal> {
   constructor(pb: PocketBase) {
-    super(pb, 'meal_items');
+    super(pb, 'meals');
   }
 
   /**
-   * Get all meal items for a user
-   * Note: Meal items are linked to meals, which are linked to users
+   * Get all meals for a user
    */
-  async getByUserId(userId: string): Promise<MealItem[]> {
-    /**
-     * TODO-LIST: Implement proper relation query
-     * - [ ] Meal items should be fetched via meals table
-     * - [ ] Define the relation structure: meal_items -> meals -> user
-     * - [ ] Consider using PocketBase expand feature
-     */
-    const result = await this.pb.collection('meals').getList<Meal>(1, 100, {
+  async getByUserId(userId: string): Promise<Meal[]> {
+    const result = await this.pb.collection(this.collectionName).getFullList({
       filter: `userId="${userId}"`,
+      sort: '-created',
     });
-
-    const mealIds = result.items.map((m) => m.id);
-    if (mealIds.length === 0) return [];
-
-    const filter = mealIds.map((id) => `mealId="${id}"`).join(' || ');
-    return await this.findByFilter(filter);
+    return result as Meal[];
   }
 
   /**
-   * Get total calories from all meal items for a user
+   * Get a meal by ID
    */
-  async getTotalCalories(userId: string, date?: string): Promise<number> {
-    /**
-     * TODO-LIST: Define calorie aggregation logic
-     * - [ ] Should this be for today only or all time?
-     * - [ ] Should we filter by meal time/date?
-     * - [ ] Need to traverse meals -> meal_items relation
-     */
-    let mealFilter = `userId="${userId}"`;
-    if (date) {
-      mealFilter += ` && time~"${date}"`;
-    }
+  async getById(id: string): Promise<Meal> {
+    return (await this.pb.collection(this.collectionName).getOne(id)) as Meal;
+  }
 
-    const meals = await this.pb.collection('meals').getList<Meal>(1, 100, {
-      filter: mealFilter,
+  /**
+   * Get today's meals for a user
+   */
+  async getTodayMeals(userId: string): Promise<Meal[]> {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const today = `${year}-${month}-${day}`;
+
+    const result = await this.pb.collection(this.collectionName).getFullList({
+      filter: `userId="${userId}" && created~"${today}"`,
+      sort: '-created',
     });
-
-    const mealIds = meals.items.map((m) => m.id);
-    if (mealIds.length === 0) return 0;
-
-    const filter = mealIds.map((id) => `mealId="${id}"`).join(' || ');
-    const items = await this.findByFilter(filter);
-
-    return items.reduce((total, item) => total + (item.calories || 0), 0);
+    return result as Meal[];
   }
 
   /**
-   * Create a meal item
+   * Create a new meal
    */
-  async createItem(data: CreateMealItemDto): Promise<MealItem> {
-    return await this.create(data);
+  async createMeal(userId: string, data: CreateMealDto): Promise<Meal> {
+    return await this.create({
+      ...data,
+      userId,
+    });
   }
 
   /**
-   * Update a meal item
+   * Update a meal
    */
-  async updateItem(id: string, data: UpdateMealItemDto): Promise<MealItem> {
+  async updateMeal(id: string, data: UpdateMealDto): Promise<Meal> {
     return await this.update(id, data);
+  }
+
+  /**
+   * Delete a meal
+   */
+  async deleteMeal(id: string): Promise<boolean> {
+    return await this.delete(id);
+  }
+
+  /**
+   * Check if user owns the meal
+   */
+  async isOwnedBy(id: string, userId: string): Promise<boolean> {
+    try {
+      const meal = await this.getById(id);
+      return meal.userId === userId;
+    } catch {
+      return false;
+    }
   }
 }
