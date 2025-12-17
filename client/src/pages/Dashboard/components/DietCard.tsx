@@ -3,7 +3,7 @@ import { useEffect, useRef, useMemo } from "react";
 import { animate, stagger, random } from "animejs";
 import { Link } from "react-router";
 import { useTodayMealsQuery } from "../../../hooks/useMealQueries";
-import { useTodayMealItemsQuery } from "../../../hooks/useMealItemQueries";
+import { useMealItemsQuery } from "../../../hooks/useMealItemQueries";
 import { useUserProfile } from "../../../contexts/UserProfileContext";
 import { calculateCalories } from "../../../lib/mealItem";
 
@@ -21,7 +21,7 @@ export function DietCard() {
 
   const { settings } = useUserProfile();
   const { data: todayMeals = [] } = useTodayMealsQuery();
-  const { data: foodLibrary = [] } = useTodayMealItemsQuery();
+  const { data: foodLibrary = [] } = useMealItemsQuery();
 
   const nutritionStats = useMemo(() => {
     let protein = 0;

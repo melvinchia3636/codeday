@@ -68,7 +68,7 @@ function ChatContent() {
               id: entry.id,
               content: entry.content,
               isUser: entry.role === "user",
-              timestamp: new Date(entry.created),
+              timestamp: new Date(entry.timestamp),
             })
           );
           setMessages(loadedMessages);

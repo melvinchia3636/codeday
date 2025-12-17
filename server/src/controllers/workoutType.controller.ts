@@ -74,7 +74,7 @@ export class WorkoutTypeController extends BaseController<WorkoutType> {
       const userId = req.userId!;
       const data: CreateWorkoutTypeDto = req.body;
       const type = await this.workoutTypeService.createType(userId, data);
-      return this.success(res, type, 'Workout type created', 201);
+      return this.success(res, type, 'Workout type timestamp', 201);
     } catch (error) {
       next(error);
     }

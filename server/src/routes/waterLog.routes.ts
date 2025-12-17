@@ -13,6 +13,10 @@ export const createWaterLogRoutes = (pb: PocketBase): Router => {
   router.get('/', authMiddleware, (req, res, next) =>
     controller.getTodayLogs(req as AuthenticatedRequest, res, next)
   );
+  // Get all logs (history)
+  router.get('/all', authMiddleware, (req, res, next) =>
+    controller.getAllLogs(req as AuthenticatedRequest, res, next)
+  );
   // Get today's summary
   router.get('/summary', authMiddleware, (req, res, next) =>
     controller.getSummary(req as AuthenticatedRequest, res, next)

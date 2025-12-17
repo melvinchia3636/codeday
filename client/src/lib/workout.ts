@@ -10,7 +10,7 @@ export interface WorkoutType {
   color: string;
   caloriesPerMinute: number;
   userId: string;
-  created: string;
+  timestamp: string;
   updated: string;
 }
 
@@ -38,7 +38,7 @@ export interface Workout {
   caloriesBurned: number;
   effortUnits: number;
   userId: string;
-  created: string;
+  timestamp: string;
   updated: string;
 }
 

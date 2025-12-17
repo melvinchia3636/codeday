@@ -66,7 +66,7 @@ export class WorkoutController extends BaseController<Workout> {
       const userId = req.userId!;
       const data: CreateWorkoutDto = req.body;
       const workout = await this.workoutService.createWorkout(userId, data);
-      return this.success(res, workout, 'Workout created', 201);
+      return this.success(res, workout, 'Workout timestamp', 201);
     } catch (error) {
       next(error);
     }

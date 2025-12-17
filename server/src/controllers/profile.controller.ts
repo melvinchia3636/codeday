@@ -65,7 +65,7 @@ export class ProfileController extends BaseController<UserProfile> {
     try {
       const data: CreateUserProfileDto = req.body;
       const profile = await this.profileService.createProfile(data);
-      return this.success(res, profile, 'User created', 201);
+      return this.success(res, profile, 'User timestamp', 201);
     } catch (error) {
       next(error);
     }

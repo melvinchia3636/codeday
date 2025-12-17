@@ -218,7 +218,7 @@ function SignupContent() {
       <AuthSuccessModal
         isVisible={feedbackState === "success"}
         title="IDENTITY_INITIALIZED"
-        message="Neural profile created successfully. Your digital consciousness has been registered in the network. Proceed to authentication terminal."
+        message="Neural profile timestamp successfully. Your digital consciousness has been registered in the network. Proceed to authentication terminal."
         buttonText="PROCEED_TO_AUTH_TERMINAL"
         onConfirm={handleSuccessConfirm}
         color="cyan"

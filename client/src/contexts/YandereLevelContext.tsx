@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 import { useWorkoutsQuery } from "../hooks/useWorkoutQueries";
 import { useTodayMealsQuery } from "../hooks/useMealQueries";
-import { useTodayMealItemsQuery } from "../hooks/useMealItemQueries";
+import { useMealItemsQuery } from "../hooks/useMealItemQueries";
 import { useTodayLogsQuery } from "../hooks/useHydrationQueries";
 import { useUserProfile } from "./UserProfileContext";
 import { calculateCalories } from "../lib/mealItem";
@@ -66,7 +66,7 @@ export function YandereLevelProvider({ children }: YandereLevelProviderProps) {
     useWorkoutsQuery();
   const { data: meals = [], isLoading: mealsLoading } = useTodayMealsQuery();
   const { data: foodLibrary = [], isLoading: foodLoading } =
-    useTodayMealItemsQuery();
+    useMealItemsQuery();
   const { data: waterLogs = [], isLoading: waterLoading } = useTodayLogsQuery();
   const { settings, isSettingsLoading } = useUserProfile();
 
@@ -162,7 +162,7 @@ export function YandereLevelProvider({ children }: YandereLevelProviderProps) {
     todayEnd.setDate(todayEnd.getDate() + 1);
 
     const todayWorkouts = workouts.filter((w) => {
-      const date = new Date(w.created);
+      const date = new Date(w.timestamp);
       return date >= todayStart && date < todayEnd;
     });
 

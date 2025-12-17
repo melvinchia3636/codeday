@@ -12,7 +12,7 @@ export interface MealItem {
   protein: number;
   carbs: number;
   fat: number;
-  created: string;
+  timestamp: string;
   updated: string;
 }
 

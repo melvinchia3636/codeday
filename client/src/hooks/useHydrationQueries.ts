@@ -28,6 +28,18 @@ export function useTodayLogsQuery() {
 }
 
 /**
+ * Query hook for fetching all water logs (history)
+ */
+export function useAllLogsQuery() {
+  return useQuery<WaterLog[]>({
+    queryKey: [...hydrationQueryKeys.all, "allLogs"] as const,
+    queryFn: hydrationApi.getAllLogs,
+    enabled: auth.isAuthenticated(),
+    staleTime: 60000,
+  });
+}
+
+/**
  * Query hook for fetching today's total water amount
  */
 export function useTodayWaterAmountQuery() {

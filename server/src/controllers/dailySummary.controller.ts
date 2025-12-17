@@ -53,7 +53,7 @@ export class DailySummaryController extends BaseController<DailySummary> {
       const userId = req.userId!;
       const data: CreateDailySummaryDto = req.body;
       const summary = await this.dailySummaryService.createSummary(userId, data);
-      return this.success(res, summary, 'Daily summary created', 201);
+      return this.success(res, summary, 'Daily summary timestamp', 201);
     } catch (error) {
       next(error);
     }

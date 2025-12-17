@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 import { CreateFoodModal } from "./CreateFoodModal";
 import {
   useCreateMealItemMutation,
-  useTodayMealItemsQuery,
+  useMealItemsQuery,
 } from "../../../hooks/useMealItemQueries";
 import {
   calculateCalories,
@@ -17,7 +17,7 @@ interface FoodLibraryProps {
 
 export function FoodLibrary({ foodsRef }: FoodLibraryProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: mealItems = [], isLoading } = useTodayMealItemsQuery();
+  const { data: mealItems = [], isLoading } = useMealItemsQuery();
   const createMutation = useCreateMealItemMutation();
 
   const handleAddFood = () => {
@@ -120,7 +120,7 @@ export function FoodLibrary({ foodsRef }: FoodLibraryProps) {
  */
 function MealItemCard({ item }: { item: MealItem }) {
   const calories = calculateCalories(item);
-  const createdTime = new Date(item.created).toLocaleTimeString("en-US", {
+  const timestampTime = new Date(item.timestamp).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -148,7 +148,7 @@ function MealItemCard({ item }: { item: MealItem }) {
 
       <div className="relative z-10 flex items-center justify-between mb-3 text-[10px]">
         <span className="text-cyan-400/70 font-mono">{item.quantity}g</span>
-        <span className="text-zinc-500 font-mono">{createdTime}</span>
+        <span className="text-zinc-500 font-mono">{timestampTime}</span>
       </div>
 
       <div className="relative z-10 space-y-2">

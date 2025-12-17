@@ -17,7 +17,7 @@ export class MealService extends BaseService<Meal> {
   async getByUserId(userId: string): Promise<Meal[]> {
     const result = await this.pb.collection(this.collectionName).getFullList({
       filter: `userId="${userId}"`,
-      sort: '-created',
+      sort: '-timestamp',
     });
     return result as Meal[];
   }
@@ -40,8 +40,8 @@ export class MealService extends BaseService<Meal> {
     const today = `${year}-${month}-${day}`;
 
     const result = await this.pb.collection(this.collectionName).getFullList({
-      filter: `userId="${userId}" && created~"${today}"`,
-      sort: '-created',
+      filter: `userId="${userId}" && timestamp~"${today}"`,
+      sort: '-timestamp',
     });
     return result as Meal[];
   }

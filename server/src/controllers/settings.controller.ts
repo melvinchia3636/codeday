@@ -53,7 +53,7 @@ export class SettingsController extends BaseController<Settings> {
       const userId = req.userId!;
       const data: CreateSettingsDto = req.body;
       const settings = await this.settingsService.createSettings(userId, data);
-      return this.success(res, settings, 'Settings created', 201);
+      return this.success(res, settings, 'Settings timestamp', 201);
     } catch (error) {
       next(error);
     }

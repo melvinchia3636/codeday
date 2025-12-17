@@ -17,7 +17,7 @@ export interface Meal {
   type: string; // 'breakfast', 'lunch', 'dinner', 'snack'
   items: MealItemEntry[];
   userId: string;
-  created: string;
+  timestamp: string;
   updated: string;
 }
 

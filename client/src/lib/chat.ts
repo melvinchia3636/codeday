@@ -10,7 +10,7 @@ export interface ChatHistoryEntry {
   userId: string;
   role: "user" | "assistant";
   content: string;
-  created: string;
+  timestamp: string;
 }
 
 export interface ChatRequest {

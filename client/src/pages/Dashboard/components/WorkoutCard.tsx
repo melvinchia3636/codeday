@@ -24,7 +24,7 @@ export function WorkoutCard() {
   const todayStats = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
     const todayWorkouts = workouts.filter(
-      (w) => w.created?.slice(0, 10) === today
+      (w) => w.timestamp?.slice(0, 10) === today
     );
 
     const totalCalories = todayWorkouts.reduce(

@@ -12,7 +12,7 @@ export interface UserData {
   dob?: string;
   heightCm?: number;
   weightKg?: number;
-  created?: string;
+  timestamp?: string;
   updated?: string;
 }
 
@@ -37,7 +37,7 @@ export interface UserProfile {
   heightCm?: number;
   weightKg?: number;
   bmi?: number;
-  created?: string;
+  timestamp?: string;
   updated?: string;
 }
 
@@ -60,7 +60,7 @@ export interface UserSettings {
   hydroIntervalMin: number;
   expectedMealsPerDay: number;
   timezone: string;
-  created?: string;
+  timestamp?: string;
   updated?: string;
 }
 
@@ -80,7 +80,7 @@ export interface WeightTarget {
   userId: string;
   targetWeightKg: number;
   targetType: "lose" | "gain" | "maintain";
-  created?: string;
+  timestamp?: string;
   updated?: string;
 }
 

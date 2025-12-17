@@ -91,7 +91,7 @@ export class MealItemController extends BaseController<MealItem> {
       const userId = req.userId!;
       const data: CreateMealItemDto = req.body;
       const item = await this.mealItemService.createItem(userId, data);
-      return this.success(res, item, 'Meal item created', 201);
+      return this.success(res, item, 'Meal item timestamp', 201);
     } catch (error) {
       next(error);
     }

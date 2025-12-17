@@ -53,7 +53,7 @@ export class StreaksController extends BaseController<Streaks> {
       const userId = req.userId!;
       const data: CreateStreaksDto = req.body;
       const streaks = await this.streaksService.createStreaks(userId, data);
-      return this.success(res, streaks, 'Streaks created', 201);
+      return this.success(res, streaks, 'Streaks timestamp', 201);
     } catch (error) {
       next(error);
     }

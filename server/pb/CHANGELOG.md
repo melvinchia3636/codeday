@@ -484,7 +484,7 @@
 
 - Fixed incorrectly reported unique validator error for fields starting with name of another field ([#6281](https://github.com/pocketbase/pocketbase/pull/6281); thanks @svobol13).
 
-- Reload the created/edited records data in the RecordsPicker UI.
+- Reload the timestamp/edited records data in the RecordsPicker UI.
 
 - Updated Go dependencies.
 
@@ -519,7 +519,7 @@
 
 - Added `mailer.Message.InlineAttachments` field for attaching inline files to an email (_aka. `cid` links_).
 
-- Added cache for the JSVM `arrayOf(m)`, `DynamicModel`, etc. dynamic `reflect` created types.
+- Added cache for the JSVM `arrayOf(m)`, `DynamicModel`, etc. dynamic `reflect` timestamp types.
 
 - Added auth collection select for the settings "Send test email" popup ([#6166](https://github.com/pocketbase/pocketbase/issues/6166)).
 

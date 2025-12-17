@@ -92,7 +92,7 @@ export class WaifuController extends BaseController<WaifuState> {
       const userId = req.userId!;
       const data: SetWaifuEmotionDto = req.body;
       await this.waifuService.setEmotion(userId, data);
-      return res.status(201).json({ message: 'Emotion created' });
+      return res.status(201).json({ message: 'Emotion timestamp' });
     } catch (error) {
       next(error);
     }
@@ -167,7 +167,7 @@ export class WaifuController extends BaseController<WaifuState> {
       const userId = req.userId!;
       const data: SetWaifuGreetingDto = req.body;
       await this.waifuService.setGreeting(userId, data);
-      return res.status(201).json({ message: 'Greeting created' });
+      return res.status(201).json({ message: 'Greeting timestamp' });
     } catch (error) {
       next(error);
     }

@@ -107,7 +107,7 @@ export class WorkoutService extends BaseService<Workout> {
    */
   async getTodayWorkouts(userId: string): Promise<Workout[]> {
     const today = this.getTodayDateString();
-    return await this.findByFilter(`userId="${userId}" && created~"${today}"`);
+    return await this.findByFilter(`userId="${userId}" && timestamp~"${today}"`);
   }
 
   /**

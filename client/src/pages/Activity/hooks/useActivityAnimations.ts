@@ -7,6 +7,7 @@ interface UseActivityAnimationsProps {
   timelineRef: RefObject<HTMLDivElement | null>;
   calendarRef: RefObject<HTMLDivElement | null>;
   itemsCount?: number;
+  summariesCount?: number;
 }
 
 /**
@@ -21,6 +22,7 @@ export function useActivityAnimations(props: UseActivityAnimationsProps) {
     timelineRef,
     calendarRef,
     itemsCount = 0,
+    summariesCount = 0,
   } = props;
   const hasAnimatedContainerRef = useRef(false);
 
@@ -64,15 +66,44 @@ export function useActivityAnimations(props: UseActivityAnimationsProps) {
         { opacity: [0, 1], translateX: [30, 0], duration: 600 },
         "-=400"
       );
-      const days = calendarRef.current.querySelectorAll(".day-cell");
+    }
+  }, [containerRef, summaryRef, timelineRef, calendarRef]);
+
+  // Day cells animation (runs when summaries are loaded or updated)
+  const prevSummariesCountRef = useRef(0);
+  useEffect(() => {
+    if (!calendarRef.current || summariesCount === 0) return;
+
+    const days = calendarRef.current.querySelectorAll(".day-cell");
+    const prevCount = prevSummariesCountRef.current;
+
+    if (prevCount === 0) {
+      // First load - animate all items
       animate(days, {
         opacity: [0, 1],
         scale: [0.5, 1],
-        delay: stagger(20, { start: 800, grid: [7, 5], from: "center" }),
+        delay: stagger(50, { start: 100 }),
         duration: 300,
       });
+    } else if (summariesCount > prevCount) {
+      // New items added - animate only the new ones and ensure all are visible
+      const newDays = Array.from(days).slice(0, summariesCount - prevCount);
+      animate(newDays, {
+        opacity: [0, 1],
+        scale: [0.5, 1],
+        delay: stagger(50, { start: 50 }),
+        duration: 300,
+      });
+      // Ensure existing days are visible
+      Array.from(days)
+        .slice(summariesCount - prevCount)
+        .forEach((day) => {
+          (day as HTMLElement).style.opacity = "1";
+        });
     }
-  }, [containerRef, summaryRef, timelineRef, calendarRef]);
+
+    prevSummariesCountRef.current = summariesCount;
+  }, [calendarRef, summariesCount]);
 
   // Timeline items animation (runs when items change)
   useEffect(() => {

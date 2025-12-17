@@ -6,7 +6,7 @@ import { BaseRecord } from './base.model';
  */
 export interface Meal extends BaseRecord {
   type: string; // e.g., 'breakfast', 'lunch', 'dinner', 'snack'
-  created: string;
+  timestamp: string;
   items: {
     foodId: string;
     quantity: number;
@@ -16,7 +16,7 @@ export interface Meal extends BaseRecord {
 
 export interface CreateMealDto {
   type: string;
-  created: string;
+  timestamp: string;
   items: {
     foodId: string;
     quantity: number;

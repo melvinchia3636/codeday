@@ -129,9 +129,9 @@ export function Header() {
             className="w-8 h-8 text-pink-400 drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]"
           />
         </span>
-        NEON
+        Lucy
         <span className="text-pink-500 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]">
-          FIT
+          Fit
         </span>
         <span
           ref={cursorRef}

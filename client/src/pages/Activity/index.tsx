@@ -7,8 +7,8 @@ import { SummaryCards } from "./components/SummaryCards";
 import { ActivityTimeline } from "./components/ActivityTimeline";
 import { HistoryCalendar } from "./components/HistoryCalendar";
 import { useWorkoutsQuery } from "../../hooks/useWorkoutQueries";
-import { useTodayMealsQuery } from "../../hooks/useMealQueries";
-import { useTodayLogsQuery } from "../../hooks/useHydrationQueries";
+import { useMealsQuery } from "../../hooks/useMealQueries";
+import { useAllLogsQuery } from "../../hooks/useHydrationQueries";
 import {
   useYandereLevel,
   type YandereLevel,
@@ -35,21 +35,32 @@ const emotionColors: Record<string, string> = {
   yandere: "red",
 };
 
+// Helper to get date string from a date (module level for reuse)
+// Use UTC methods to avoid timezone offset shifting dates
+const getDateString = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 function ActivityContent() {
   const containerRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
 
+  // Use queries that fetch ALL data, not just today's
   const { data: workouts = [] } = useWorkoutsQuery();
-  const { data: meals = [] } = useTodayMealsQuery();
-  const { data: waterLogs = [] } = useTodayLogsQuery();
+  const { data: meals = [] } = useMealsQuery();
+  const { data: waterLogs = [] } = useAllLogsQuery();
 
   const {
     nutritionScore,
     hydrationScore,
     workoutScore,
-    totalScore,
+    totalScore: contextTotalScore,
     yandereLevel,
   } = useYandereLevel();
 
@@ -63,18 +74,10 @@ function ActivityContent() {
       icon: string;
       color: string;
       timestamp: number;
+      dateStr: string;
     }[] = [];
 
     let idCounter = 1;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const isToday = (dateStr: string) => {
-      const date = new Date(dateStr);
-      return date >= today && date < tomorrow;
-    };
 
     const formatTime = (date: Date) =>
       date.toLocaleTimeString("en-US", {
@@ -84,24 +87,25 @@ function ActivityContent() {
         timeZone: "UTC",
       });
 
-    workouts
-      .filter((w) => isToday(w.created))
-      .forEach((w) => {
-        const date = new Date(w.created);
-        items.push({
-          id: idCounter++,
-          type: "workout",
-          title: w.type,
-          desc: `${w.durationMin} min • ${w.caloriesBurned} kcal`,
-          time: formatTime(date),
-          icon: "pixelarticons:human-run",
-          color: "pink",
-          timestamp: date.getTime(),
-        });
+    // Add all workouts
+    workouts.forEach((w) => {
+      const date = new Date(w.timestamp);
+      items.push({
+        id: idCounter++,
+        type: "workout",
+        title: w.type,
+        desc: `${w.durationMin} min • ${w.caloriesBurned} kcal`,
+        time: formatTime(date),
+        icon: "pixelarticons:human-run",
+        color: "pink",
+        timestamp: date.getTime(),
+        dateStr: getDateString(w.timestamp),
       });
+    });
 
+    // Add all meals
     meals.forEach((m) => {
-      const date = new Date(m.created);
+      const date = new Date(m.timestamp);
       const mealTypeLabel = m.type.charAt(0).toUpperCase() + m.type.slice(1);
       const itemCount = m.items?.length || 0;
       items.push({
@@ -113,11 +117,14 @@ function ActivityContent() {
         icon: "pixelarticons:coin",
         color: "fuchsia",
         timestamp: date.getTime(),
+        dateStr: getDateString(m.timestamp),
       });
     });
 
+    // Add all water logs
     waterLogs.forEach((w) => {
-      const date = new Date(w.timestamp || w.created || new Date());
+      const dateValue = w.timestamp || w.timestamp || new Date().toISOString();
+      const date = new Date(dateValue);
       items.push({
         id: idCounter++,
         type: "water",
@@ -127,11 +134,120 @@ function ActivityContent() {
         icon: "pixelarticons:drop",
         color: "cyan",
         timestamp: date.getTime(),
+        dateStr: getDateString(dateValue),
       });
     });
 
+    // Sort by timestamp descending (newest first)
     return items.sort((a, b) => b.timestamp - a.timestamp);
   }, [workouts, meals, waterLogs]);
+
+  // Group activities by date
+  const groupedActivities = useMemo(() => {
+    // Helper to format date as a readable label
+    const formatDateLabel = (dateStr: string) => {
+      const date = new Date(dateStr);
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      const todayStr = getDateString(today.toISOString());
+      const yesterdayStr = getDateString(yesterday.toISOString());
+
+      if (dateStr === todayStr) return "TODAY";
+      if (dateStr === yesterdayStr) return "YESTERDAY";
+
+      return date
+        .toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        })
+        .toUpperCase();
+    };
+
+    const groups: Record<string, typeof activityTimeline> = {};
+
+    activityTimeline.forEach((item) => {
+      if (!groups[item.dateStr]) {
+        groups[item.dateStr] = [];
+      }
+      groups[item.dateStr].push(item);
+    });
+
+    // Convert to array sorted by date (newest first)
+    return Object.entries(groups)
+      .sort(([dateA], [dateB]) => dateB.localeCompare(dateA))
+      .map(([dateStr, items]) => ({
+        dateStr,
+        dateLabel: formatDateLabel(dateStr),
+        items,
+      }));
+  }, [activityTimeline]);
+
+  const emotion = levelToEmotion[yandereLevel];
+  const todayDateStr = new Date().toISOString().split("T")[0];
+
+  // Compute daily summaries for all days in the history
+  const dailySummaries = useMemo(() => {
+    return groupedActivities.map((group) => {
+      // Count activities by type for this day
+      const dayMeals = group.items.filter((i) => i.type === "meal");
+      const dayWorkouts = group.items.filter((i) => i.type === "workout");
+      const dayWater = group.items.filter((i) => i.type === "water");
+
+      // Simple scoring based on activity counts
+      // Diet score: based on number of meals (4 meals = 100%)
+      const dietScore = Math.min(100, Math.round((dayMeals.length / 4) * 100));
+
+      // Hydro score: based on water intake count (8+ entries = 100%)
+      const hydroScore = Math.min(100, Math.round((dayWater.length / 8) * 100));
+
+      // Effort score: based on workout count (2+ workouts = 100%)
+      const effortScore = Math.min(
+        100,
+        Math.round((dayWorkouts.length / 2) * 100)
+      );
+
+      // Total is weighted average
+      const totalScore = Math.round((dietScore + hydroScore + effortScore) / 3);
+
+      // Determine emotion based on total score
+      let dayEmotion = "yandere";
+      if (totalScore >= 80) dayEmotion = "in love";
+      else if (totalScore >= 60) dayEmotion = "friendly";
+      else if (totalScore >= 40) dayEmotion = "tsundere";
+
+      // Use today's actual scores (with time factor) if this is today
+      if (group.dateStr === todayDateStr) {
+        return {
+          date: group.dateStr,
+          diet: nutritionScore,
+          hydro: hydrationScore,
+          effort: workoutScore,
+          total: contextTotalScore, // Use context's totalScore which has time factor
+          emotion,
+        };
+      }
+
+      return {
+        date: group.dateStr,
+        diet: dietScore,
+        hydro: hydroScore,
+        effort: effortScore,
+        total: totalScore,
+        emotion: dayEmotion,
+      };
+    });
+  }, [
+    groupedActivities,
+    todayDateStr,
+    nutritionScore,
+    hydrationScore,
+    workoutScore,
+    contextTotalScore,
+    emotion,
+  ]);
 
   useActivityAnimations({
     containerRef,
@@ -139,19 +255,17 @@ function ActivityContent() {
     timelineRef,
     calendarRef,
     itemsCount: activityTimeline.length,
+    summariesCount: dailySummaries.length,
   });
 
-  const emotion = levelToEmotion[yandereLevel];
-  const today = {
-    date: new Date().toISOString().split("T")[0],
+  const todaySummary = dailySummaries.find((s) => s.date === todayDateStr) || {
+    date: todayDateStr,
     diet: nutritionScore,
     hydro: hydrationScore,
     effort: workoutScore,
-    total: totalScore,
+    total: contextTotalScore,
     emotion,
   };
-
-  const dailySummaries = [today];
 
   return (
     <div
@@ -163,17 +277,20 @@ function ActivityContent() {
       <PageHeader
         icon="pixelarticons:timeline"
         title="ACTIVITY_LOG"
-        status={`TODAY'S SCORE: ${today.total}%`}
+        status={`TODAY'S SCORE: ${todaySummary.total}%`}
         color="pink"
       />
       <SummaryCards
         summaryRef={summaryRef}
-        today={today}
+        today={todaySummary}
         emotionIcons={emotionIcons}
         emotionColors={emotionColors}
       />
       <div className="relative z-10 flex-1 grid grid-cols-12 gap-6 overflow-hidden">
-        <ActivityTimeline timelineRef={timelineRef} items={activityTimeline} />
+        <ActivityTimeline
+          timelineRef={timelineRef}
+          groupedItems={groupedActivities}
+        />
         <HistoryCalendar
           calendarRef={calendarRef}
           summaries={dailySummaries}

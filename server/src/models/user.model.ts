@@ -6,7 +6,7 @@ export interface User {
   id: string;
   collectionId: string;
   collectionName: string;
-  created: string;
+  timestamp: string;
   updated: string;
   username: string;
   email: string;

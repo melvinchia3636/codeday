@@ -68,7 +68,7 @@ export class FoodLogController extends BaseController<FoodLog> {
       const userId = req.userId!;
       const data: CreateFoodLogDto = req.body;
       const log = await this.foodLogService.createLog(userId, data);
-      return this.success(res, log, 'Food log created', 201);
+      return this.success(res, log, 'Food log timestamp', 201);
     } catch (error) {
       next(error);
     }

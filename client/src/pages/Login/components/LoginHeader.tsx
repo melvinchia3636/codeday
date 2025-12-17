@@ -18,7 +18,7 @@ export function LoginHeader({ logoRef, cursorRef }: LoginHeaderProps) {
           icon="pixelarticons:human-run"
           className="w-8 h-8 text-pink-400"
         />
-        NEON<span className="text-pink-500">FIT</span>
+        Lucy <span className="text-pink-500">Fit</span>
         <span
           ref={cursorRef}
           className="text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"

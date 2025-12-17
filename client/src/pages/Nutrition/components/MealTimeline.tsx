@@ -7,7 +7,7 @@ import {
   useCreateMealMutation,
   useUpdateMealMutation,
 } from "../../../hooks/useMealQueries";
-import { useTodayMealItemsQuery } from "../../../hooks/useMealItemQueries";
+import { useMealItemsQuery } from "../../../hooks/useMealItemQueries";
 import { calculateCalories } from "../../../lib/mealItem";
 import type { CreateMealDto, UpdateMealDto } from "../../../lib/meal";
 import {
@@ -35,7 +35,7 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
 
   const { data: todayMeals = [], isLoading: mealsLoading } =
     useTodayMealsQuery();
-  const { data: foodLibrary = [] } = useTodayMealItemsQuery();
+  const { data: foodLibrary = [] } = useMealItemsQuery();
   const createMutation = useCreateMealMutation();
   const updateMutation = useUpdateMealMutation();
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Icon } from "@iconify/react";
 import { CyberpunkModal } from "../../../components/CyberpunkModal";
-import { useTodayMealItemsQuery } from "../../../hooks/useMealItemQueries";
+import { useMealItemsQuery } from "../../../hooks/useMealItemQueries";
 import { useTodayMealsQuery } from "../../../hooks/useMealQueries";
 import { calculateCalories, type MealItem } from "../../../lib/mealItem";
 
@@ -58,7 +58,7 @@ export function MealLogModal({
   onCancel,
   isLoading = false,
 }: MealLogModalProps) {
-  const { data: foodLibrary = [] } = useTodayMealItemsQuery();
+  const { data: foodLibrary = [] } = useMealItemsQuery();
   const { data: todayMeals = [] } = useTodayMealsQuery();
 
   const [selectedType, setSelectedType] = useState(defaultMealType);

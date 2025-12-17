@@ -62,7 +62,7 @@ export function ActivityTimeline() {
       items.push({
         id: `workout-${w.id}`,
         originalId: w.id,
-        timestamp: new Date(w.created),
+        timestamp: new Date(w.timestamp),
         type: "workout",
         description: `${w.type} workout completed`,
         value: `+${w.caloriesBurned} cal`,
@@ -75,7 +75,7 @@ export function ActivityTimeline() {
       items.push({
         id: `meal-${m.id}`,
         originalId: m.id,
-        timestamp: new Date(m.created),
+        timestamp: new Date(m.timestamp),
         type: "meal",
         description: `${mealTypeLabel} logged (${itemCount} items)`,
         value: `logged`,
@@ -86,7 +86,7 @@ export function ActivityTimeline() {
       items.push({
         id: `water-${w.id}`,
         originalId: w.id,
-        timestamp: new Date(w.timestamp || w.created || new Date()),
+        timestamp: new Date(w.timestamp || w.timestamp || new Date()),
         type: "water",
         description: `Hydration logged`,
         value: `+${w.amountMl}ml`,

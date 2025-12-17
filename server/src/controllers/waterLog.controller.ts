@@ -37,6 +37,24 @@ export class WaterLogController extends BaseController<WaterLog> {
   }
 
   /**
+   * Get all water log entries for a user
+   * GET /water-logs/all
+   */
+  async getAllLogs(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    try {
+      const userId = req.userId!;
+      const logs = await this.waterLogService.getByUserId(userId);
+      return this.success(res, logs);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * Get today's water log entries
    * GET /water-logs
    */
@@ -103,7 +121,7 @@ export class WaterLogController extends BaseController<WaterLog> {
       const userId = req.userId!;
       const data: CreateWaterLogDto = req.body;
       const log = await this.waterLogService.createLog(userId, data);
-      return this.success(res, log, 'Water log created', 201);
+      return this.success(res, log, 'Water log timestamp', 201);
     } catch (error) {
       next(error);
     }

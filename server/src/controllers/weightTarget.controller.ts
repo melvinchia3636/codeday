@@ -53,7 +53,7 @@ export class WeightTargetController extends BaseController<WeightTarget> {
       const userId = req.userId!;
       const data: CreateWeightTargetDto = req.body;
       const target = await this.weightTargetService.createTarget(userId, data);
-      return this.success(res, target, 'Weight target created', 201);
+      return this.success(res, target, 'Weight target timestamp', 201);
     } catch (error) {
       next(error);
     }

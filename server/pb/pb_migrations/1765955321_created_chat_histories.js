@@ -48,7 +48,7 @@ migrate((app) => {
       {
         "hidden": false,
         "id": "autodate2990389176",
-        "name": "created",
+        "name": "timestamp",
         "onCreate": true,
         "onUpdate": false,
         "presentable": false,

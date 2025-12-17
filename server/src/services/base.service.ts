@@ -21,7 +21,7 @@ export abstract class BaseService<T> {
     const { sort, filter } = params || {};
 
     const result = await this.pb.collection(this.collectionName).getFullList<T>({
-      sort: sort || '-created',
+      sort: sort || '-timestamp',
       filter: filter || '',
     });
 
@@ -63,7 +63,7 @@ export abstract class BaseService<T> {
     const { sort } = params || {};
 
     const result = await this.pb.collection(this.collectionName).getFullList<T>({
-      sort: sort || '-created',
+      sort: sort || '-timestamp',
       filter,
     });
 

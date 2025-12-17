@@ -87,7 +87,7 @@ export function WorkoutHistory() {
   };
 
   const sortedWorkouts = [...filteredWorkouts].sort(
-    (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
 
   return (
@@ -154,7 +154,7 @@ export function WorkoutHistory() {
                     {w.type}
                   </p>
                   <p className="text-xs text-pink-400/60">
-                    {formatDate(w.created)}
+                    {formatDate(w.timestamp)}
                   </p>
                 </div>
                 <div className="text-right">

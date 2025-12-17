@@ -8,7 +8,7 @@ export interface WaterLog {
   amountMl: number;
   timestamp: string;
   userId: string;
-  created?: string;
+  timestamp?: string;
   updated?: string;
 }
 
@@ -44,6 +44,14 @@ export const hydrationApi = {
    */
   getTodayLogs: async (): Promise<WaterLog[]> => {
     const response = await api.get<WaterLog[]>("/water-logs");
+    return response.data ?? [];
+  },
+
+  /**
+   * Get all water logs (history)
+   */
+  getAllLogs: async (): Promise<WaterLog[]> => {
+    const response = await api.get<WaterLog[]>("/water-logs/all");
     return response.data ?? [];
   },
 

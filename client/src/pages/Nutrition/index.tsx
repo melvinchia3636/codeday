@@ -7,7 +7,7 @@ import { MacroCircles } from "./components/MacroCircles";
 import { MealTimeline } from "./components/MealTimeline";
 import { FoodLibrary } from "./components/FoodLibrary";
 import { useTodayMealsQuery } from "../../hooks/useMealQueries";
-import { useTodayMealItemsQuery } from "../../hooks/useMealItemQueries";
+import { useMealItemsQuery } from "../../hooks/useMealItemQueries";
 import { calculateCalories } from "../../lib/mealItem";
 import { useUserProfile } from "../../contexts/UserProfileContext";
 
@@ -41,7 +41,7 @@ function NutritionContent() {
 
   const { settings } = useUserProfile();
   const { data: todayMeals = [] } = useTodayMealsQuery();
-  const { data: foodLibrary = [] } = useTodayMealItemsQuery();
+  const { data: foodLibrary = [] } = useMealItemsQuery();
 
   useNutritionAnimations({
     containerRef,

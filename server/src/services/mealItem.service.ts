@@ -83,8 +83,8 @@ export class MealItemService extends BaseService<MealItem> {
     const today = `${year}-${month}-${day}`;
 
     const result = await this.pb.collection(this.collectionName).getFullList({
-      filter: `userId="${userId}" && created~"${today}"`,
-      sort: '-created',
+      filter: `userId="${userId}" && timestamp~"${today}"`,
+      sort: '-timestamp',
     });
     return result as MealItem[];
   }

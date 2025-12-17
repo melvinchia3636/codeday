@@ -18,7 +18,7 @@ export function SignupHeader({ logoRef, cursorRef }: SignupHeaderProps) {
           icon="pixelarticons:user-plus"
           className="w-8 h-8 text-cyan-400"
         />
-        NEON<span className="text-cyan-500">FIT</span>
+        Lucy <span className="text-cyan-500">Fit</span>
         <span
           ref={cursorRef}
           className="text-pink-400 drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]"

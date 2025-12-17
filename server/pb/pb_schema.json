@@ -127,7 +127,7 @@
             },
             {
                 "id": "autodate2990389176",
-                "name": "created",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -218,8 +218,8 @@
                 "hidden": false
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -290,8 +290,8 @@
                 "hidden": false
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -381,8 +381,8 @@
                 "min": 0
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -401,7 +401,7 @@
         ],
         "indexes": [
             "CREATE INDEX `idx_workouts_user` ON `workouts` (`userId`)",
-            "CREATE INDEX `idx_workouts_created` ON `workouts` (`created`)"
+            "CREATE INDEX `idx_workouts_timestamp` ON `workouts` (`timestamp`)"
         ]
     },
     {
@@ -482,8 +482,8 @@
                 "max": 50
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -572,8 +572,8 @@
                 "min": 0
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -654,8 +654,8 @@
                 "max": 1000
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -765,8 +765,8 @@
                 "max": 50
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -838,8 +838,8 @@
                 "max": 20
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -926,8 +926,8 @@
                 "hidden": false
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -1007,8 +1007,8 @@
                 "min": 0
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,
@@ -1077,8 +1077,8 @@
                 "max": 50
             },
             {
-                "id": "autodate_created",
-                "name": "created",
+                "id": "autodate_timestamp",
+                "name": "timestamp",
                 "type": "autodate",
                 "system": false,
                 "hidden": false,

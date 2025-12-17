@@ -9,7 +9,7 @@ export interface ChatHistory {
   userId: string;
   role: 'user' | 'assistant';
   content: string;
-  created: string;
+  timestamp: string;
   updated?: string;
 }
 
@@ -31,7 +31,7 @@ export class ChatHistoryService extends BaseService<ChatHistory> {
    * Get all chat history for a user, ordered by creation time
    */
   async getHistory(userId: string): Promise<ChatHistory[]> {
-    return await this.findByFilter(`userId="${userId}"`, { sort: 'created' });
+    return await this.findByFilter(`userId="${userId}"`, { sort: 'timestamp' });
   }
 
   /**

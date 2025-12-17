@@ -90,7 +90,7 @@ export class UserController extends BaseController<User> {
         // Don't fail user creation if settings creation fails
       }
 
-      return this.success(res, user, 'User created successfully', 201);
+      return this.success(res, user, 'User timestamp successfully', 201);
     } catch (error) {
       next(error);
     }

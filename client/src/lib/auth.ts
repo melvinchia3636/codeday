@@ -6,7 +6,7 @@ export interface User {
   email: string;
   name?: string;
   avatar?: string;
-  created: string;
+  timestamp: string;
   updated: string;
 }
 
