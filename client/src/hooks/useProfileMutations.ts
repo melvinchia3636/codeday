@@ -29,6 +29,10 @@ export function useUpdateSettingsMutation() {
     onSuccess: () => {
       // Invalidate settings query to refetch
       queryClient.invalidateQueries({ queryKey: profileQueryKeys.settings() });
+      // Also invalidate related queries that depend on settings (calorie/water targets)
+      queryClient.invalidateQueries({ queryKey: ["meals"] });
+      queryClient.invalidateQueries({ queryKey: ["hydration"] });
+      queryClient.invalidateQueries({ queryKey: ["mealItems"] });
     },
   });
 }
@@ -54,6 +58,10 @@ export function useSaveProfileMutation() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileQueryKeys.all });
+      // Also invalidate related queries that depend on settings (calorie/water targets)
+      queryClient.invalidateQueries({ queryKey: ["meals"] });
+      queryClient.invalidateQueries({ queryKey: ["hydration"] });
+      queryClient.invalidateQueries({ queryKey: ["mealItems"] });
     },
   });
 }
