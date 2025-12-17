@@ -128,7 +128,7 @@ export function ChatMessages({
             </div>
 
             <p
-              className={`text-sm leading-relaxed ${
+              className={`text-sm leading-relaxed whitespace-pre-wrap ${
                 message.isUser ? "text-pink-100" : "text-cyan-100"
               }`}
             >
