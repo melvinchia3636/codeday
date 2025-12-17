@@ -1,13 +1,21 @@
 import { api } from "./api";
 
 /**
+ * Meal Item in a meal entry
+ */
+export interface MealItemEntry {
+  foodId: string;
+  quantity: number;
+}
+
+/**
  * Meal Interface
  * A meal entry (breakfast, lunch, dinner, snack) with food items
  */
 export interface Meal {
   id: string;
   type: string; // 'breakfast', 'lunch', 'dinner', 'snack'
-  items: string[]; // Array of meal item IDs
+  items: MealItemEntry[];
   userId: string;
   created: string;
   updated: string;
@@ -15,12 +23,12 @@ export interface Meal {
 
 export interface CreateMealDto {
   type: string;
-  items: string[];
+  items: MealItemEntry[];
 }
 
 export interface UpdateMealDto {
   type?: string;
-  items?: string[];
+  items?: MealItemEntry[];
 }
 
 /**

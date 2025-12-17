@@ -51,16 +51,20 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
     }
   }, [mealsLoading, mealsRef]);
 
-  // Editing meal state
+  // Editing meal state - now uses {foodId, quantity}[] structure
   const [editingMeal, setEditingMeal] = useState<{
     id: string;
     type: string;
-    items: string[];
+    items: { foodId: string; quantity: number }[];
   } | null>(null);
 
   const handleMealClick = (
     typeId: string,
-    mealToEdit?: { id: string; type: string; items: string[] }
+    mealToEdit?: {
+      id: string;
+      type: string;
+      items: { foodId: string; quantity: number }[];
+    }
   ) => {
     if (mealToEdit) {
       setEditingMeal(mealToEdit);
@@ -76,7 +80,11 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
     type: string;
     items: { mealItemId: string; quantity: number }[];
   }) => {
-    const items = data.items.map((i) => i.mealItemId);
+    // Convert to new {foodId, quantity} structure
+    const items = data.items.map((i) => ({
+      foodId: i.mealItemId,
+      quantity: i.quantity,
+    }));
 
     const onSuccess = () => {
       setIsModalOpen(false);
@@ -114,20 +122,29 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
     setEditingMeal(null);
   };
 
-  // Helper to get meal items for a meal
-  const getMealItems = (itemIds: string[]) => {
-    return itemIds
-      .map((id) => foodLibrary.find((f) => f.id === id))
+  // Helper to get meal items for a meal - with null checks
+  const getMealItems = (
+    items: { foodId: string; quantity: number }[] | null | undefined
+  ) => {
+    if (!items) return [];
+    return items
+      .map((item) => foodLibrary.find((f) => f.id === item.foodId))
       .filter(Boolean);
   };
 
-  // Helper to calculate meal total
-  const getMealTotal = (itemIds: string[]) => {
-    const items = getMealItems(itemIds);
-    return items.reduce(
-      (sum, item) => (item ? sum + calculateCalories(item) : sum),
-      0
-    );
+  // Helper to calculate meal total - with null checks
+  const getMealTotal = (
+    items: { foodId: string; quantity: number }[] | null | undefined
+  ) => {
+    if (!items) return 0;
+    return items.reduce((sum, item) => {
+      const foodItem = foodLibrary.find((f) => f.id === item.foodId);
+      if (foodItem) {
+        const ratio = item.quantity / 100;
+        return sum + calculateCalories(foodItem) * ratio;
+      }
+      return sum;
+    }, 0);
   };
 
   return (

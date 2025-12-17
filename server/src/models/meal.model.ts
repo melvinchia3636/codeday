@@ -7,14 +7,20 @@ import { BaseRecord } from './base.model';
 export interface Meal extends BaseRecord {
   type: string; // e.g., 'breakfast', 'lunch', 'dinner', 'snack'
   created: string;
-  items: string[]; // Array of meal item IDs
+  items: {
+    foodId: string;
+    quantity: number;
+  }[];
   userId: string;
 }
 
 export interface CreateMealDto {
   type: string;
   created: string;
-  items: string[];
+  items: {
+    foodId: string;
+    quantity: number;
+  }[];
 }
 
 export interface UpdateMealDto extends Partial<CreateMealDto> {}

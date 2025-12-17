@@ -8,7 +8,7 @@ import { calculateCalories, type MealItem } from "../../../lib/mealItem";
 interface InitialMealData {
   id: string;
   type: string;
-  items: string[]; // Array of meal item IDs
+  items: { foodId: string; quantity: number }[];
 }
 
 interface MealLogModalProps {
@@ -67,17 +67,18 @@ export function MealLogModal({
     undefined
   );
 
-  // Helper to populate items from meal item IDs
+  // Helper to populate items from meal items array - with null checks
   const populateFromMealItems = useCallback(
-    (itemIds: string[]) => {
-      return itemIds
-        .map((itemId) => {
-          const foodItem = foodLibrary.find((f) => f.id === itemId);
+    (items: { foodId: string; quantity: number }[] | null | undefined) => {
+      if (!items) return [];
+      return items
+        .map((item) => {
+          const foodItem = foodLibrary.find((f) => f.id === item.foodId);
           if (!foodItem) return null;
           return {
             mealItemId: foodItem.id,
             foodId: foodItem.foodId,
-            quantity: foodItem.quantity,
+            quantity: item.quantity,
             protein: foodItem.protein,
             carbs: foodItem.carbs,
             fat: foodItem.fat,

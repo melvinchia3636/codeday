@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useNutritionAnimations } from "./hooks/useNutritionAnimations";
 import { PageDecorationsProvider } from "../../contexts/PageDecorationsContext";
 import { PageDecorations } from "../../components/PageDecorations";
@@ -6,6 +6,9 @@ import { PageHeader } from "../../components/PageHeader";
 import { MacroCircles } from "./components/MacroCircles";
 import { MealTimeline } from "./components/MealTimeline";
 import { FoodLibrary } from "./components/FoodLibrary";
+import { useTodayMealsQuery } from "../../hooks/useMealQueries";
+import { useTodayMealItemsQuery } from "../../hooks/useMealItemQueries";
+import { calculateCalories } from "../../lib/mealItem";
 
 const mealTypes = [
   {
@@ -24,11 +27,11 @@ const mealTypes = [
   { id: "snack", icon: "pixelarticons:coin", label: "SNACK", time: "15:00" },
 ];
 
-const macros = [
-  { label: "PROTEIN", current: 95, target: 120, color: "pink", unit: "g" },
-  { label: "CARBS", current: 180, target: 250, color: "cyan", unit: "g" },
-  { label: "FAT", current: 55, target: 70, color: "fuchsia", unit: "g" },
-];
+// Target values - could be made dynamic/configurable later
+const TARGET_PROTEIN = 120;
+const TARGET_CARBS = 250;
+const TARGET_FAT = 70;
+const TARGET_CALORIES = 2200;
 
 function NutritionContent() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -36,6 +39,9 @@ function NutritionContent() {
   const mealsRef = useRef<HTMLDivElement>(null);
   const foodsRef = useRef<HTMLDivElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
+
+  const { data: todayMeals = [] } = useTodayMealsQuery();
+  const { data: foodLibrary = [] } = useTodayMealItemsQuery();
 
   useNutritionAnimations({
     containerRef,
@@ -45,9 +51,60 @@ function NutritionContent() {
     logRef,
   });
 
-  // TODO: Calculate from actual meal data
-  const totalCalories = 1050;
-  const targetCalories = 2200;
+  // Calculate actual totals from today's meals
+  const { totalProtein, totalCarbs, totalFat, totalCalories } = useMemo(() => {
+    let protein = 0;
+    let carbs = 0;
+    let fat = 0;
+    let calories = 0;
+
+    // Iterate through all meals and their items - with null checks
+    for (const meal of todayMeals) {
+      if (!meal.items) continue;
+      for (const item of meal.items) {
+        const foodItem = foodLibrary.find((f) => f.id === item.foodId);
+        if (foodItem) {
+          const ratio = item.quantity / 100;
+          protein += foodItem.protein * ratio;
+          carbs += foodItem.carbs * ratio;
+          fat += foodItem.fat * ratio;
+          calories += calculateCalories(foodItem) * ratio;
+        }
+      }
+    }
+
+    return {
+      totalProtein: Math.round(protein),
+      totalCarbs: Math.round(carbs),
+      totalFat: Math.round(fat),
+      totalCalories: Math.round(calories),
+    };
+  }, [todayMeals, foodLibrary]);
+
+  // Build macros array with actual values
+  const macros = [
+    {
+      label: "PROTEIN",
+      current: totalProtein,
+      target: TARGET_PROTEIN,
+      color: "pink",
+      unit: "g",
+    },
+    {
+      label: "CARBS",
+      current: totalCarbs,
+      target: TARGET_CARBS,
+      color: "cyan",
+      unit: "g",
+    },
+    {
+      label: "FAT",
+      current: totalFat,
+      target: TARGET_FAT,
+      color: "fuchsia",
+      unit: "g",
+    },
+  ];
 
   return (
     <div
@@ -59,14 +116,14 @@ function NutritionContent() {
       <PageHeader
         icon="pixelarticons:coin"
         title="NUTRITION_LOG"
-        status={`${totalCalories} / ${targetCalories} KCAL`}
+        status={`${totalCalories} / ${TARGET_CALORIES} KCAL`}
         color="pink"
       />
       <MacroCircles
         macrosRef={macrosRef}
         macros={macros}
         totalCalories={totalCalories}
-        targetCalories={targetCalories}
+        targetCalories={TARGET_CALORIES}
       />
       <div className="relative z-10 flex-1 grid grid-cols-3 gap-6 overflow-hidden">
         <MealTimeline mealsRef={mealsRef} mealTypes={mealTypes} />
