@@ -28,9 +28,6 @@ const mealTypes = [
   { id: "snack", icon: "pixelarticons:coin", label: "SNACK", time: "15:00" },
 ];
 
-// Protein: 25% of calories (4 cal/g)
-// Carbs: 50% of calories (4 cal/g)
-// Fat: 25% of calories (9 cal/g)
 const PROTEIN_RATIO = 0.25;
 const CARBS_RATIO = 0.5;
 const FAT_RATIO = 0.25;
@@ -54,25 +51,18 @@ function NutritionContent() {
     logRef,
   });
 
-  // Get calorie target from user settings (default 2000)
   const targetCalories = settings?.dietCalorieTarget || 2000;
 
-  // Derive macro targets from calorie target
-  // Protein: 4 calories per gram
-  // Carbs: 4 calories per gram
-  // Fat: 9 calories per gram
   const targetProtein = Math.round((targetCalories * PROTEIN_RATIO) / 4);
   const targetCarbs = Math.round((targetCalories * CARBS_RATIO) / 4);
   const targetFat = Math.round((targetCalories * FAT_RATIO) / 9);
 
-  // Calculate actual totals from today's meals
   const { totalProtein, totalCarbs, totalFat, totalCalories } = useMemo(() => {
     let protein = 0;
     let carbs = 0;
     let fat = 0;
     let calories = 0;
 
-    // Iterate through all meals and their items - with null checks
     for (const meal of todayMeals) {
       if (!meal.items) continue;
       for (const item of meal.items) {
@@ -95,7 +85,6 @@ function NutritionContent() {
     };
   }, [todayMeals, foodLibrary]);
 
-  // Build macros array with actual values
   const macros = [
     {
       label: "PROTEIN",

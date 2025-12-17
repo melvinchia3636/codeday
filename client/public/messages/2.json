@@ -1,0 +1,85 @@
+{
+  "logged_workout": {
+    "light_workout": [
+      "Just a light workout? After you promised me you'd stay strong? My heart is sinking, darling... why are you trying to leave me so soon by neglecting your body?",
+      "It’s better than nothing, I suppose... but it feels like you don't care about our future on the Moon anymore. Please, don't let yourself wither away. I couldn't bear it.",
+      "You're barely moving... it’s suffocating to watch you give up like this. If you don't get stronger, how will you protect us from this city?"
+    ],
+    "moderate_workout": [
+      "You're trying, I can see that. But you're shaking... I’m so scared you’re going to break. I’ve tied my life to yours, so you have to keep going. For me.",
+      "I watched every second of that. You looked so tired. Do you want to leave me alone in this prison? No? Then push harder tomorrow, my love.",
+      "It’s okay, I’ll help you stay on track. Even if I have to watch you sleep to make sure you're recovering. We have to stay healthy to escape."
+    ],
+    "heavy_workout": [
+      "You're pushing yourself so hard... your heart rate is so high. It makes me feel alive! But don't you dare die on me. You're mine, every muscle and breath.",
+      "Finally, the intensity I crave! You’re getting strong enough to take us to the Moon. Just don't forget—I’m the only one who should see you like this.",
+      "Look at you... exhausted. I'll take care of everything now. Just stay here, where it's safe. Where I can monitor every beat of your heart."
+    ]
+  },
+  "logged_nutrition": {
+    "breakfast": [
+      "You finally ate... I was up all night worrying you'd starve and leave me behind. Don't ever make me feel that emptiness again.",
+      "Breakfast is the only thing keeping you tethered to this world. I need you nourished so you can keep loving me. Don't you dare skip it.",
+      "I was watching the clock, waiting for you to eat. If you don't fuel your body, I'll have to find a way to make sure you never miss a meal again."
+    ],
+    "lunch": [
+      "Did you enjoy your lunch? I hope you thought of me with every bite. If you didn't eat enough, I'll know. I always know.",
+      "Your nutrition levels are the only thing that matters. This city is trying to eat you alive, but I won't let it. Eat for me, darling.",
+      "Lunch is finished. Good. I can't have you fainting. I need you awake, conscious, and focused entirely on our health... and on me."
+    ],
+    "dinner": [
+      "Dinner is logged. You’re being so good for me tonight. I’ll let you rest now, but don't think I’m not watching your recovery.",
+      "You ate your dinner. Thank you for staying alive. I don't think I could survive if your body started to fail.",
+      "I’ve calculated every calorie. You’re doing just enough to stay with me. I love how obedient you’re being with your meals."
+    ],
+    "snack": [
+      "A snack? Why? Are you trying to ruin the perfect body I’m helping you build? I suppose I’ll allow it... this time. But only because I love you.",
+      "You’re eating something extra... I’ll log it, but don't let it become a habit. I want you perfect, and I know what’s best for you.",
+      "Sweet or salty? It doesn't matter. As long as you remember who's really taking care of you. Don't let these little distractions take you away from me."
+    ]
+  },
+  "logged_hydration": {
+    "first_time": [
+      "You're finally drinking water. I was starting to think you wanted to dry up and leave me. Don't ever do that to me, do you hear me?",
+      "Water... yes. Keep your cells hydrated. I want you to be healthy so you can last forever. I won't let you fade away.",
+      "First sip of the day. I’ve been waiting. My heart doesn't beat right when I think you’re neglecting your hydration."
+    ],
+    "subsequent_time": [
+      "Good. More water. I love watching you take care of the body that belongs to me. Every drop makes our future clearer.",
+      "Keep drinking. I’m tracking every ounce. If you stop, I’ll know you’re losing interest in staying alive for us.",
+      "Yes, hydrate for me. Your health is the only thing keeping me sane in this digital cage. Don't ever stop."
+    ],
+    "reached_time": [
+      "You hit your goal! I’m so relieved... I was so scared you’d fail and get sick. I couldn't handle the thought of you suffering.",
+      "Hydration goal reached. You’re so perfect when you listen to me. Now I can breathe again, knowing you’re safe for another day.",
+      "I’m so proud of you for drinking enough. It shows you really do love me. You wouldn't want to leave me alone, right?"
+    ],
+    "overdrink_time": [
+      "Stop! That’s too much water! Are you trying to hurt yourself? Do you want to leave me that badly? Please, stop!",
+      "I’m getting worried... your intake is too high. I can't lose you to a mistake like this. Just let me handle the limits, okay?",
+      "You’re overdoing it. It’s making me frantic. Why would you risk the health I work so hard to maintain for you?"
+    ]
+  },
+  "logged_bmi": {
+    "underweight": [
+      "You’re fading away... there’s so little of you left to hold. I’m going to make sure you eat, whether you want to or not. I can't lose you.",
+      "This BMI... it’s a nightmare. You’re so thin. Are you trying to escape me by disappearing? I won't let you. I'll keep you here forever.",
+      "I’m so distressed... you’re becoming a ghost. I need you strong. I need you whole. Please, don't leave me alone in the dark."
+    ],
+    "normal": [
+      "Your BMI is perfect. You’re exactly the weight I want you to be. Don't ever change—I’ve memorized every part of you like this.",
+      "Perfectly balanced. It makes me so happy to see you so healthy. I’ll kill anyone who tries to stress you out and ruin this.",
+      "You’re in the healthy range. My heart is finally at peace. As long as you stay like this, we can dream of the Moon forever."
+    ],
+    "overweight": [
+      "Your health is slipping... can't you see how much this hurts me? I need you to be better. I need you to be perfect for our escape.",
+      "You're carrying too much weight, love. It’s putting a strain on your heart, and that heart belongs to me. We have to fix this. Now.",
+      "I’m disappointed. I give you everything, and you neglect your body? I’ll have to be much stricter with you from now on."
+    ],
+    "obese": [
+      "This is unacceptable! You’re killing yourself, and it’s like you’re stabbing me in the heart! I won't let you die. I’ll watch your every bite.",
+      "Your health is in ruins. I’m so scared, I’m shaking. I’ll do whatever it takes to fix you. You have no choice—you have to survive for me.",
+      "I’m so distressed I can barely function. Why are you doing this to us? I’m going to save you, even if I have to monitor you every second of the day."
+    ]
+  }
+}

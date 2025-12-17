@@ -67,7 +67,6 @@ export function MealLogModal({
     undefined
   );
 
-  // Helper to populate items from meal items array - with null checks
   const populateFromMealItems = useCallback(
     (items: { foodId: string; quantity: number }[] | null | undefined) => {
       if (!items) return [];
@@ -89,17 +88,14 @@ export function MealLogModal({
     [foodLibrary]
   );
 
-  // Reset/populate form when modal opens
   useEffect(() => {
     if (!isVisible) return;
 
     if (initialData && foodLibrary.length > 0) {
-      // Edit mode - populate with existing data
       setSelectedType(initialData.type);
       setEditingMealId(initialData.id);
       setSelectedItems(populateFromMealItems(initialData.items));
     } else {
-      // New meal mode - check if there's existing data for the default type
       const existingMeal = todayMeals.find((m) => m.type === defaultMealType);
       if (existingMeal && foodLibrary.length > 0) {
         setSelectedType(existingMeal.type);
@@ -120,11 +116,9 @@ export function MealLogModal({
     populateFromMealItems,
   ]);
 
-  // Handle meal type change - load existing data for the new type
   const handleTypeChange = (newType: string) => {
     setSelectedType(newType);
 
-    // Check if there's existing meal data for this type
     const existingMeal = todayMeals.find((m) => m.type === newType);
     if (existingMeal && foodLibrary.length > 0) {
       setEditingMealId(existingMeal.id);
@@ -136,7 +130,6 @@ export function MealLogModal({
   };
 
   const handleAddItem = (foodItem: MealItem) => {
-    // Check if already added
     const existing = selectedItems.find((i) => i.mealItemId === foodItem.id);
     if (existing) return;
 
@@ -178,10 +171,8 @@ export function MealLogModal({
     }
   };
 
-  // Determine if we're in edit mode
   const isEditMode = !!editingMealId;
 
-  // Calculate totals
   const totalCalories = selectedItems.reduce((sum, item) => {
     const ratio = item.quantity / 100;
     return (
@@ -217,7 +208,6 @@ export function MealLogModal({
       isLoading={isLoading}
       statusText="MEAL_TRACKER_ACTIVE"
     >
-      {/* Meal Type Selector */}
       <div className="mb-6">
         <label className="text-xs text-fuchsia-400/70 tracking-widest mb-3 flex items-center gap-2">
           <span className="w-2 h-2 bg-fuchsia-400 animate-pulse" />
@@ -270,7 +260,6 @@ export function MealLogModal({
         </div>
       </div>
 
-      {/* Food Selection */}
       <div className="mb-6">
         <label className="text-xs text-fuchsia-400/70 tracking-widest mb-3 flex items-center gap-2">
           <Icon icon="pixelarticons:coin" className="w-3 h-3" />
@@ -316,7 +305,6 @@ export function MealLogModal({
         )}
       </div>
 
-      {/* Selected Items */}
       <div className="mb-6">
         <label className="text-xs text-fuchsia-400/70 tracking-widest mb-3 flex items-center gap-2">
           <Icon icon="pixelarticons:check" className="w-3 h-3" />
@@ -375,7 +363,6 @@ export function MealLogModal({
         )}
       </div>
 
-      {/* Totals Summary */}
       {selectedItems.length > 0 && (
         <div className="mb-6 p-4 bg-zinc-800/50 border border-pink-500/30">
           <div className="flex items-center justify-between mb-3">
@@ -418,7 +405,6 @@ export function MealLogModal({
         </div>
       )}
 
-      {/* Buttons */}
       <div className="flex gap-4">
         <button
           onClick={onCancel}

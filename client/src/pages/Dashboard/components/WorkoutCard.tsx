@@ -21,7 +21,6 @@ export function WorkoutCard() {
   const { data: workouts = [] } = useWorkoutsQuery();
   const { data: workoutTypes = [] } = useWorkoutTypesQuery();
 
-  // Filter today's workouts and calculate totals
   const todayStats = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
     const todayWorkouts = workouts.filter(
@@ -35,7 +34,6 @@ export function WorkoutCard() {
     const targetCalories = 500;
     const progress = Math.min((totalCalories / targetCalories) * 100, 100);
 
-    // Get workout summaries by type
     const workoutSummary: string[] = [];
     const workoutsByType: { [key: string]: number } = {};
     todayWorkouts.forEach((w) => {
@@ -54,7 +52,6 @@ export function WorkoutCard() {
   }, [workouts, workoutTypes]);
 
   useEffect(() => {
-    // Animate counter from last value to new value
     if (valueRef.current) {
       const startValue = lastCaloriesRef.current;
       const endValue = todayStats.totalCalories;
@@ -73,7 +70,6 @@ export function WorkoutCard() {
         },
       });
 
-      // Continuous glow pulse
       animate(valueRef.current, {
         textShadow: [
           "0 0 0 transparent",
@@ -87,7 +83,6 @@ export function WorkoutCard() {
       });
     }
 
-    // Progress bar animation
     if (progressRef.current) {
       animate(progressRef.current, {
         width: [`0%`, `${todayStats.progress}%`],
@@ -97,7 +92,6 @@ export function WorkoutCard() {
       });
     }
 
-    // Icon animation
     if (iconRef.current) {
       animate(iconRef.current, {
         translateX: [0, 5, -5, 5, 0],
@@ -110,7 +104,6 @@ export function WorkoutCard() {
       });
     }
 
-    // Floating orb
     if (orbRef.current) {
       animate(orbRef.current, {
         translateX: [0, random(-20, 20)],
@@ -123,7 +116,6 @@ export function WorkoutCard() {
       });
     }
 
-    // Top line glow
     if (topLineRef.current) {
       animate(topLineRef.current, {
         opacity: [0.5, 1, 0.5],
@@ -138,7 +130,6 @@ export function WorkoutCard() {
       });
     }
 
-    // Corner pulse
     cornersRef.current.forEach((corner, i) => {
       if (corner) {
         animate(corner, {
@@ -151,7 +142,6 @@ export function WorkoutCard() {
       }
     });
 
-    // Container animation
     if (containerRef.current) {
       animate(containerRef.current, {
         borderColor: [
@@ -196,25 +186,21 @@ export function WorkoutCard() {
         onMouseLeave={handleMouseLeave}
         className="group bg-zinc-900/80 border-2 border-pink-500/50 p-4 relative overflow-hidden transition-all duration-300 backdrop-blur-sm cursor-pointer"
       >
-        {/* Floating particles */}
         <div
           ref={particlesRef}
           className="absolute inset-0 pointer-events-none"
         ></div>
 
-        {/* Top accent line */}
         <div
           ref={topLineRef}
           className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-pink-500 via-fuchsia-500 to-transparent"
         ></div>
 
-        {/* Floating orb */}
         <div
           ref={orbRef}
           className="absolute -top-10 -right-10 w-20 h-20 bg-pink-500/10 rounded-full blur-xl"
         ></div>
 
-        {/* Corner decorations */}
         <div
           ref={(el) => {
             if (el) cornersRef.current[0] = el;

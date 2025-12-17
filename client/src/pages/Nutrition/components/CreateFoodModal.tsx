@@ -42,10 +42,8 @@ export function CreateFoodModal({
 
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Calculate calories from macros (protein * 4 + carbs * 4 + fat * 9)
   const calories = Math.round(protein * 4 + carbs * 4 + fat * 9);
 
-  // Reset form when modal opens
   useEffect(() => {
     if (!isVisible) return;
 
@@ -64,7 +62,6 @@ export function CreateFoodModal({
     }
   }, [isVisible, initialData]);
 
-  // Preview animation when calories change
   useEffect(() => {
     if (previewRef.current && isVisible) {
       animate(previewRef.current, {
@@ -98,7 +95,6 @@ export function CreateFoodModal({
       isLoading={isLoading}
       statusText="NUTRITION_LOG_ACTIVE"
     >
-      {/* Calorie Preview (Auto-calculated) */}
       <div className="flex justify-center mb-6">
         <div
           ref={previewRef}
@@ -108,7 +104,6 @@ export function CreateFoodModal({
               "0 0 30px rgba(236,72,153,0.5), 0 0 60px rgba(236,72,153,0.3)",
           }}
         >
-          {/* Corner decorations */}
           <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-400" />
           <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-cyan-400" />
           <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-cyan-400" />
@@ -127,7 +122,6 @@ export function CreateFoodModal({
         </div>
       </div>
 
-      {/* Food ID / Name input */}
       <div className="mb-4">
         <label className="text-xs text-fuchsia-400/70 tracking-widest mb-2 flex items-center gap-2">
           <span className="w-1.5 h-1.5 bg-fuchsia-400" />
@@ -142,7 +136,6 @@ export function CreateFoodModal({
         />
       </div>
 
-      {/* Quantity input */}
       <div className="mb-4">
         <label className="text-xs text-cyan-400/70 tracking-widest mb-2 flex items-center gap-2">
           <Icon icon="pixelarticons:chart-bar" className="w-3 h-3" />
@@ -163,7 +156,6 @@ export function CreateFoodModal({
         </div>
       </div>
 
-      {/* Macro nutrients section */}
       <div className="mb-6">
         <label className="text-xs text-fuchsia-400/70 tracking-widest mb-3 flex items-center gap-2">
           <span className="w-2 h-2 bg-fuchsia-400 animate-pulse" />
@@ -172,9 +164,7 @@ export function CreateFoodModal({
         </label>
 
         <div className="p-4 bg-zinc-800/50 border border-pink-500/30">
-          {/* Macro input grid */}
           <div className="grid grid-cols-3 gap-4">
-            {/* Protein */}
             <div>
               <label className="text-[10px] text-pink-400 tracking-widest mb-1 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-pink-400" />
@@ -206,7 +196,6 @@ export function CreateFoodModal({
               </div>
             </div>
 
-            {/* Carbs */}
             <div>
               <label className="text-[10px] text-cyan-400 tracking-widest mb-1 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-cyan-400" />
@@ -238,7 +227,6 @@ export function CreateFoodModal({
               </div>
             </div>
 
-            {/* Fat */}
             <div>
               <label className="text-[10px] text-fuchsia-400 tracking-widest mb-1 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-fuchsia-400" />
@@ -271,7 +259,6 @@ export function CreateFoodModal({
             </div>
           </div>
 
-          {/* Calorie calculation breakdown */}
           <div className="mt-4 pt-3 border-t border-pink-500/20">
             <div className="flex items-center justify-between text-xs">
               <span className="text-zinc-500 tracking-wider font-mono">
@@ -288,7 +275,6 @@ export function CreateFoodModal({
         </div>
       </div>
 
-      {/* Buttons */}
       <div className="flex gap-4">
         <button
           onClick={onCancel}

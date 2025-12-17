@@ -41,7 +41,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load auth state from localStorage on mount
   useEffect(() => {
     const storedUser = auth.getUser();
     const storedToken = auth.getToken();
@@ -78,14 +77,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     []
   );
 
-  // Login without updating state - for deferred state update after animation
   const loginSilent = useCallback(
     async (credentials: LoginCredentials): Promise<AuthData> => {
       setError(null);
 
       try {
         const authData = await auth.login(credentials);
-        // Don't update state - caller will do it later
+
         return authData;
       } catch (err) {
         const message =
@@ -99,7 +97,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     []
   );
 
-  // Apply auth data to state (after loading animation completes)
   const applyAuthData = useCallback((authData: AuthData) => {
     setUser(authData.user);
     setToken(authData.token);
@@ -107,7 +104,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signup = useCallback(async (data: SignupData): Promise<User> => {
     setError(null);
-    // Note: Don't set isLoading here as it interferes with GuestLayout
 
     try {
       const newUser = await auth.signup(data);

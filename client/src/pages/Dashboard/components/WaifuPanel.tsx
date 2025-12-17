@@ -1,8 +1,76 @@
 import { Icon } from "@iconify/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animate, random } from "animejs";
+import {
+  useYandereLevel,
+  type YandereLevel,
+} from "../../../contexts/YandereLevelContext";
+import { chatApi } from "../../../lib/chat";
+
+// Level-based styling and images
+const levelConfig: Record<
+  YandereLevel,
+  {
+    label: string;
+    icon: string;
+    color: string;
+    borderColor: string;
+    image: string;
+  }
+> = {
+  0: {
+    label: "HAPPY_MODE",
+    icon: "pixelarticons:mood-happy",
+    color: "text-cyan-400",
+    borderColor: "border-cyan-500",
+    image: "/lucy/lvl0.gif",
+  },
+  1: {
+    label: "NEUTRAL_MODE",
+    icon: "pixelarticons:mood-neutral",
+    color: "text-pink-400",
+    borderColor: "border-pink-500",
+    image: "/lucy/lvl1.gif",
+  },
+  2: {
+    label: "TSUNDERE_MODE",
+    icon: "pixelarticons:mood-sad",
+    color: "text-fuchsia-400",
+    borderColor: "border-fuchsia-500",
+    image: "/lucy/lvl2.gif",
+  },
+  3: {
+    label: "YANDERE_MODE",
+    icon: "pixelarticons:heart",
+    color: "text-red-400",
+    borderColor: "border-red-500",
+    image: "/lucy/lvl3.gif",
+  },
+};
+
+// Fallback greetings by level
+const fallbackGreetings: Record<YandereLevel, string> = {
+  0: "You're doing great today~ ♡",
+  1: "I've got my eyes on you~",
+  2: "Don't disappoint me today...",
+  3: "I won't let you neglect yourself.",
+};
 
 export function WaifuPanel() {
+  const {
+    yandereLevel,
+    totalScore,
+    nutritionScore,
+    hydrationScore,
+    workoutScore,
+  } = useYandereLevel();
+  const config = levelConfig[yandereLevel];
+
+  const [greeting, setGreeting] = useState<string>(
+    fallbackGreetings[yandereLevel]
+  );
+  const [isLoadingGreeting, setIsLoadingGreeting] = useState(true);
+
   const containerRef = useRef<HTMLElement>(null);
   const heartRef = useRef<HTMLSpanElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -15,8 +83,30 @@ export function WaifuPanel() {
   const pulseRingsRef = useRef<HTMLDivElement[]>([]);
   const particlesRef = useRef<HTMLDivElement>(null);
 
+  // Fetch AI greeting on mount
   useEffect(() => {
-    // Heart beat animation
+    const fetchGreeting = async () => {
+      try {
+        const aiGreeting = await chatApi.getGreeting({
+          yandereLevel,
+          totalScore,
+          nutritionScore,
+          hydrationScore,
+          workoutScore,
+        });
+        setGreeting(aiGreeting);
+      } catch (error) {
+        console.error("Failed to fetch greeting:", error);
+        setGreeting(fallbackGreetings[yandereLevel]);
+      } finally {
+        setIsLoadingGreeting(false);
+      }
+    };
+
+    fetchGreeting();
+  }, []); // Only run on mount
+
+  useEffect(() => {
     if (heartRef.current) {
       animate(heartRef.current, {
         scale: [1, 1.3, 1, 1.3, 1],
@@ -36,9 +126,7 @@ export function WaifuPanel() {
       });
     }
 
-    // Subtle waifu swaying animation (natural breathing/idle motion)
     if (imageRef.current) {
-      // Gentle sway
       animate(imageRef.current, {
         rotate: [-0.8, 0.8],
         translateX: [-2, 2],
@@ -47,7 +135,7 @@ export function WaifuPanel() {
         loop: true,
         alternate: true,
       });
-      // Subtle breathing
+
       animate(imageRef.current, {
         scaleY: [1, 1.008, 1],
         scaleX: [1, 0.998, 1],
@@ -57,7 +145,6 @@ export function WaifuPanel() {
       });
     }
 
-    // Text flicker (only glitch effect, no opacity change to keep waifu bright)
     if (textRef.current) {
       const loader = textRef.current.querySelector(".loader-icon");
       if (loader)
@@ -82,7 +169,6 @@ export function WaifuPanel() {
   }, []);
 
   useEffect(() => {
-    // Corners animation
     cornersRef.current.forEach((corner, i) => {
       if (corner) {
         animate(corner, {
@@ -109,7 +195,6 @@ export function WaifuPanel() {
       }
     });
 
-    // Bottom line pulse
     if (bottomLineRef.current) {
       animate(bottomLineRef.current, {
         opacity: [0.5, 1, 0.5],
@@ -124,7 +209,6 @@ export function WaifuPanel() {
       });
     }
 
-    // Floating orbs
     orbsRef.current.forEach((orb, i) => {
       if (orb) {
         animate(orb, {
@@ -140,7 +224,6 @@ export function WaifuPanel() {
       }
     });
 
-    // Scanline
     if (scanlineRef.current) {
       animate(scanlineRef.current, {
         translateY: ["-100%", "200vh"],
@@ -150,7 +233,6 @@ export function WaifuPanel() {
       });
     }
 
-    // Hologram flicker
     if (hologramRef.current) {
       animate(hologramRef.current, {
         opacity: [0.02, 0.08, 0.02],
@@ -160,7 +242,6 @@ export function WaifuPanel() {
       });
     }
 
-    // Pulse rings
     pulseRingsRef.current.forEach((ring, i) => {
       if (ring) {
         animate(ring, {
@@ -174,7 +255,6 @@ export function WaifuPanel() {
       }
     });
 
-    // Particles
     if (particlesRef.current) {
       for (let i = 0; i < 15; i++) {
         const particle = document.createElement("div");
@@ -200,7 +280,6 @@ export function WaifuPanel() {
       }
     }
 
-    // Container border
     if (containerRef.current) {
       animate(containerRef.current, {
         borderColor: [
@@ -272,19 +351,34 @@ export function WaifuPanel() {
         ref={textRef}
         className="relative z-10 flex flex-col items-center justify-center h-full w-full p-4"
       >
+        {/* Speech Bubble */}
+        <div className="absolute top-4 left-4 right-4 z-20">
+          <div className="relative bg-zinc-900/90 border border-pink-500/50 p-3 rounded-lg backdrop-blur-sm">
+            <div className="absolute -bottom-2 left-8 w-4 h-4 bg-zinc-900/90 border-r border-b border-pink-500/50 transform rotate-45" />
+            <p className={`text-sm ${config.color} leading-relaxed`}>
+              {isLoadingGreeting ? (
+                <span className="animate-pulse">...</span>
+              ) : (
+                greeting
+              )}
+            </p>
+          </div>
+        </div>
         <img
           ref={imageRef}
-          src="/lucy.gif"
+          src={config.image}
           alt="Lucy - Your Waifu Companion"
           className="max-h-full max-w-full object-contain drop-shadow-[0_0_20px_rgba(236,72,153,0.5)]"
           style={{ transformOrigin: "bottom center" }}
         />
         <div className="absolute bottom-4 left-0 right-0 text-center">
-          <p className="text-pink-400 text-xs tracking-widest flex items-center justify-center gap-2">
+          <p
+            className={`${config.color} text-xs tracking-widest flex items-center justify-center gap-2`}
+          >
             <span ref={heartRef}>
-              <Icon icon="pixelarticons:heart" className="w-4 h-4" />
+              <Icon icon={config.icon} className="w-4 h-4" />
             </span>
-            LUCY.exe
+            LUCY.exe • {config.label} • {totalScore}%
           </p>
         </div>
       </div>

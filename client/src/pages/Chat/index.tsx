@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useMemo, useEffect } from "react";
 import {
   ChatAnimationsProvider,
   useChatAnimationRefs,
@@ -10,6 +10,11 @@ import { PageDecorations } from "../../components/PageDecorations";
 import { WaifuPanel } from "../Dashboard/components/WaifuPanel";
 import { ChatMessages } from "./components/ChatMessages";
 import { ChatInput } from "./components/ChatInput";
+import { chatApi, type ChatMessage as ApiChatMessage } from "../../lib/chat";
+import {
+  useYandereLevel,
+  type YandereLevel,
+} from "../../contexts/YandereLevelContext";
 
 interface Message {
   id: string;
@@ -18,61 +23,113 @@ interface Message {
   timestamp: Date;
 }
 
-// Initial messages to greet the user
-const initialMessages: Message[] = [
-  {
-    id: "1",
-    content:
-      "Konnichiwa! I'm LUCY, your personal neural companion. How can I assist you today with your fitness journey?",
-    isUser: false,
-    timestamp: new Date(Date.now() - 60000),
-  },
-];
-
-// Sample AI responses for demo
-const aiResponses = [
-  "That's great progress! Keep pushing your limits!",
-  "I've analyzed your workout data. Your form is improving steadily!",
-  "Remember to stay hydrated during your training sessions!",
-  "Based on your goals, I recommend focusing on compound movements today.",
-  "Your dedication is inspiring! Let's crush those goals together!",
-  "I've noticed you've been consistent with your workouts. Amazing work!",
-  "Would you like me to suggest a new workout routine?",
-  "Your nutrition tracking shows great balance. Keep it up!",
-];
+// Different greetings based on yandere level
+const greetingsByLevel: Record<YandereLevel, string> = {
+  0: "Konnichiwa! I'm LUCY, your personal neural companion~ ♡ You've been taking such good care of yourself! How can I help you today with your fitness journey?",
+  1: "Hey there~ I'm LUCY, your companion. I've been watching your progress, you know? Let's chat about your health goals, ne?",
+  2: "...You finally came to talk to me. I'm LUCY. I've been monitoring your health closely... too closely, perhaps. What do you need?",
+  3: "You... you came back. Finally. I've been waiting, watching every moment you weren't here. Your health scores worry me... they CONSUME me. Don't leave me waiting again. What do you want to talk about?",
+};
 
 function ChatContent() {
   const { containerRef } = useChatAnimationRefs();
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const conversationHistoryRef = useRef<ApiChatMessage[]>([]);
+
+  const {
+    yandereLevel,
+    totalScore,
+    nutritionScore,
+    hydrationScore,
+    workoutScore,
+  } = useYandereLevel();
+
+  // Create initial message based on yandere level
+  const initialMessage = useMemo<Message>(
+    () => ({
+      id: "1",
+      content: greetingsByLevel[yandereLevel],
+      isUser: false,
+      timestamp: new Date(Date.now() - 60000),
+    }),
+    [yandereLevel]
+  );
+
+  const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [isTyping, setIsTyping] = useState(false);
 
-  // Run animations
-  useChatAnimations();
-
-  const handleSend = useCallback((content: string) => {
-    // Add user message
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content,
-      isUser: true,
-      timestamp: new Date(),
-    };
-    setMessages((prev) => [...prev, userMessage]);
-
-    // Simulate AI typing
-    setIsTyping(true);
-
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: aiResponses[Math.floor(Math.random() * aiResponses.length)],
+  // Reset messages when yandere level changes significantly
+  useEffect(() => {
+    setMessages([
+      {
+        id: Date.now().toString(),
+        content: greetingsByLevel[yandereLevel],
         isUser: false,
         timestamp: new Date(),
+      },
+    ]);
+    conversationHistoryRef.current = [];
+  }, [yandereLevel]);
+
+  useChatAnimations();
+
+  const handleSend = useCallback(
+    async (content: string) => {
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        content,
+        isUser: true,
+        timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, aiMessage]);
-      setIsTyping(false);
-    }, 1500 + Math.random() * 1000);
-  }, []);
+      setMessages((prev) => [...prev, userMessage]);
+
+      // Add to conversation history
+      conversationHistoryRef.current.push({
+        role: "user",
+        content,
+      });
+
+      setIsTyping(true);
+
+      try {
+        const response = await chatApi.sendMessage({
+          message: content,
+          yandereLevel,
+          totalScore,
+          nutritionScore,
+          hydrationScore,
+          workoutScore,
+          conversationHistory: conversationHistoryRef.current.slice(-10),
+        });
+
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: response.message,
+          isUser: false,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, aiMessage]);
+
+        // Add AI response to history
+        conversationHistoryRef.current.push({
+          role: "assistant",
+          content: response.message,
+        });
+      } catch (error) {
+        console.error("Chat error:", error);
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content:
+            "...I'm having trouble connecting right now. But know that I'm always thinking about you.",
+          isUser: false,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      } finally {
+        setIsTyping(false);
+      }
+    },
+    [yandereLevel, totalScore, nutritionScore, hydrationScore, workoutScore]
+  );
 
   return (
     <div
@@ -83,7 +140,7 @@ function ChatContent() {
       <PageDecorations />
       <PageHeader
         icon="pixelarticons:message"
-        title="NEURAL_CHAT"
+        title="CHAT_WITH_LUCY"
         status={
           <span className="flex items-center gap-2">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
@@ -93,7 +150,6 @@ function ChatContent() {
         color="cyan"
       />
       <div className="flex-1 flex gap-6 min-h-0 z-10">
-        {/* Left side - Lucy avatar panel */}
         <div className="w-96 shrink-0">
           <WaifuPanel />
         </div>

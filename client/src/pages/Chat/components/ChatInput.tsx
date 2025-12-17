@@ -17,7 +17,6 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
   const maxLength = 500;
   const canSend = message.trim().length > 0 && !disabled;
 
-  // Animate send button on enable/disable
   useEffect(() => {
     if (sendButtonRef.current && canSend) {
       animate(sendButtonRef.current, {
@@ -33,7 +32,6 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
       onSend(message.trim());
       setMessage("");
 
-      // Flash effect
       if (inputRef.current) {
         animate(inputRef.current, {
           boxShadow: [
@@ -61,16 +59,13 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
       className="relative p-4 bg-zinc-900/80 border-2 border-pink-500/40"
       style={{ opacity: 0 }}
     >
-      {/* Top accent line */}
       <div className="absolute top-0 left-0 w-full h-0.5 bg-linear-to-r from-pink-500 via-fuchsia-500 to-cyan-500 opacity-50" />
 
-      {/* Corner accents */}
       <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-pink-500" />
       <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-cyan-500" />
       <div className="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-cyan-500" />
       <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-pink-500" />
 
-      {/* Input label */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2 text-[10px] text-pink-400/60 tracking-widest">
           <Icon icon="pixelarticons:message" className="w-3 h-3" />
@@ -85,7 +80,6 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
         </div>
       </div>
 
-      {/* Input area */}
       <div className="flex gap-3">
         <div className="flex-1 relative">
           <textarea
@@ -99,11 +93,9 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
             className="w-full bg-zinc-800/60 border border-pink-500/30 px-4 py-3 text-white text-sm tracking-wide resize-none focus:outline-none focus:border-pink-400 focus:shadow-[0_0_15px_rgba(236,72,153,0.3)] transition-all placeholder:text-zinc-600"
           />
 
-          {/* Scanline overlay */}
           <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.05)_50%)] bg-size-[100%_4px]" />
         </div>
 
-        {/* Send button */}
         <button
           ref={sendButtonRef}
           onClick={handleSend}
@@ -117,7 +109,6 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
             boxShadow: canSend ? "0 0 25px rgba(236,72,153,0.4)" : undefined,
           }}
         >
-          {/* Shimmer effect */}
           {canSend && (
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
           )}
@@ -129,7 +120,6 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
         </button>
       </div>
 
-      {/* Status bar */}
       <div className="flex items-center justify-between mt-3 text-[9px] text-zinc-500 tracking-widest">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />

@@ -22,16 +22,13 @@ import type {
 } from "../lib/workout";
 
 interface WorkoutsContextValue {
-  // Data
   workoutTypes: WorkoutType[];
   workouts: Workout[];
   filteredWorkouts: Workout[];
 
-  // Filter state
   selectedTypeFilter: string | null;
   setSelectedTypeFilter: (typeId: string | null) => void;
 
-  // Loading states
   isLoading: boolean;
   isLoadingWorkouts: boolean;
   isCreatingWorkout: boolean;
@@ -39,7 +36,6 @@ interface WorkoutsContextValue {
   isUpdatingType: boolean;
   isDeletingType: boolean;
 
-  // Actions
   createWorkout: (data: CreateWorkoutDto) => void;
   createType: (data: CreateWorkoutTypeDto) => void;
   updateType: (id: string, data: UpdateWorkoutTypeDto) => void;
@@ -53,30 +49,25 @@ interface WorkoutsProviderProps {
 }
 
 export function WorkoutsProvider({ children }: WorkoutsProviderProps) {
-  // Fetch data
   const { data: workoutTypes = [], isLoading } = useWorkoutTypesQuery();
   const { data: workouts = [], isLoading: isLoadingWorkouts } =
     useWorkoutsQuery();
 
-  // Filter state
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<string | null>(
     null
   );
 
-  // Compute filtered workouts
   const filteredWorkouts = useMemo(() => {
     if (!selectedTypeFilter) return workouts;
     const filterLower = selectedTypeFilter.toLowerCase();
     return workouts.filter((w) => w.type.toLowerCase() === filterLower);
   }, [workouts, selectedTypeFilter]);
 
-  // Mutations
   const createWorkoutMutation = useCreateWorkoutMutation();
   const createTypeMutation = useCreateWorkoutTypeMutation();
   const updateTypeMutation = useUpdateWorkoutTypeMutation();
   const deleteTypeMutation = useDeleteWorkoutTypeMutation();
 
-  // Actions
   const createWorkout = (data: CreateWorkoutDto) => {
     createWorkoutMutation.mutate(data);
   };
@@ -94,16 +85,13 @@ export function WorkoutsProvider({ children }: WorkoutsProviderProps) {
   };
 
   const value: WorkoutsContextValue = {
-    // Data
     workoutTypes,
     workouts,
     filteredWorkouts,
 
-    // Filter state
     selectedTypeFilter,
     setSelectedTypeFilter,
 
-    // Loading states
     isLoading,
     isLoadingWorkouts,
     isCreatingWorkout: createWorkoutMutation.isPending,
@@ -111,7 +99,6 @@ export function WorkoutsProvider({ children }: WorkoutsProviderProps) {
     isUpdatingType: updateTypeMutation.isPending,
     isDeletingType: deleteTypeMutation.isPending,
 
-    // Actions
     createWorkout,
     createType,
     updateType,

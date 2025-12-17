@@ -15,7 +15,6 @@ export function UserProfile() {
   const scanlineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Avatar ring rotation
     if (avatarRingRef.current) {
       animate(avatarRingRef.current, {
         rotate: [0, 360],
@@ -25,7 +24,6 @@ export function UserProfile() {
       });
     }
 
-    // Avatar pulse and glow
     if (avatarRef.current) {
       animate(avatarRef.current, {
         scale: [1, 1.05, 1],
@@ -40,7 +38,6 @@ export function UserProfile() {
       });
     }
 
-    // Username glitch effect
     if (usernameRef.current) {
       const glitchInterval = setInterval(() => {
         if (usernameRef.current) {
@@ -65,7 +62,6 @@ export function UserProfile() {
   }, []);
 
   useEffect(() => {
-    // Level text flicker
     if (levelRef.current) {
       animate(levelRef.current, {
         opacity: [0.5, 1, 0.5],
@@ -75,7 +71,6 @@ export function UserProfile() {
       });
     }
 
-    // Container glow effect
     if (glowRef.current) {
       animate(glowRef.current, {
         opacity: [0.3, 0.7, 0.3],
@@ -85,7 +80,6 @@ export function UserProfile() {
       });
     }
 
-    // Scanline animation
     if (scanlineRef.current) {
       animate(scanlineRef.current, {
         translateY: ["-100%", "200%"],
@@ -95,7 +89,6 @@ export function UserProfile() {
       });
     }
 
-    // Container border animation
     if (containerRef.current) {
       animate(containerRef.current, {
         borderColor: [
@@ -121,19 +114,16 @@ export function UserProfile() {
       ref={containerRef}
       className="flex items-center gap-3 bg-zinc-900/80 border border-pink-500/50 px-4 py-2 relative overflow-hidden backdrop-blur-sm cursor-pointer transition-all duration-300 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] hover:bg-zinc-800/80 group"
     >
-      {/* Scanline effect */}
       <div
         ref={scanlineRef}
         className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent pointer-events-none z-10"
       ></div>
 
-      {/* Background glow */}
       <div
         ref={glowRef}
         className="absolute -inset-4 bg-gradient-to-r from-pink-500/10 via-fuchsia-500/5 to-cyan-500/10 blur-xl pointer-events-none group-hover:from-cyan-500/20 group-hover:via-pink-500/10 group-hover:to-fuchsia-500/20 transition-all"
       ></div>
 
-      {/* Avatar container with rotating ring */}
       <div className="relative">
         <div
           ref={avatarRingRef}
@@ -158,7 +148,7 @@ export function UserProfile() {
           {user?.username}
         </h2>
         <p ref={levelRef} className="text-xs text-pink-300/50 tracking-wider">
-          LVL 42 // <span className="text-cyan-400">ELITE</span>
+          LVL 42
         </p>
       </div>
     </Link>

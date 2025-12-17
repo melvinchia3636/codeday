@@ -9,22 +9,30 @@ import { HistoryCalendar } from "./components/HistoryCalendar";
 import { useWorkoutsQuery } from "../../hooks/useWorkoutQueries";
 import { useTodayMealsQuery } from "../../hooks/useMealQueries";
 import { useTodayLogsQuery } from "../../hooks/useHydrationQueries";
-import { useUserProfile } from "../../contexts/UserProfileContext";
+import {
+  useYandereLevel,
+  type YandereLevel,
+} from "../../contexts/YandereLevelContext";
+
+const levelToEmotion: Record<YandereLevel, string> = {
+  0: "in love",
+  1: "friendly",
+  2: "tsundere",
+  3: "yandere",
+};
 
 const emotionIcons: Record<string, string> = {
-  happy: "pixelarticons:mood-happy",
-  neutral: "pixelarticons:mood-neutral",
+  "in love": "pixelarticons:mood-happy",
+  friendly: "pixelarticons:mood-neutral",
   tsundere: "pixelarticons:mood-sad",
-  angry: "pixelarticons:mood-angry",
   yandere: "pixelarticons:heart",
 };
 
 const emotionColors: Record<string, string> = {
-  happy: "cyan",
-  neutral: "pink",
+  "in love": "cyan",
+  friendly: "pink",
   tsundere: "fuchsia",
-  angry: "red",
-  yandere: "pink",
+  yandere: "red",
 };
 
 function ActivityContent() {
@@ -36,9 +44,15 @@ function ActivityContent() {
   const { data: workouts = [] } = useWorkoutsQuery();
   const { data: meals = [] } = useTodayMealsQuery();
   const { data: waterLogs = [] } = useTodayLogsQuery();
-  const { settings } = useUserProfile();
 
-  // Build activity timeline from real data (TODAY only)
+  const {
+    nutritionScore,
+    hydrationScore,
+    workoutScore,
+    totalScore,
+    yandereLevel,
+  } = useYandereLevel();
+
   const activityTimeline = useMemo(() => {
     const items: {
       id: number;
@@ -70,7 +84,6 @@ function ActivityContent() {
         timeZone: "UTC",
       });
 
-    // Add workouts (filter to today only)
     workouts
       .filter((w) => isToday(w.created))
       .forEach((w) => {
@@ -87,7 +100,6 @@ function ActivityContent() {
         });
       });
 
-    // Add meals (already filtered to today by useTodayMealsQuery)
     meals.forEach((m) => {
       const date = new Date(m.created);
       const mealTypeLabel = m.type.charAt(0).toUpperCase() + m.type.slice(1);
@@ -104,7 +116,6 @@ function ActivityContent() {
       });
     });
 
-    // Add water logs (already filtered to today by useTodayLogsQuery)
     waterLogs.forEach((w) => {
       const date = new Date(w.timestamp || w.created || new Date());
       items.push({
@@ -119,11 +130,9 @@ function ActivityContent() {
       });
     });
 
-    // Sort descending (newest first)
     return items.sort((a, b) => b.timestamp - a.timestamp);
   }, [workouts, meals, waterLogs]);
 
-  // Run animations with itemsCount dependency
   useActivityAnimations({
     containerRef,
     summaryRef,
@@ -132,66 +141,16 @@ function ActivityContent() {
     itemsCount: activityTimeline.length,
   });
 
-  // Calculate today's summary from real data
-  const today = useMemo(() => {
-    // Calculate diet score (simplified - based on meals logged)
-    // Raw score can exceed 100, but display is capped
-    const mealsLogged = meals.length;
-    const rawDietScore = mealsLogged * 25;
+  const emotion = levelToEmotion[yandereLevel];
+  const today = {
+    date: new Date().toISOString().split("T")[0],
+    diet: nutritionScore,
+    hydro: hydrationScore,
+    effort: workoutScore,
+    total: totalScore,
+    emotion,
+  };
 
-    // Calculate hydration score
-    const totalWater = waterLogs.reduce((sum, w) => sum + (w.amountMl || 0), 0);
-    const waterGoal = settings?.hydroTargetMl || 2500;
-    const rawHydroScore = Math.round((totalWater / waterGoal) * 100);
-    const hydroScore = Math.min(100, rawHydroScore);
-
-    // Calculate effort score (based on workouts)
-    const totalWorkoutTime = workouts.reduce(
-      (sum, w) => sum + (w.durationMin || 0),
-      0
-    );
-    const rawEffortScore = Math.round((totalWorkoutTime / 60) * 100);
-    const effortScore = Math.min(100, rawEffortScore);
-
-    // Diminishing returns function: scores above 100 have reduced impact
-    // Returns 100 + log10(excess) * 10, capped at 120
-    const applyDiminishingReturns = (raw: number) => {
-      if (raw <= 100) return raw;
-      const excess = raw - 100;
-      // Logarithmic diminishing returns: excess of 100 gives ~20 points, excess of 1000 gives ~30
-      const bonus = Math.log10(excess + 1) * 10;
-      return Math.min(120, 100 + bonus);
-    };
-
-    // Apply diminishing returns for total score calculation
-    const adjustedDiet = applyDiminishingReturns(rawDietScore);
-    const adjustedHydro = applyDiminishingReturns(rawHydroScore);
-    const adjustedEffort = applyDiminishingReturns(rawEffortScore);
-
-    // Overall score using adjusted values, capped at 100
-    const totalScore = Math.min(
-      100,
-      Math.round((adjustedDiet + adjustedHydro + adjustedEffort) / 3)
-    );
-
-    // Determine emotion based on score
-    let emotion = "neutral";
-    if (totalScore >= 80) emotion = "happy";
-    else if (totalScore >= 60) emotion = "neutral";
-    else if (totalScore >= 40) emotion = "tsundere";
-    else emotion = "angry";
-
-    return {
-      date: new Date().toISOString().split("T")[0],
-      diet: rawDietScore, // Allow exceeding 100% for display
-      hydro: hydroScore,
-      effort: effortScore,
-      total: totalScore,
-      emotion,
-    };
-  }, [meals, waterLogs, workouts, settings]);
-
-  // Daily summaries placeholder (would need historical data endpoint)
   const dailySummaries = [today];
 
   return (

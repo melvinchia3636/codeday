@@ -7,7 +7,6 @@ import {
 } from "react";
 import { useDashboardAnimations } from "../hooks/useDashboardAnimations";
 
-// Animation ref types
 interface DashboardAnimationRefs {
   containerRef: RefObject<HTMLDivElement | null>;
   mainPanelRef: RefObject<HTMLElement | null>;
@@ -16,7 +15,7 @@ interface DashboardAnimationRefs {
   timelinePanelRef: RefObject<HTMLDivElement | null>;
   waifuPanelRef: RefObject<HTMLElement | null>;
   bottomBarRef: RefObject<HTMLElement | null>;
-  // Decoration refs
+
   particlesRef: RefObject<HTMLDivElement | null>;
   scanlineRef: RefObject<HTMLDivElement | null>;
   glitchOverlayRef: RefObject<HTMLDivElement | null>;
@@ -50,7 +49,6 @@ interface DashboardAnimationsProviderProps {
 export function DashboardAnimationsProvider({
   children,
 }: DashboardAnimationsProviderProps) {
-  // Main layout refs
   const containerRef = useRef<HTMLDivElement>(null);
   const mainPanelRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -59,7 +57,6 @@ export function DashboardAnimationsProvider({
   const waifuPanelRef = useRef<HTMLElement>(null);
   const bottomBarRef = useRef<HTMLElement>(null);
 
-  // Decoration refs
   const particlesRef = useRef<HTMLDivElement>(null);
   const scanlineRef = useRef<HTMLDivElement>(null);
   const glitchOverlayRef = useRef<HTMLDivElement>(null);
@@ -77,7 +74,6 @@ export function DashboardAnimationsProvider({
   const circuitLinesRef = useRef<HTMLDivElement[]>([]);
   const pulseRingsRef = useRef<HTMLDivElement[]>([]);
 
-  // Run the animations hook
   useDashboardAnimations({
     containerRef,
     mainPanelRef,

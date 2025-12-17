@@ -8,9 +8,6 @@ import {
 import { useUserProfile } from "../../../contexts/UserProfileContext";
 import { useProfileAnimations } from "../hooks/useProfileAnimations";
 
-// Animation ref types (page-specific only)
-// Header animation is now handled by PageHeader component
-// Decoration refs come from PageDecorationsContext
 interface ProfileAnimationRefs {
   containerRef: RefObject<HTMLDivElement | null>;
   avatarRef: RefObject<HTMLDivElement | null>;
@@ -39,7 +36,6 @@ export function ProfileAnimationsProvider({
 }: ProfileAnimationsProviderProps) {
   const { isLoading } = useUserProfile();
 
-  // Page-specific animation refs
   const containerRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
   const userInfoRef = useRef<HTMLDivElement>(null);
@@ -47,13 +43,11 @@ export function ProfileAnimationsProvider({
   const targetsRef = useRef<HTMLDivElement>(null);
   const waifuRef = useRef<HTMLDivElement>(null);
 
-  // Profile-specific decoration refs (not in shared context)
   const sideBarsRef = useRef<HTMLDivElement[]>([]);
   const glitchOverlayRef = useRef<HTMLDivElement>(null);
 
   const isAnimationsReady = !isLoading;
 
-  // Run the animations hook
   useProfileAnimations({
     containerRef,
     avatarRef,

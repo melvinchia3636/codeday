@@ -12,16 +12,13 @@ export function WaterTank() {
   const hasInitialized = useRef(false);
   const [displayedPercentage, setDisplayedPercentage] = useState(0);
 
-  // Check if we're in overflow mode (above 100%)
   const isOverflow = percentage > 100;
-  // Cap visual height at 100% but allow percentage text to show actual value
+
   const visualPercentage = Math.min(percentage, 100);
 
-  // Animate water level when percentage changes
   useEffect(() => {
     if (!waterLevelRef.current) return;
 
-    // Always animate from 0 on first render, then from current to new
     const fromValue = hasInitialized.current
       ? waterLevelRef.current.style.height || "0%"
       : "0%";
@@ -36,14 +33,12 @@ export function WaterTank() {
     hasInitialized.current = true;
   }, [visualPercentage]);
 
-  // Animate the percentage number
   useEffect(() => {
     const targetValue = Math.round(percentage);
     const startValue = displayedPercentage;
 
     if (startValue === targetValue) return;
 
-    // Animate the number counting up/down
     const duration = hasInitialized.current ? 600 : 1200;
     const delay = hasInitialized.current ? 0 : 500;
 
@@ -58,7 +53,6 @@ export function WaterTank() {
       },
     });
 
-    // Pop animation on the text
     if (percentageRef.current && hasInitialized.current) {
       animate(percentageRef.current, {
         scale: [1, 1.15, 1],

@@ -30,7 +30,6 @@ function SignupContent() {
   const [localError, setLocalError] = useState<string | null>(null);
   const [feedbackState, setFeedbackState] = useState<FeedbackState>("idle");
 
-  // Track signup completion for deferred feedback
   const signupCompleteRef = useRef(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -70,7 +69,6 @@ function SignupContent() {
     clearError();
     signupCompleteRef.current = false;
 
-    // Validation
     if (!username.trim() || !email.trim() || !password.trim()) {
       setLocalError("Please fill in all fields");
       return;
@@ -97,7 +95,7 @@ function SignupContent() {
         password,
         passwordConfirm: confirmPassword,
       });
-      // Mark signup as complete - will show success after loading animation
+
       signupCompleteRef.current = true;
     } catch {
       setLocalError(error || "Signup failed. Please try again.");
@@ -128,19 +126,16 @@ function SignupContent() {
     >
       <PageDecorations />
 
-      {/* Signup-specific: Hex grid */}
       <div
         ref={hexGridRef}
         className="absolute inset-0 pointer-events-none overflow-hidden"
       />
 
-      {/* Signup-specific: Data streams */}
       <div
         ref={dataStreamsRef}
         className="absolute inset-0 pointer-events-none overflow-hidden"
       />
 
-      {/* Left sidebars - Signup specific */}
       <div className="absolute left-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-3">
         {[...Array(6)].map((_, i) => (
           <div
@@ -161,7 +156,6 @@ function SignupContent() {
         ))}
       </div>
 
-      {/* Right sidebars - Signup specific */}
       <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-3">
         {[...Array(6)].map((_, i) => (
           <div
@@ -214,7 +208,6 @@ function SignupContent() {
         />
       </div>
 
-      {/* Auth Feedback Overlays */}
       <AuthLoadingOverlay
         isVisible={feedbackState === "loading"}
         message="INITIALIZING_NEURAL_PROFILE..."

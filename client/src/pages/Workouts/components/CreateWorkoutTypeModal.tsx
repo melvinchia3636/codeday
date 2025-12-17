@@ -21,7 +21,6 @@ interface WorkoutTypeModalProps {
   isLoading?: boolean;
 }
 
-// Available icons for selection
 const availableIcons = [
   "pixelarticons:human",
   "pixelarticons:human-run",
@@ -41,7 +40,6 @@ const availableIcons = [
   "pixelarticons:music",
 ];
 
-// Available colors matching ModalColor type
 const availableColors: { name: ModalColor; class: string; glow: string }[] = [
   { name: "cyan", class: "bg-cyan-500", glow: "rgba(34,211,238," },
   { name: "pink", class: "bg-pink-500", glow: "rgba(236,72,153," },
@@ -72,7 +70,6 @@ export function WorkoutTypeModal({
   useEffect(() => {
     if (!isVisible) return;
 
-    // Initialize form with data (edit mode) or defaults (create mode)
     if (initialData) {
       setName(initialData.name);
       setSelectedIcon(initialData.icon);
@@ -89,7 +86,6 @@ export function WorkoutTypeModal({
     }
   }, [isVisible, initialData]);
 
-  // Preview animation on icon/color change
   useEffect(() => {
     if (previewRef.current && isVisible) {
       animate(previewRef.current, {
@@ -123,7 +119,6 @@ export function WorkoutTypeModal({
       isLoading={isLoading}
       statusText="NEURAL_LINK_ACTIVE"
     >
-      {/* Preview */}
       <div className="flex justify-center mb-6">
         <div
           ref={previewRef}
@@ -145,7 +140,6 @@ export function WorkoutTypeModal({
         </div>
       </div>
 
-      {/* Name input */}
       <div className="mb-4">
         <label className="text-xs text-fuchsia-400/70 tracking-widest mb-2 flex items-center gap-2">
           <span className="w-1.5 h-1.5 bg-fuchsia-400" />
@@ -160,7 +154,6 @@ export function WorkoutTypeModal({
         />
       </div>
 
-      {/* Calories per minute input */}
       <div className="mb-6">
         <label className="text-xs text-fuchsia-400/70 tracking-widest mb-2 flex items-center gap-2">
           <Icon icon="pixelarticons:coin" className="w-3 h-3" />
@@ -184,7 +177,6 @@ export function WorkoutTypeModal({
         </p>
       </div>
 
-      {/* Icon selector */}
       <div className="mb-6">
         <label className="text-xs text-fuchsia-400/70 tracking-widest mb-2 block">
           GLYPH_SELECTOR
@@ -224,7 +216,6 @@ export function WorkoutTypeModal({
         </div>
       </div>
 
-      {/* Color selector */}
       <div className="mb-6">
         <label className="text-xs text-fuchsia-400/70 tracking-widest mb-3 flex items-center gap-2">
           <span className="w-2 h-2 bg-fuchsia-400 animate-pulse" />
@@ -278,7 +269,6 @@ export function WorkoutTypeModal({
             ))}
           </div>
 
-          {/* Bottom bar indicator */}
           <div className="mt-4 flex items-center justify-center gap-2">
             <div className="w-12 h-px bg-linear-to-r from-transparent to-pink-500/50" />
             <div className="flex gap-0.5">
@@ -305,7 +295,6 @@ export function WorkoutTypeModal({
         </div>
       </div>
 
-      {/* Buttons */}
       <div className="flex gap-4">
         <button
           onClick={onCancel}

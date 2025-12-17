@@ -12,9 +12,7 @@ export function Header() {
   const glowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Title glitch effect
     if (titleRef.current) {
-      // Initial text color shift
       animate(titleRef.current, {
         textShadow: [
           "0 0 0 transparent",
@@ -25,7 +23,6 @@ export function Header() {
         ease: "inOutQuad",
       });
 
-      // Periodic glitch
       const glitchInterval = setInterval(() => {
         if (titleRef.current) {
           animate(titleRef.current, {
@@ -54,7 +51,6 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    // Cursor blink animation
     if (cursorRef.current) {
       animate(cursorRef.current, {
         opacity: [1, 0],
@@ -65,7 +61,6 @@ export function Header() {
       });
     }
 
-    // Status text typing effect simulation
     if (statusRef.current) {
       animate(statusRef.current, {
         opacity: [0.4, 1, 0.4],
@@ -75,7 +70,6 @@ export function Header() {
       });
     }
 
-    // Icon animations
     if (iconLeftRef.current) {
       animate(iconLeftRef.current, {
         rotate: [0, 360],
@@ -94,7 +88,6 @@ export function Header() {
         loop: true,
       });
 
-      // Heart pulse glow
       animate(iconRightRef.current, {
         filter: [
           "drop-shadow(0 0 0 transparent)",
@@ -107,7 +100,6 @@ export function Header() {
       });
     }
 
-    // Background glow pulse
     if (glowRef.current) {
       animate(glowRef.current, {
         opacity: [0, 0.5, 0],
@@ -121,7 +113,6 @@ export function Header() {
 
   return (
     <div ref={containerRef} className="relative">
-      {/* Background glow effect */}
       <div
         ref={glowRef}
         className="absolute -inset-10 bg-gradient-radial from-pink-500/20 to-transparent rounded-full blur-3xl pointer-events-none"

@@ -18,15 +18,12 @@ export function PageDecorations() {
     color,
   } = usePageDecorationsRefs();
 
-  // Run decoration animations
   usePageDecorationsAnimations();
 
   const isPink = color === "pink";
 
-  // Grid color
   const gridColor = isPink ? "rgba(236,72,153,0.2)" : "rgba(34,211,238,0.2)";
 
-  // Border line gradients
   const topGradient = isPink
     ? "from-pink-500 via-fuchsia-500 to-cyan-500"
     : "from-cyan-500 via-pink-500 to-cyan-500";
@@ -34,13 +31,10 @@ export function PageDecorations() {
     ? "from-cyan-500 via-fuchsia-500 to-pink-500"
     : "from-pink-500 via-cyan-500 to-pink-500";
 
-  // Scanline color
   const scanlineColor = isPink ? "via-cyan-500/30" : "via-pink-500/30";
 
-  // Corner border color
   const cornerBorder = isPink ? "border-pink-500" : "border-cyan-500";
 
-  // Orb colors based on theme
   const getOrbClass = (i: number) => {
     if (isPink) {
       if (i % 3 === 0) return "w-64 h-64 bg-pink-500/20";

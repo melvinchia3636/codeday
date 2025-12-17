@@ -12,7 +12,6 @@ export function VitalsPanel() {
   const particlesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Title animation
     if (titleRef.current) {
       animate(titleRef.current, {
         opacity: [0, 1],
@@ -33,7 +32,6 @@ export function VitalsPanel() {
       }
     }
 
-    // Vitals items stagger animation
     if (itemsRef.current) {
       const items = itemsRef.current.querySelectorAll(".vital-item");
 
@@ -46,7 +44,6 @@ export function VitalsPanel() {
         ease: "outBack",
       });
 
-      // Border pulse animation for each item
       setTimeout(() => {
         items.forEach((item, i) => {
           const borderColors = [
@@ -76,7 +73,6 @@ export function VitalsPanel() {
         });
       }, 1000);
 
-      // Value number animations
       const values = itemsRef.current.querySelectorAll(".vital-value");
       values.forEach((value, i) => {
         animate(value, {
@@ -92,7 +88,6 @@ export function VitalsPanel() {
         });
       });
 
-      // Icon animations
       const icons = itemsRef.current.querySelectorAll(".vital-icon");
       icons.forEach((icon, i) => {
         animate(icon, {
@@ -106,7 +101,6 @@ export function VitalsPanel() {
       });
     }
 
-    // Pulse ring effect
     if (pulseRingRef.current) {
       animate(pulseRingRef.current, {
         scale: [0.8, 1.5],
@@ -117,7 +111,6 @@ export function VitalsPanel() {
       });
     }
 
-    // Background glow
     if (glowRef.current) {
       animate(glowRef.current, {
         opacity: [0.02, 0.1, 0.02],
@@ -132,7 +125,6 @@ export function VitalsPanel() {
       });
     }
 
-    // Corners animation
     cornersRef.current.forEach((corner, i) => {
       if (corner) {
         animate(corner, {
@@ -155,7 +147,6 @@ export function VitalsPanel() {
       }
     });
 
-    // Floating particles
     if (particlesRef.current) {
       for (let i = 0; i < 8; i++) {
         const particle = document.createElement("div");
@@ -186,7 +177,6 @@ export function VitalsPanel() {
       }
     }
 
-    // Container border animation
     if (containerRef.current) {
       animate(containerRef.current, {
         borderColor: [
@@ -207,22 +197,18 @@ export function VitalsPanel() {
       ref={containerRef}
       className="w-48 bg-zinc-900/50 border border-pink-500/30 p-4 relative overflow-hidden backdrop-blur-sm flex flex-col"
     >
-      {/* Particles */}
       <div
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
       ></div>
 
-      {/* Pulse ring */}
       <div
         ref={pulseRingRef}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-pink-500/30 pointer-events-none"
       ></div>
 
-      {/* Background glow */}
       <div ref={glowRef} className="absolute inset-0 pointer-events-none"></div>
 
-      {/* Corners */}
       <div
         ref={(el) => {
           if (el) cornersRef.current[0] = el;
@@ -262,7 +248,6 @@ export function VitalsPanel() {
       </div>
 
       <div ref={itemsRef} className="flex flex-col gap-2 relative z-10 flex-1">
-        {/* Streak */}
         <div
           className="vital-item bg-zinc-800/50 p-3 border-l-2 border-pink-500 flex-1 flex flex-col justify-center"
           style={{ opacity: 0 }}
@@ -286,7 +271,6 @@ export function VitalsPanel() {
           </div>
         </div>
 
-        {/* Weight */}
         <div
           className="vital-item bg-zinc-800/50 p-3 border-l-2 border-cyan-500 flex-1 flex flex-col justify-center"
           style={{ opacity: 0 }}
@@ -310,7 +294,6 @@ export function VitalsPanel() {
           </div>
         </div>
 
-        {/* Goal */}
         <div
           className="vital-item bg-zinc-800/50 p-3 border-l-2 border-fuchsia-500 flex-1 flex flex-col justify-center"
           style={{ opacity: 0 }}

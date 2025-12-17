@@ -29,7 +29,6 @@ export function AuthSuccessModal({
   useEffect(() => {
     if (!isVisible) return;
 
-    // Create rings
     if (ringsRef.current) {
       ringsRef.current.innerHTML = "";
       for (let i = 0; i < 5; i++) {
@@ -43,7 +42,6 @@ export function AuthSuccessModal({
       }
     }
 
-    // Create particles
     if (particlesRef.current) {
       particlesRef.current.innerHTML = "";
       for (let i = 0; i < 30; i++) {
@@ -61,7 +59,6 @@ export function AuthSuccessModal({
       }
     }
 
-    // Overlay fade in
     if (overlayRef.current) {
       animate(overlayRef.current, {
         opacity: [0, 1],
@@ -70,7 +67,6 @@ export function AuthSuccessModal({
       });
     }
 
-    // Modal entrance - dramatic scale and bounce
     if (modalRef.current) {
       animate(modalRef.current, {
         opacity: [0, 1],
@@ -82,7 +78,6 @@ export function AuthSuccessModal({
       });
     }
 
-    // Icon animation - spin and pulse
     if (iconRef.current) {
       animate(iconRef.current, {
         scale: [0, 1.5, 1],
@@ -93,7 +88,6 @@ export function AuthSuccessModal({
       });
     }
 
-    // Ring pulse
     if (ringsRef.current) {
       animate(ringsRef.current.children, {
         scale: [1, 3],
@@ -105,7 +99,6 @@ export function AuthSuccessModal({
       });
     }
 
-    // Particles burst
     if (particlesRef.current) {
       animate(particlesRef.current.children, {
         opacity: [0, 1, 0],
@@ -118,7 +111,6 @@ export function AuthSuccessModal({
       });
     }
 
-    // Data lines animation
     if (dataLinesRef.current) {
       const lines = dataLinesRef.current.querySelectorAll(".data-line");
       animate(lines, {
@@ -142,23 +134,19 @@ export function AuthSuccessModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/95 backdrop-blur-md"
       style={{ opacity: 0 }}
     >
-      {/* Background radial glow */}
       <div
         className={`absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(${rgbColor},0.2)_0%,transparent_50%)]`}
       />
 
-      {/* Grid pattern */}
       <div
         className={`absolute inset-0 bg-[linear-gradient(rgba(${rgbColor},0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(${rgbColor},0.03)_1px,transparent_1px)] bg-[size:30px_30px]`}
       />
 
-      {/* Particles container */}
       <div
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none overflow-hidden"
       />
 
-      {/* Data stream lines */}
       <div
         ref={dataLinesRef}
         className="absolute inset-0 pointer-events-none overflow-hidden"
@@ -178,7 +166,6 @@ export function AuthSuccessModal({
         ))}
       </div>
 
-      {/* Main modal */}
       <div
         ref={modalRef}
         className={`relative bg-zinc-900/95 border-2 border-${colorClass}-500/70 p-12 max-w-xl w-full mx-4`}
@@ -187,7 +174,6 @@ export function AuthSuccessModal({
           boxShadow: `0 0 60px rgba(${rgbColor},0.4), inset 0 0 30px rgba(${rgbColor},0.1)`,
         }}
       >
-        {/* Animated corner glows */}
         <div
           className={`absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-${colorClass}-500/30 to-transparent`}
         />
@@ -195,12 +181,10 @@ export function AuthSuccessModal({
           className={`absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-${colorClass}-500/30 to-transparent`}
         />
 
-        {/* Top accent line with animation */}
         <div
           className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-${colorClass}-400 to-transparent animate-pulse`}
         />
 
-        {/* Success icon with rings */}
         <div className="relative w-28 h-28 mx-auto mb-8">
           <div ref={ringsRef} className="absolute inset-0" />
           <div
@@ -216,13 +200,12 @@ export function AuthSuccessModal({
               className={`w-14 h-14 text-${colorClass}-300`}
             />
           </div>
-          {/* Glow pulse behind icon */}
+
           <div
             className={`absolute inset-0 bg-${colorClass}-500/30 rounded-full blur-xl animate-pulse`}
           />
         </div>
 
-        {/* Status badge */}
         <div className="flex justify-center mb-4">
           <div
             className={`inline-flex items-center gap-2 px-4 py-1 border border-${colorClass}-500/50 bg-${colorClass}-500/10`}
@@ -241,7 +224,6 @@ export function AuthSuccessModal({
           </div>
         </div>
 
-        {/* Title with glitch-style effect */}
         <h2
           className={`text-3xl font-bold tracking-[0.2em] text-${colorClass}-300 text-center mb-2 flex items-center justify-center gap-3`}
           style={{ textShadow: `0 0 30px rgba(${rgbColor},0.8)` }}
@@ -251,7 +233,6 @@ export function AuthSuccessModal({
           <Icon icon="pixelarticons:zap" className="w-7 h-7 animate-pulse" />
         </h2>
 
-        {/* Decorative divider */}
         <div className="flex items-center justify-center gap-2 mb-6">
           <div className={`w-16 h-px bg-${colorClass}-500/50`} />
           <Icon
@@ -261,12 +242,10 @@ export function AuthSuccessModal({
           <div className={`w-16 h-px bg-${colorClass}-500/50`} />
         </div>
 
-        {/* Message */}
         <p className="text-zinc-300 text-center tracking-wide mb-8 text-sm leading-relaxed">
           {message}
         </p>
 
-        {/* Confirm button - extra fancy */}
         <button
           onClick={onConfirm}
           className={`group relative w-full py-5 bg-gradient-to-r from-${colorClass}-500 via-fuchsia-500 to-${colorClass}-500 text-white font-bold tracking-[0.15em] uppercase overflow-hidden transition-all hover:scale-[1.02]`}
@@ -276,7 +255,6 @@ export function AuthSuccessModal({
             animation: "shimmer 3s linear infinite",
           }}
         >
-          {/* Button shine effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
 
           <span className="relative flex items-center justify-center gap-3">
@@ -286,7 +264,6 @@ export function AuthSuccessModal({
           </span>
         </button>
 
-        {/* Bottom HUD elements */}
         <div className="mt-6 flex items-center justify-between text-[10px]">
           <span className={`text-${colorClass}-400/60 tracking-widest`}>
             <Icon icon="pixelarticons:shield" className="inline w-3 h-3 mr-1" />
@@ -308,7 +285,6 @@ export function AuthSuccessModal({
           </span>
         </div>
 
-        {/* Corner accents */}
         <div
           className={`absolute top-3 left-3 w-6 h-6 border-l-2 border-t-2 border-${colorClass}-400`}
         />
@@ -323,7 +299,6 @@ export function AuthSuccessModal({
         />
       </div>
 
-      {/* Outer corner decorations */}
       <div
         className={`absolute top-8 left-8 w-12 h-12 border-l-2 border-t-2 border-${colorClass}-500/40`}
       />
@@ -337,7 +312,6 @@ export function AuthSuccessModal({
         className={`absolute bottom-8 right-8 w-12 h-12 border-r-2 border-b-2 border-${colorClass}-500/40`}
       />
 
-      {/* Pinging corner dots */}
       {[
         "top-10 left-10",
         "top-10 right-10",
@@ -351,7 +325,6 @@ export function AuthSuccessModal({
         />
       ))}
 
-      {/* Add shimmer keyframes */}
       <style>{`
         @keyframes shimmer {
           0% { background-position: 200% 0; }

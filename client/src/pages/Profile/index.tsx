@@ -18,18 +18,44 @@ import {
   AuthLoadingOverlay,
   AuthSuccessModal,
 } from "../../components/AuthFeedback";
+import {
+  useYandereLevel,
+  type YandereLevel,
+} from "../../contexts/YandereLevelContext";
+import { useLucyToast, type BmiAction } from "../../contexts/LucyToastContext";
+
+// Map yandere level (0-3) to display string
+const levelToDisplayString: Record<
+  YandereLevel,
+  "in love" | "friendly" | "tsundere" | "yandere"
+> = {
+  0: "in love",
+  1: "friendly",
+  2: "tsundere",
+  3: "yandere",
+};
 
 function ProfileContent() {
-  const { isLoading, userDataError, settingsError, saveProfile } =
+  const { isLoading, userDataError, settingsError, saveProfile, formBmi } =
     useUserProfile();
   const { user } = useAuth();
   const { containerRef } = useProfileAnimationRefs();
+  const { yandereLevel } = useYandereLevel();
+  const { showToast } = useLucyToast();
 
   const error = userDataError || settingsError;
 
   const [showSaveOverlay, setShowSaveOverlay] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const saveCompleteRef = useRef(false);
+
+  // Determine BMI category based on BMI value
+  const getBmiCategory = (bmi: number): BmiAction => {
+    if (bmi < 18.5) return "underweight";
+    if (bmi < 25) return "normal";
+    if (bmi < 30) return "overweight";
+    return "obese";
+  };
 
   const handleSave = async () => {
     setShowSaveOverlay(true);
@@ -38,6 +64,10 @@ function ProfileContent() {
     try {
       await saveProfile();
       saveCompleteRef.current = true;
+      // Show BMI toast after successful save
+      if (formBmi > 0) {
+        showToast("logged_bmi", getBmiCategory(formBmi));
+      }
     } catch (err) {
       console.error("Failed to save profile:", err);
       saveCompleteRef.current = false;
@@ -58,8 +88,8 @@ function ProfileContent() {
 
   const waifuProfile = {
     id: "waifu_001",
-    name: "ARIA-7",
-    yandere_level: "medium" as "none" | "low" | "medium" | "high",
+    name: "LUCY",
+    yandere_level: levelToDisplayString[yandereLevel],
   };
 
   if (isLoading) {

@@ -4,15 +4,19 @@ import { useWorkoutsAnimationRefs } from "../contexts/WorkoutsAnimationsContext"
 import { useWorkouts } from "../../../contexts/WorkoutsContext";
 import { defaultWorkoutTypes, colorMap } from "../../../lib/workout";
 import { NumberInput } from "../../../components/NumberInput";
+import {
+  useLucyToast,
+  type WorkoutAction,
+} from "../../../contexts/LucyToastContext";
 
 export function LogWorkout() {
   const { logFormRef } = useWorkoutsAnimationRefs();
   const { workoutTypes, createWorkout, isCreatingWorkout } = useWorkouts();
+  const { showToast } = useLucyToast();
 
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
   const [duration, setDuration] = useState(30);
 
-  // Show predefined defaults + custom user types
   const defaultDisplayTypes = defaultWorkoutTypes.map((t, i) => ({
     id: `default-${i}`,
     icon: t.icon,
@@ -34,10 +38,15 @@ export function LogWorkout() {
   const selectedType = displayTypes[selectedTypeIndex] || displayTypes[0];
   const rgba = colorMap[selectedType?.color] || colorMap.pink;
 
-  // Auto-calculate calories based on duration and type
   const calculatedCalories = duration * (selectedType?.caloriesPerMinute || 5);
 
-  // Handle save workout
+  // Determine workout intensity based on duration
+  const getWorkoutIntensity = (durationMin: number): WorkoutAction => {
+    if (durationMin >= 45) return "heavy_workout";
+    if (durationMin >= 20) return "moderate_workout";
+    return "light_workout";
+  };
+
   const handleSave = () => {
     if (!selectedType) return;
     createWorkout({
@@ -45,7 +54,10 @@ export function LogWorkout() {
       durationMin: duration,
       caloriesBurned: calculatedCalories,
     });
-    // Reset form after save
+
+    // Show Lucy toast based on workout intensity
+    showToast("logged_workout", getWorkoutIntensity(duration));
+
     setSelectedTypeIndex(0);
     setDuration(30);
   };
@@ -56,17 +68,14 @@ export function LogWorkout() {
       className="relative bg-zinc-900/80 border-2 border-pink-500/50 p-5 backdrop-blur-sm overflow-hidden"
       style={{ opacity: 0 }}
     >
-      {/* Background grid */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.03)_1px,transparent_1px)] bg-size-[20px_20px] pointer-events-none" />
 
-      {/* Corner accents */}
       <div className="absolute top-0 left-0 w-6 h-6 border-l-2 border-t-2 border-pink-500" />
       <div className="absolute top-0 right-0 w-6 h-6 border-r-2 border-t-2 border-cyan-500" />
       <div className="absolute bottom-0 left-0 w-6 h-6 border-l-2 border-b-2 border-cyan-500" />
       <div className="absolute bottom-0 right-0 w-6 h-6 border-r-2 border-b-2 border-pink-500" />
 
       <div className="relative z-10">
-        {/* Header */}
         <h3 className="text-lg font-bold text-pink-400 tracking-[0.2em] mb-4 flex items-center gap-2 border-b border-pink-500/30 pb-2">
           <Icon icon="pixelarticons:edit" className="w-5 h-5" />
           LOG_NEW_WORKOUT
@@ -77,7 +86,6 @@ export function LogWorkout() {
         </h3>
 
         <div className="space-y-4">
-          {/* Workout Type Selector - Visual Grid */}
           <div>
             <label className="text-xs text-pink-400/70 tracking-widest mb-2 flex items-center gap-2">
               <span className="w-1.5 h-1.5 bg-pink-400" />
@@ -131,7 +139,6 @@ export function LogWorkout() {
             </div>
           </div>
 
-          {/* Duration Input - Using NumberInput component */}
           <NumberInput
             label="DURATION"
             icon="pixelarticons:clock"
@@ -140,7 +147,6 @@ export function LogWorkout() {
             onChange={(e) => setDuration(Number(e.target.value))}
           />
 
-          {/* Calculated Calories Display */}
           <div className="p-4 bg-zinc-800/50 border border-pink-500/30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -168,14 +174,12 @@ export function LogWorkout() {
             </p>
           </div>
 
-          {/* Submit Button */}
           <button
             onClick={handleSave}
             disabled={isCreatingWorkout}
             className="group relative w-full py-4 bg-linear-to-r from-pink-600 via-fuchsia-500 to-pink-600 text-white font-bold tracking-widest uppercase overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(236,72,153,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundSize: "200% 100%" }}
           >
-            {/* Shimmer effect */}
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
             <span className="relative flex items-center justify-center gap-2">
               <Icon
@@ -191,7 +195,6 @@ export function LogWorkout() {
           </button>
         </div>
 
-        {/* Bottom status */}
         <div className="mt-4 flex items-center justify-between text-[10px]">
           <span className="text-pink-400/50 tracking-widest flex items-center gap-1">
             <Icon icon="pixelarticons:mood-happy" className="w-3 h-3" />

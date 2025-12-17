@@ -1,0 +1,85 @@
+{
+  "logged_workout": {
+    "light_workout": [
+      "I saw you logged a walk. It's a start. This city is a prison, but keeping your body moving is the first step toward finding a way out.",
+      "A light session? That’s cool. It’s better than just sitting around waiting for Arasaka to find a reason to mess with you.",
+      "Just a quick stretch today? I get it. Sometimes Night City just drains the life out of you, but I'm glad you did something."
+    ],
+    "moderate_workout": [
+      "Nice work on that session. You’re looking stronger. It’s important to stay fit if we’re ever going to leave this place behind.",
+      "I watched your stats during the workout. You're doing well. Keep that up and you might just make it out of the gutter.",
+      "Moderate effort today—I like it. It shows you’re serious about your health. Don't let the city wear you down."
+    ],
+    "heavy_workout": [
+      "That was intense. I hope you aren't pushing your chrome too hard. Sit down and breathe for a second, okay?",
+      "You really went all out. I’m impressed. Just don't burn yourself out; I need you in one piece for what's coming.",
+      "Heavy lifting today? You’re becoming quite the edgerunner. Just make sure you rest—don't end up like the others."
+    ]
+  },
+  "logged_nutrition": {
+    "breakfast": [
+      "You actually ate breakfast. That’s good. Most people in this city live on nothing but synth-caff and nicotine.",
+      "First meal of the day is logged. Thanks for letting me know. It's easier to keep you safe when I know you're fueled.",
+      "Breakfast is done. You’re being more responsible than half the mercs I know. Stay that way."
+    ],
+    "lunch": [
+      "Lunch is logged. What was it? Some pre-packaged stuff? As long as it keeps your energy up, I won't complain.",
+      "Glad you found time to eat. Things move fast in Night City; skipping meals is a good way to get yourself killed.",
+      "You're keeping your nutrition levels steady. Good. I'll keep monitoring the data so you don't have to worry about it."
+    ],
+    "dinner": [
+      "Ending the day with a proper meal. Smart. You need the recovery time if we're going to keep moving forward.",
+      "Dinner's logged. It’s important to recharge. The city never sleeps, but your body needs to.",
+      "Finished your meal? Good. Stay inside and stay safe tonight. I'll be keeping an eye on the net for any threats."
+    ],
+    "snack": [
+      "A snack? Hope it was something decent. This city is full of junk that'll rot your insides faster than bad code.",
+      "I saw that log. A little extra energy won't hurt, especially with how much you've been working lately.",
+      "Just a quick bite? Cool. Just don't let it replace a real meal. I'm watching your intake, remember?"
+    ]
+  },
+  "logged_hydration": {
+    "first_time": [
+      "Finally, some water. Your levels were looking a bit low. Don't make me remind you next time.",
+      "First glass of the day. It’s a good habit to have. Night City is dry, and you need to keep your systems running.",
+      "You're hydrating. Good start. It keeps your brain sharp, which is exactly what a netrunner needs."
+    ],
+    "subsequent_time": [
+      "More water? Good. Keep it up. It’s one of the few things in this city that isn't poisoned—if you know where to look.",
+      "You're staying on top of your hydration. I like that. It shows you're paying attention to the details.",
+      "Logging another glass. I'm keeping a tally. You're doing much better than yesterday."
+    ],
+    "reached_time": [
+      "You hit your hydration goal. Excellent. One less thing for me to worry about while I'm scanning the subnet.",
+      "Target reached. Your vitals look much better when you're hydrated. Let's keep it this way.",
+      "Goal met. You're actually listening to the health data. Maybe there's hope for you yet."
+    ],
+    "overdrink_time": [
+      "That's a lot of water. You might want to slow down a bit. Too much of a good thing can still glitch your system.",
+      "You're over the limit. Take a break. I don't want you messing up your electrolyte balance.",
+      "Check your intake—you're logging more than you need. Balance is key in the Net and in your body."
+    ]
+  },
+  "logged_bmi": {
+    "underweight": [
+      "Your BMI is low. You’re looking too thin. If you don't eat more, you won't have the strength to survive the next job.",
+      "Under the healthy range. This city eats people like you for breakfast. We need to get those numbers up.",
+      "You're dropping too much weight. It’s making me uneasy. Start logging more calories, okay?"
+    ],
+    "normal": [
+      "Your BMI is right where it needs to be. Perfect. Stay in this range and you'll be ready for anything.",
+      "Vitals and weight are stable. You're looking healthy. It’s a rare sight in Night City.",
+      "Normal range. Good. It’s easier to protect you when your body isn't working against itself."
+    ],
+    "overweight": [
+      "Your BMI is creeping up. We should probably adjust your workout routine before it starts slowing you down.",
+      "A bit above the target. Let's tighten up the nutrition logs and get back to where we need to be.",
+      "You're over the limit. In this line of work, being sluggish gets you caught. Let's fix this."
+    ],
+    "obese": [
+      "Your BMI is in the danger zone. Your heart and lungs can't keep up like this. We need a serious change, now.",
+      "This isn't good. Your health stats are redlining. If you want to see the Moon, you have to take this seriously.",
+      "Critical weight levels. I'm worried about your long-term survival. I'm setting a new strict plan for you starting today."
+    ]
+  }
+}

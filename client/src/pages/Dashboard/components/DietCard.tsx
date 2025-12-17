@@ -23,7 +23,6 @@ export function DietCard() {
   const { data: todayMeals = [] } = useTodayMealsQuery();
   const { data: foodLibrary = [] } = useTodayMealItemsQuery();
 
-  // Calculate nutrition totals from today's meals
   const nutritionStats = useMemo(() => {
     let protein = 0;
     let carbs = 0;
@@ -56,7 +55,6 @@ export function DietCard() {
   }, [todayMeals, foodLibrary, settings]);
 
   useEffect(() => {
-    // Animated counter
     if (valueRef.current) {
       const startValue = lastCaloriesRef.current;
       const endValue = nutritionStats.calories;
@@ -77,7 +75,6 @@ export function DietCard() {
         },
       });
 
-      // Glow pulse
       setTimeout(() => {
         if (valueRef.current) {
           animate(valueRef.current, {
@@ -94,7 +91,6 @@ export function DietCard() {
       }, 2000);
     }
 
-    // Macros animation
     if (macrosRef.current) {
       const macroItems = macrosRef.current.querySelectorAll(".macro-item");
       animate(macroItems, {
@@ -107,7 +103,6 @@ export function DietCard() {
       });
     }
 
-    // Icon rotation
     if (iconRef.current) {
       animate(iconRef.current, {
         rotate: [0, 360],
@@ -117,7 +112,6 @@ export function DietCard() {
       });
     }
 
-    // Orb floating
     if (orbRef.current) {
       animate(orbRef.current, {
         translateX: [0, random(-25, 25)],
@@ -130,7 +124,6 @@ export function DietCard() {
       });
     }
 
-    // Top line animation
     if (topLineRef.current) {
       animate(topLineRef.current, {
         opacity: [0.5, 1, 0.5],
@@ -145,7 +138,6 @@ export function DietCard() {
       });
     }
 
-    // Corners animation
     cornersRef.current.forEach((corner, i) => {
       if (corner) {
         animate(corner, {
@@ -158,7 +150,6 @@ export function DietCard() {
       }
     });
 
-    // Container animation
     if (containerRef.current) {
       animate(containerRef.current, {
         borderColor: [
@@ -203,32 +194,27 @@ export function DietCard() {
         onMouseLeave={handleMouseLeave}
         className="group bg-zinc-900/80 border-2 border-fuchsia-500/50 p-4 relative overflow-hidden transition-all duration-300 backdrop-blur-sm cursor-pointer"
       >
-        {/* Particles */}
         <div
           ref={particlesRef}
           className="absolute inset-0 pointer-events-none"
         ></div>
 
-        {/* Hologram overlay */}
         <div
           ref={hologramRef}
           className="absolute inset-0 bg-[linear-gradient(0deg,transparent_50%,rgba(168,85,247,0.1)_50%)] bg-[length:100%_4px] pointer-events-none"
           style={{ opacity: 0.05 }}
         ></div>
 
-        {/* Top line */}
         <div
           ref={topLineRef}
           className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-fuchsia-500 via-pink-500 to-transparent"
         ></div>
 
-        {/* Orb */}
         <div
           ref={orbRef}
           className="absolute -top-10 -right-10 w-20 h-20 bg-fuchsia-500/10 rounded-full blur-xl"
         ></div>
 
-        {/* Corners */}
         <div
           ref={(el) => {
             if (el) cornersRef.current[0] = el;

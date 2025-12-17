@@ -15,20 +15,17 @@ export function WorkoutHistory() {
   } = useWorkouts();
   const prevWorkoutsLengthRef = useRef(filteredWorkouts.length);
 
-  // Animate history items when workouts change or filter changes
   useEffect(() => {
     if (!historyRef.current || isLoadingWorkouts) return;
 
     const items = historyRef.current.querySelectorAll(".history-item");
     if (items.length === 0) return;
 
-    // Check if new items were added
     const isNewItemAdded =
       filteredWorkouts.length > prevWorkoutsLengthRef.current;
     prevWorkoutsLengthRef.current = filteredWorkouts.length;
 
     if (isNewItemAdded) {
-      // Animate only the first item (newest) with a pop effect
       const firstItem = items[0];
       if (firstItem) {
         animate(firstItem, {
@@ -39,12 +36,11 @@ export function WorkoutHistory() {
           ease: "outBack",
         });
       }
-      // Make remaining items visible immediately
+
       for (let i = 1; i < items.length; i++) {
         (items[i] as HTMLElement).style.opacity = "1";
       }
     } else {
-      // Initial load or filter change animation
       animate(items, {
         opacity: [0, 1],
         translateY: [20, 0],
@@ -54,7 +50,6 @@ export function WorkoutHistory() {
     }
   }, [filteredWorkouts, isLoadingWorkouts, historyRef, selectedTypeFilter]);
 
-  // Combine default and custom types for display
   const allTypes = [
     ...defaultWorkoutTypes.map((t) => ({
       id: t.name.toLowerCase(),
@@ -70,7 +65,6 @@ export function WorkoutHistory() {
     })),
   ];
 
-  // Helper to find type by name
   const findType = (typeName: string) => {
     return (
       allTypes.find((t) => t.id === typeName.toLowerCase()) || {
@@ -82,7 +76,6 @@ export function WorkoutHistory() {
     );
   };
 
-  // Format date for display
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleString("en-US", {
@@ -93,7 +86,6 @@ export function WorkoutHistory() {
     });
   };
 
-  // Sort workouts by created date (newest first)
   const sortedWorkouts = [...filteredWorkouts].sort(
     (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
   );
@@ -113,7 +105,6 @@ export function WorkoutHistory() {
       </h3>
 
       {isLoadingWorkouts ? (
-        // Loading skeleton
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div
@@ -133,7 +124,6 @@ export function WorkoutHistory() {
           ))}
         </div>
       ) : sortedWorkouts.length === 0 ? (
-        // Empty state
         <div className="text-center py-8 text-pink-400/50">
           <Icon
             icon="pixelarticons:mood-sad"
@@ -143,7 +133,6 @@ export function WorkoutHistory() {
           <p className="text-xs mt-1">Start by logging your first workout!</p>
         </div>
       ) : (
-        // Workout list
         <div className="space-y-3 overflow-auto min-h-0">
           {sortedWorkouts.map((w) => {
             const type = findType(w.type);

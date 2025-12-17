@@ -23,22 +23,18 @@ export function ChatMessages({
   const prevMessageIdsRef = useRef<Set<string>>(new Set());
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages.length, isTyping]);
 
-  // Animate new messages
   useEffect(() => {
     if (!messagesRef.current) return;
 
-    // Find new message IDs
     const currentIds = new Set(messages.map((m) => m.id));
     const newIds = messages.filter((m) => !prevMessageIdsRef.current.has(m.id));
 
-    // Animate new messages
     if (newIds.length > 0 && prevMessageIdsRef.current.size > 0) {
       newIds.forEach((msg) => {
         const element = messagesRef.current?.querySelector(
@@ -79,7 +75,6 @@ export function ChatMessages({
       className="flex-1 overflow-y-auto p-4 space-y-4"
       style={{ opacity: 0 }}
     >
-      {/* Decorative line at top */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 h-px bg-linear-to-r from-transparent via-cyan-500/30 to-transparent" />
         <span className="text-[10px] text-cyan-500/50 tracking-widest">
@@ -103,7 +98,6 @@ export function ChatMessages({
                 : "bg-cyan-500/10 border border-cyan-500/40"
             }`}
           >
-            {/* Corner accents */}
             <div
               className={`absolute top-0 ${
                 message.isUser ? "right-0" : "left-0"
@@ -119,7 +113,6 @@ export function ChatMessages({
               }`}
             />
 
-            {/* Sender label */}
             <div
               className={`text-[9px] tracking-widest mb-2 flex items-center gap-2 ${
                 message.isUser ? "text-pink-400/60" : "text-cyan-400/60"
@@ -134,7 +127,6 @@ export function ChatMessages({
               {message.isUser ? "USER" : "LUCY"}
             </div>
 
-            {/* Message content */}
             <p
               className={`text-sm leading-relaxed ${
                 message.isUser ? "text-pink-100" : "text-cyan-100"
@@ -143,7 +135,6 @@ export function ChatMessages({
               {message.content}
             </p>
 
-            {/* Timestamp */}
             <div
               className={`text-[8px] tracking-wider mt-2 ${
                 message.isUser ? "text-pink-500/40" : "text-cyan-500/40"
@@ -155,7 +146,6 @@ export function ChatMessages({
         </div>
       ))}
 
-      {/* Typing indicator */}
       {isTyping && (
         <div className="chat-message flex justify-start">
           <div className="relative max-w-[70%] p-4 bg-cyan-500/10 border border-cyan-500/40">

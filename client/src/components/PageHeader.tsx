@@ -28,18 +28,14 @@ export function PageHeader({
 
   const isPink = color === "pink";
 
-  // Title gradient based on theme
   const titleGradient = isPink
     ? "from-pink-400 via-fuchsia-400 to-cyan-400"
     : "from-cyan-400 via-pink-400 to-cyan-400";
 
-  // Icon color based on theme
   const iconColor = isPink ? "text-pink-500" : "text-cyan-500";
 
-  // Status text color based on theme
   const statusColor = isPink ? "text-pink-400/60" : "text-cyan-400/60";
 
-  // Header entrance animation
   useEffect(() => {
     if (headerRef.current) {
       animate(headerRef.current, {

@@ -2,7 +2,6 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { Icon } from "@iconify/react";
 import { animate, random } from "animejs";
 
-// Color configuration for all supported colors
 const colorConfig = {
   pink: { primary: "pink", glow: "rgba(236,72,153,", rgb: "236,72,153" },
   cyan: { primary: "cyan", glow: "rgba(34,211,238,", rgb: "34,211,238" },
@@ -58,7 +57,6 @@ export function CyberpunkModal({
   useEffect(() => {
     if (!isVisible) return;
 
-    // Create matrix rain effect
     if (matrixRef.current) {
       matrixRef.current.innerHTML = "";
       for (let i = 0; i < 30; i++) {
@@ -82,7 +80,6 @@ export function CyberpunkModal({
       }
     }
 
-    // Create floating particles
     if (particlesRef.current) {
       particlesRef.current.innerHTML = "";
       for (let i = 0; i < 40; i++) {
@@ -115,7 +112,6 @@ export function CyberpunkModal({
       }
     }
 
-    // Overlay fade in
     if (overlayRef.current) {
       animate(overlayRef.current, {
         opacity: [0, 1],
@@ -124,7 +120,6 @@ export function CyberpunkModal({
       });
     }
 
-    // Modal entrance with power-up effect
     if (modalRef.current) {
       animate(modalRef.current, {
         opacity: [0, 1],
@@ -135,7 +130,6 @@ export function CyberpunkModal({
       });
     }
 
-    // Title glitch animation
     if (titleRef.current) {
       const glitchInterval = setInterval(() => {
         if (titleRef.current) {
@@ -171,13 +165,11 @@ export function CyberpunkModal({
       style={{ opacity: 0 }}
       onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
-      {/* Matrix rain background */}
       <div
         ref={matrixRef}
         className="absolute inset-0 overflow-hidden pointer-events-none"
       />
 
-      {/* Radial glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -185,18 +177,15 @@ export function CyberpunkModal({
         }}
       />
 
-      {/* Cyberpunk grid */}
       <div
         className={`absolute inset-0 bg-[linear-gradient(rgba(${primaryRgb},0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(${primaryRgb},0.03)_1px,transparent_1px)] bg-size-[30px_30px] pointer-events-none`}
       />
 
-      {/* Particles */}
       <div
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none overflow-hidden"
       />
 
-      {/* Pulsing rings */}
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(3)].map((_, i) => (
           <div
@@ -212,7 +201,6 @@ export function CyberpunkModal({
         ))}
       </div>
 
-      {/* Modal */}
       <div
         ref={modalRef}
         className={`relative z-10 bg-zinc-900/95 border-2 border-${primaryColor}-500/60 p-8 max-w-lg w-full mx-4`}
@@ -221,10 +209,8 @@ export function CyberpunkModal({
           boxShadow: `0 0 60px ${primaryGlow}0.4), 0 0 120px ${accentGlow}0.2), inset 0 0 40px ${primaryGlow}0.1)`,
         }}
       >
-        {/* Holographic border effect */}
         <div className="absolute inset-0 border-2 border-fuchsia-500/20 animate-pulse pointer-events-none" />
 
-        {/* Corner accents */}
         <div
           className={`absolute top-0 left-0 w-10 h-10 border-l-4 border-t-4 border-${primaryColor}-500 pointer-events-none`}
         />
@@ -234,12 +220,9 @@ export function CyberpunkModal({
           className={`absolute bottom-0 right-0 w-10 h-10 border-r-4 border-b-4 border-${primaryColor}-500 pointer-events-none`}
         />
 
-        {/* Top accent line */}
         <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-pink-500 via-fuchsia-500 to-cyan-500 animate-pulse pointer-events-none" />
 
-        {/* Form content wrapper */}
         <div className="relative z-20">
-          {/* Status indicator */}
           <div className="flex justify-center mb-4">
             <div className="inline-flex items-center gap-2 px-4 py-1 border border-fuchsia-500/50 bg-fuchsia-500/10">
               <div className="w-2 h-2 bg-fuchsia-400 rounded-full animate-pulse" />
@@ -250,7 +233,6 @@ export function CyberpunkModal({
             </div>
           </div>
 
-          {/* Title */}
           <div ref={titleRef}>
             <h2
               className={`text-2xl font-bold tracking-[0.15em] text-${primaryColor}-400 text-center mb-6 flex items-center justify-center gap-3`}
@@ -264,10 +246,8 @@ export function CyberpunkModal({
             </h2>
           </div>
 
-          {/* Content from children */}
           {children}
 
-          {/* Bottom HUD */}
           <div className="mt-6 flex items-center justify-between text-[10px]">
             <span className="text-fuchsia-400/60 tracking-widest">
               <Icon
@@ -295,7 +275,6 @@ export function CyberpunkModal({
         </div>
       </div>
 
-      {/* Outer corner decorations */}
       <div
         className={`absolute top-8 left-8 w-16 h-16 border-l-2 border-t-2 border-${primaryColor}-500/40`}
       />
@@ -309,7 +288,6 @@ export function CyberpunkModal({
         className={`absolute bottom-8 right-8 w-16 h-16 border-r-2 border-b-2 border-${primaryColor}-500/40`}
       />
 
-      {/* Pinging corner dots */}
       {[
         "top-10 left-10",
         "top-10 right-10",

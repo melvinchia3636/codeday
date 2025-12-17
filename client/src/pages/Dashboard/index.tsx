@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { animate } from "animejs";
 import { Header } from "./components/Header";
 import { UserProfile } from "./components/UserProfile";
 import { WorkoutCard } from "./components/WorkoutCard";
@@ -13,6 +15,7 @@ import {
   DashboardAnimationsProvider,
   useDashboardAnimationRefs,
 } from "./contexts/DashboardAnimationsContext";
+import { useYandereLevel } from "../../contexts/YandereLevelContext";
 
 function DashboardContent() {
   const {
@@ -23,6 +26,27 @@ function DashboardContent() {
     timelinePanelRef,
     waifuPanelRef,
   } = useDashboardAnimationRefs();
+
+  const { yandereLevel } = useYandereLevel();
+
+  // Shake effect when yandere level is 3
+  useEffect(() => {
+    if (yandereLevel === 3 && containerRef.current) {
+      const container = containerRef.current;
+      const shakeAnimation = animate(container, {
+        translateX: [-3, 3, -3, 3, -2, 2, -1, 1, 0],
+        translateY: [-2, 2, -2, 2, -1, 1, 0],
+        duration: 500,
+        ease: "easeInOutSine",
+        loop: true,
+      });
+
+      return () => {
+        shakeAnimation.pause();
+        container.style.transform = "";
+      };
+    }
+  }, [yandereLevel, containerRef]);
 
   return (
     <div

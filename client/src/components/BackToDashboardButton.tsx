@@ -22,7 +22,7 @@ export function BackToDashboardButton({
       className={`flex p-2 items-center gap-2 transition-colors ${colorClasses}`}
     >
       <Icon icon="pixelarticons:arrow-left" className="w-5 h-5" />
-      <span className="tracking-widest text-sm">RETURN_TO_DASHBOARD</span>
+      <span className="tracking-widest text-sm">DASHBOARD</span>
     </Link>
   );
 }

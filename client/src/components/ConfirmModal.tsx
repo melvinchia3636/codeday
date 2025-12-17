@@ -33,7 +33,6 @@ interface ConfirmModalProps {
   config: ConfirmModalConfig;
 }
 
-// Theme configurations
 const themes = {
   danger: {
     primary: "pink",
@@ -72,7 +71,6 @@ export function ConfirmModal({
   useEffect(() => {
     if (!isVisible) return;
 
-    // Create floating particles
     if (particlesRef.current) {
       particlesRef.current.innerHTML = "";
       for (let i = 0; i < 25; i++) {
@@ -91,7 +89,6 @@ export function ConfirmModal({
       }
     }
 
-    // Overlay fade in
     if (overlayRef.current) {
       animate(overlayRef.current, {
         opacity: [0, 1],
@@ -100,7 +97,6 @@ export function ConfirmModal({
       });
     }
 
-    // Modal entrance
     if (modalRef.current) {
       animate(modalRef.current, {
         opacity: [0, 1],
@@ -111,7 +107,6 @@ export function ConfirmModal({
       });
     }
 
-    // Icon pulse
     if (iconRef.current) {
       animate(iconRef.current, {
         scale: [0, 1.3, 1],
@@ -122,7 +117,6 @@ export function ConfirmModal({
       });
     }
 
-    // Warning bars
     if (warningBarsRef.current) {
       const bars = warningBarsRef.current.querySelectorAll(".warning-bar");
       animate(bars, {
@@ -134,7 +128,6 @@ export function ConfirmModal({
       });
     }
 
-    // Particles
     if (particlesRef.current) {
       animate(particlesRef.current.children, {
         opacity: [0, 0.8, 0],
@@ -148,7 +141,6 @@ export function ConfirmModal({
       });
     }
 
-    // Glitch effect
     const glitchInterval = setInterval(() => {
       if (glitchRef.current) {
         animate(glitchRef.current, {
@@ -184,7 +176,6 @@ export function ConfirmModal({
       style={{ opacity: 0 }}
       onClick={(e) => e.target === e.currentTarget && !isLoading && onCancel()}
     >
-      {/* Radial glow */}
       <div
         className="absolute inset-0"
         style={{
@@ -192,7 +183,6 @@ export function ConfirmModal({
         }}
       />
 
-      {/* Warning stripes */}
       <div className="absolute inset-0 overflow-hidden opacity-5">
         <div
           className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_20px,rgba(239,68,68,1)_20px,rgba(239,68,68,1)_40px)]"
@@ -200,7 +190,6 @@ export function ConfirmModal({
         />
       </div>
 
-      {/* Grid */}
       <div
         className={`absolute inset-0 bg-[linear-gradient(rgba(${
           config.theme === "warning" ? "34,211,238" : "236,72,153"
@@ -209,13 +198,11 @@ export function ConfirmModal({
         },0.02)_1px,transparent_1px)] bg-size-[25px_25px]`}
       />
 
-      {/* Particles */}
       <div
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none overflow-hidden"
       />
 
-      {/* Warning bars */}
       <div
         ref={warningBarsRef}
         className="absolute top-0 left-0 right-0 flex flex-col gap-1 p-2"
@@ -229,7 +216,6 @@ export function ConfirmModal({
         ))}
       </div>
 
-      {/* Modal */}
       <div
         ref={modalRef}
         className={`relative bg-zinc-900/95 border-2 ${primaryBorder}/60 p-10 max-w-md w-full mx-4`}
@@ -238,24 +224,20 @@ export function ConfirmModal({
           boxShadow: `0 0 50px ${theme.glow}0.3), 0 0 100px rgba(239,68,68,0.15), inset 0 0 30px ${theme.glow}0.1)`,
         }}
       >
-        {/* Border glow */}
         <div
           className={`absolute inset-0 border-2 ${primaryBorder}/30 animate-pulse`}
           style={{ animationDuration: "1.5s" }}
         />
 
-        {/* Corner accents */}
         <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-amber-500/80" />
         <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-amber-500/80" />
         <div className="absolute bottom-0 left-0 w-8 h-8 border-l-2 border-b-2 border-amber-500/80" />
         <div className="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-amber-500/80" />
 
-        {/* Top accent */}
         <div
           className={`absolute top-0 left-0 w-full h-1 bg-linear-to-r from-amber-500 via-${isPrimary}-500 to-amber-500 animate-pulse`}
         />
 
-        {/* Icon */}
         <div className="relative w-24 h-24 mx-auto mb-6">
           <div
             className={`absolute inset-0 border-2 ${primaryBorder}/30 rounded-full animate-ping`}
@@ -286,7 +268,6 @@ export function ConfirmModal({
           />
         </div>
 
-        {/* Status badge */}
         {config.statusText && (
           <div className="flex justify-center mb-4">
             <div className="inline-flex items-center gap-2 px-4 py-1 border border-amber-500/50 bg-amber-500/10">
@@ -299,7 +280,6 @@ export function ConfirmModal({
           </div>
         )}
 
-        {/* Title */}
         <div ref={glitchRef}>
           <h2
             className={`text-2xl font-bold tracking-[0.15em] ${primaryColor} text-center mb-2 flex items-center justify-center gap-3`}
@@ -313,7 +293,6 @@ export function ConfirmModal({
           </h2>
         </div>
 
-        {/* Divider */}
         <div className="flex items-center justify-center gap-2 mb-5">
           <div className={`w-12 h-px ${primaryBg}/50`} />
           <Icon
@@ -323,7 +302,6 @@ export function ConfirmModal({
           <div className={`w-12 h-px ${primaryBg}/50`} />
         </div>
 
-        {/* Message */}
         <p className="text-zinc-300 text-center tracking-wide mb-8 text-sm leading-relaxed">
           {config.message}
           {config.subMessage && (
@@ -336,7 +314,6 @@ export function ConfirmModal({
           )}
         </p>
 
-        {/* Buttons */}
         <div className="flex gap-4">
           <button
             onClick={onCancel}
@@ -380,7 +357,6 @@ export function ConfirmModal({
           </button>
         </div>
 
-        {/* Bottom HUD */}
         <div className="mt-6 flex items-center justify-between text-[10px]">
           <span className="text-amber-400/60 tracking-widest">
             <Icon
@@ -407,7 +383,6 @@ export function ConfirmModal({
         </div>
       </div>
 
-      {/* Outer corners */}
       <div
         className={`absolute top-8 left-8 w-12 h-12 border-l-2 border-t-2 ${primaryBorder}/40`}
       />
@@ -421,7 +396,6 @@ export function ConfirmModal({
         className={`absolute bottom-8 right-8 w-12 h-12 border-r-2 border-b-2 ${primaryBorder}/40`}
       />
 
-      {/* Pinging corners */}
       {[
         "top-10 left-10",
         "top-10 right-10",

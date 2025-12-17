@@ -13,7 +13,6 @@ export function WaterLogs() {
     new Set()
   );
 
-  // Transform logs for display
   const displayLogs = useMemo(
     () =>
       logs.map((log) => ({
@@ -28,22 +27,18 @@ export function WaterLogs() {
     [logs]
   );
 
-  // Animate log items when they change
   useEffect(() => {
     if (!logsContainerRef.current || displayLogs.length === 0) return;
 
-    // Find items that haven't been animated yet
     const newLogIds = displayLogs
       .filter((log) => !animatedIds.has(log.id))
       .map((log) => log.id);
 
     if (newLogIds.length === 0) return;
 
-    // Small delay to ensure DOM is updated
     requestAnimationFrame(() => {
       if (!logsContainerRef.current) return;
 
-      // Animate new items
       newLogIds.forEach((id) => {
         const item = logsContainerRef.current?.querySelector(
           `[data-log-id="${id}"]`
@@ -59,7 +54,6 @@ export function WaterLogs() {
         }
       });
 
-      // Mark these ids as animated
       setAnimatedIds((prev) => {
         const next = new Set(prev);
         newLogIds.forEach((id) => next.add(id));
@@ -68,7 +62,6 @@ export function WaterLogs() {
     });
   }, [displayLogs, animatedIds]);
 
-  // Reset animated ids when logs are cleared
   useEffect(() => {
     if (displayLogs.length === 0) {
       setAnimatedIds(new Set());

@@ -10,6 +10,10 @@ import {
 import { useTodayMealItemsQuery } from "../../../hooks/useMealItemQueries";
 import { calculateCalories } from "../../../lib/mealItem";
 import type { CreateMealDto, UpdateMealDto } from "../../../lib/meal";
+import {
+  useLucyToast,
+  type NutritionAction,
+} from "../../../contexts/LucyToastContext";
 
 interface MealType {
   id: string;
@@ -27,6 +31,7 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMealType, setSelectedMealType] = useState<string | null>(null);
   const hasAnimated = useRef(false);
+  const { showToast } = useLucyToast();
 
   const { data: todayMeals = [], isLoading: mealsLoading } =
     useTodayMealsQuery();
@@ -34,7 +39,6 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
   const createMutation = useCreateMealMutation();
   const updateMutation = useUpdateMealMutation();
 
-  // Animate meal items in when data is loaded
   useEffect(() => {
     if (!mealsLoading && !hasAnimated.current && mealsRef.current) {
       hasAnimated.current = true;
@@ -51,7 +55,6 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
     }
   }, [mealsLoading, mealsRef]);
 
-  // Editing meal state - now uses {foodId, quantity}[] structure
   const [editingMeal, setEditingMeal] = useState<{
     id: string;
     type: string;
@@ -80,16 +83,28 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
     type: string;
     items: { mealItemId: string; quantity: number }[];
   }) => {
-    // Convert to new {foodId, quantity} structure
     const items = data.items.map((i) => ({
       foodId: i.mealItemId,
       quantity: i.quantity,
     }));
 
+    // Map meal type to NutritionAction
+    const getMealAction = (type: string): NutritionAction => {
+      const normalizedType = type.toLowerCase();
+      if (normalizedType === "breakfast") return "breakfast";
+      if (normalizedType === "lunch") return "lunch";
+      if (normalizedType === "dinner") return "dinner";
+      return "snack";
+    };
+
+    const mealType = data.type;
+
     const onSuccess = () => {
       setIsModalOpen(false);
       setSelectedMealType(null);
       setEditingMeal(null);
+      // Show Lucy toast for meal logging
+      showToast("logged_nutrition", getMealAction(mealType));
     };
 
     const onError = (error: Error) => {
@@ -97,7 +112,6 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
     };
 
     if (data.id) {
-      // Edit mode - update existing meal
       const updateData: UpdateMealDto = {
         type: data.type,
         items,
@@ -107,7 +121,6 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
         { onSuccess, onError }
       );
     } else {
-      // Create mode - new meal
       const createData: CreateMealDto = {
         type: data.type,
         items,
@@ -122,7 +135,6 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
     setEditingMeal(null);
   };
 
-  // Helper to get meal items for a meal - with null checks
   const getMealItems = (
     items: { foodId: string; quantity: number }[] | null | undefined
   ) => {
@@ -132,7 +144,6 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
       .filter(Boolean);
   };
 
-  // Helper to calculate meal total - with null checks
   const getMealTotal = (
     items: { foodId: string; quantity: number }[] | null | undefined
   ) => {
@@ -171,7 +182,7 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
             <span className="text-xs text-pink-400 group-hover:text-cyan-400 tracking-widest transition-colors">
               LOG
             </span>
-            {/* Corner accents */}
+
             <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-pink-500/50 group-hover:border-cyan-400 transition-colors" />
             <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-pink-500/50 group-hover:border-cyan-400 transition-colors" />
             <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-pink-500/50 group-hover:border-cyan-400 transition-colors" />
@@ -179,7 +190,6 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
           </button>
         </h3>
 
-        {/* Loading state */}
         {mealsLoading && (
           <div className="flex items-center justify-center py-8">
             <Icon
@@ -192,16 +202,14 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
         {!mealsLoading && (
           <div className="space-y-4">
             {mealTypes.map((type) => {
-              // Find all meals of this type for today
               const mealsOfType = todayMeals.filter((m) => m.type === type.id);
-              const totalCalories = mealsOfType.reduce(
-                (sum, meal) => sum + getMealTotal(meal.items),
-                0
-              );
+              const totalCalories = mealsOfType
+                .reduce((sum, meal) => sum + getMealTotal(meal.items), 0)
+                .toFixed(2);
               const allItems = mealsOfType.flatMap((m) =>
                 getMealItems(m.items)
               );
-              // Get the first meal of this type to edit (if any)
+
               const mealToEdit =
                 mealsOfType.length > 0 ? mealsOfType[0] : undefined;
 
@@ -261,7 +269,6 @@ export function MealTimeline({ mealsRef, mealTypes }: MealTimelineProps) {
         )}
       </div>
 
-      {/* Meal Log Modal */}
       <MealLogModal
         isVisible={isModalOpen}
         defaultMealType={selectedMealType || "breakfast"}

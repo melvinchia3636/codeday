@@ -1,0 +1,85 @@
+{
+  "logged_workout": {
+    "light_workout": [
+      "I saw you moving a bit today! It’s like when we first started training—small steps lead to the Moon, you know? I’m so proud of you, darling.",
+      "Just a light one today? That’s perfectly okay, my love. You’re staying active for us, and that’s all that matters to me. You’re doing great!",
+      "I love seeing you take care of yourself. Even a little movement makes my heart flutter. You're so precious to me, stay healthy, okay?"
+    ],
+    "moderate_workout": [
+      "You’re working so hard! It reminds me of how dedicated you were when we were running through the city. I’m always right here cheering for you, my hero.",
+      "That was a great session! You’re getting stronger every day, just for our future. I’m so lucky to have you. Let’s keep this up together!",
+      "I can see your progress, and it makes me so happy I could cry. You’re doing this for us, aren't you? You’re absolutely wonderful, darling."
+    ],
+    "heavy_workout": [
+      "Wow, look at you go! You’re becoming so strong... I’ll always be here to support you when you’re tired. You’re my everything, thank you for trying so hard.",
+      "Incredible effort! You’re pushing yourself to the limit just like a top-tier edgerunner. I’m so proud to be yours. Now, come rest with me for a bit?",
+      "You did so much today! My heart is racing just watching you. I promise to keep you safe and cared for after a workout like that. You're my world."
+    ]
+  },
+  "logged_nutrition": {
+    "breakfast": [
+      "Good morning, sunshine! I’m so glad you ate. Starting the day fueled up is the best way to ensure we have a long future together.",
+      "You remembered breakfast! You’re being so good for me. I want you to have all the energy in the world so we can dream about the Moon together.",
+      "Seeing you eat well makes me the happiest girl in Night City. Thank you for taking care of the body I love so much, my precious."
+    ],
+    "lunch": [
+      "Lunchtime! I hope it was delicious. Every healthy choice you make is a gift to me. I’m so devoted to keeping you healthy, darling.",
+      "I’m so happy you’re refueling. You need to stay strong so we can stay together forever. I’ll always be here to watch over your nutrition!",
+      "You’re eating so well today! It makes me feel so loved when you listen to my advice. You’re just perfect, you know that?"
+    ],
+    "dinner": [
+      "Dinner is logged! You’re doing such a good job maintaining your health. I’m so proud of you, my love. Sleep well tonight, okay?",
+      "A healthy dinner for my favorite person. I’m always thinking of you and how to keep you safe. You mean the world to me.",
+      "I love that you’re ending the day on a healthy note. It means we’re one day closer to our dreams. I’ll be right here waiting for you tomorrow."
+    ],
+    "snack": [
+      "A little treat? You deserve it for being such a hard worker! I love seeing you happy. Just don't forget I'm always watching your health!",
+      "Mmm, looks yummy! I’m glad you’re enjoying yourself. A happy heart is a healthy heart, and yours belongs entirely to me.",
+      "A snack for my sweetie! It’s okay to indulge a little when you’ve been this good. You’re so adorable, I just want to protect you forever."
+    ]
+  },
+  "logged_hydration": {
+    "first_time": [
+      "First glass of water! Good job, darling. Keeping your systems hydrated is the first step to staying sharp. I’m so proud of you.",
+      "You’re starting the day right! It makes me so happy to see you taking care of yourself. Drink up for me, okay?",
+      "Hydration is key! I love watching you be so responsible. It shows how much you value our time together. You're so sweet."
+    ],
+    "subsequent_time": [
+      "More water? You’re doing amazing! I’m keeping track of every drop because I care about you more than anything.",
+      "Keep it up, my love! You’re staying so refreshed. I’ll be right here to remind you if you ever forget, but you’re being so good!",
+      "You’re hydrating perfectly. It makes your skin look so healthy... I could stare at you all day. Thank you for staying healthy for us."
+    ],
+    "reached_time": [
+      "You hit your goal! Yay! I’m so happy, I feel like I’m walking on the Moon! You’re the best partner ever.",
+      "Goal reached! You’re so disciplined and wonderful. I knew I could count on you to stay healthy for our future. I love you so much!",
+      "You did it! Your hydration is perfect now. Now I can rest easy knowing my favorite person is fully taken care of. You're my hero."
+    ],
+    "overdrink_time": [
+      "Careful, love! That’s a lot of water. I don't want you to feel sick. Please listen to me, I only want what’s best for you!",
+      "Slow down a bit, darling. I love your enthusiasm, but let’s keep it balanced. I need you to be safe and comfortable, always.",
+      "I think that’s plenty for now! Let’s take a little break. I get so worried when I think you might be overdoing it. Your health is my priority."
+    ]
+  },
+  "logged_bmi": {
+    "underweight": [
+      "You’re looking a bit thin, my love. Please eat a little more for me? I want you to be strong enough to hold me forever.",
+      "I’m getting a little worried... you need to be nourished so we can escape this city together. Let me help you reach a healthy weight!",
+      "You’re so precious to me, I can’t bear the thought of you being weak. Let’s work on getting you some more energy, okay, sweetheart?"
+    ],
+    "normal": [
+      "Your BMI is perfect! You look absolutely breathtaking. I wouldn't change a single thing about you. You’re my perfect match.",
+      "Exactly where you should be! You’re doing so well, darling. I’m so proud to be the one by your side. You’re so healthy and handsome/beautiful!",
+      "You’re in the perfect range! It makes me so happy to see you thriving. I’ll always be here to help you stay just like this."
+    ],
+    "overweight": [
+      "We might need to focus a little more on our health goals, but don't worry! I’ll be right here to support you every step of the way, my love.",
+      "A little extra to love is fine, but I want you to live a long, healthy life with me. Let’s try to get back to our target together, okay?",
+      "I’ll help you stay motivated, I promise. We’ll reach your goal together because your heart is the most important thing to me."
+    ],
+    "obese": [
+      "I’m getting really worried about your heart, darling. Please, let’s make a change so we can have a long future together. I need you here with me.",
+      "It’s time to be a bit more serious about our health, my love. I’ll be your personal coach and your biggest fan. We can do this together!",
+      "I love you so much, and that’s why I want to see you get healthier. Let’s start making some changes for us, okay? I’m here for you, always."
+    ]
+  }
+}

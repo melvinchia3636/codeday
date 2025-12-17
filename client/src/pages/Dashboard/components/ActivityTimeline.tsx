@@ -26,11 +26,9 @@ export function ActivityTimeline() {
   const { data: meals = [] } = useTodayMealsQuery();
   const { data: waterLogs = [] } = useTodayLogsQuery();
 
-  // Combine and sort all activities
   const activities = useMemo(() => {
     const items: ActivityItem[] = [];
 
-    // Add workouts
     workouts.forEach((w) => {
       items.push({
         id: `workout-${w.id}`,
@@ -41,7 +39,6 @@ export function ActivityTimeline() {
       });
     });
 
-    // Add meals
     meals.forEach((m) => {
       const mealTypeLabel = m.type.charAt(0).toUpperCase() + m.type.slice(1);
       const itemCount = m.items?.length || 0;
@@ -54,7 +51,6 @@ export function ActivityTimeline() {
       });
     });
 
-    // Add water logs
     waterLogs.forEach((w) => {
       items.push({
         id: `water-${w.id}`,
@@ -65,7 +61,6 @@ export function ActivityTimeline() {
       });
     });
 
-    // Sort by timestamp ascending (oldest first) and take 25
     return items
       .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
       .slice(0, 25);
@@ -101,30 +96,27 @@ export function ActivityTimeline() {
   };
 
   useEffect(() => {
-    // Title animation - wait for parent container
     if (titleRef.current) {
       animate(titleRef.current, {
         opacity: [0, 1],
         translateX: [-20, 0],
         duration: 600,
-        delay: 1200, // Wait for parent container animation
+        delay: 1200,
         ease: "outExpo",
       });
     }
 
-    // Timeline items stagger animation - wait for parent container
     if (itemsRef.current) {
       const items = itemsRef.current.querySelectorAll(".timeline-item");
 
       animate(items, {
         opacity: [0, 1],
         translateX: [-30, 0],
-        delay: stagger(80, { start: 1400 }), // Start after parent container + title
+        delay: stagger(80, { start: 1400 }),
         duration: 400,
         ease: "outExpo",
       });
 
-      // Pulse dots - start after items animate
       const dots = itemsRef.current.querySelectorAll(".activity-dot");
       setTimeout(() => {
         animate(dots, {
@@ -138,7 +130,6 @@ export function ActivityTimeline() {
       }, 2500);
     }
 
-    // Scanline effect
     if (scanlineRef.current) {
       animate(scanlineRef.current, {
         translateY: ["-100%", "300%"],
@@ -148,7 +139,6 @@ export function ActivityTimeline() {
       });
     }
 
-    // Background glow
     if (glowRef.current) {
       animate(glowRef.current, {
         opacity: [0.02, 0.1, 0.02],
@@ -158,7 +148,6 @@ export function ActivityTimeline() {
       });
     }
 
-    // Corners animation
     cornersRef.current.forEach((corner, i) => {
       if (corner) {
         animate(corner, {
@@ -171,9 +160,7 @@ export function ActivityTimeline() {
       }
     });
 
-    // Data stream background
     if (dataStreamRef.current) {
-      // Clear existing streams
       dataStreamRef.current.innerHTML = "";
       for (let i = 0; i < 6; i++) {
         const stream = document.createElement("div");
@@ -195,7 +182,6 @@ export function ActivityTimeline() {
       }
     }
 
-    // Container border animation
     if (containerRef.current) {
       animate(containerRef.current, {
         borderColor: [
@@ -215,25 +201,21 @@ export function ActivityTimeline() {
       ref={containerRef}
       className="flex-1 bg-zinc-900/50 border border-pink-500/30 p-4 relative overflow-hidden backdrop-blur-sm flex flex-col"
     >
-      {/* Data streams background */}
       <div
         ref={dataStreamRef}
         className="absolute inset-0 pointer-events-none overflow-hidden"
       ></div>
 
-      {/* Scanline */}
       <div
         ref={scanlineRef}
         className="absolute left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-cyan-500/30 to-transparent pointer-events-none z-10"
       ></div>
 
-      {/* Background glow */}
       <div
         ref={glowRef}
         className="absolute inset-0 bg-gradient-radial from-pink-500/10 to-transparent pointer-events-none"
       ></div>
 
-      {/* Corners */}
       <div
         ref={(el) => {
           if (el) cornersRef.current[0] = el;

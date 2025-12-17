@@ -25,7 +25,6 @@ import type {
   UpdateSettingsData,
 } from "../lib/profile";
 
-// Form data types
 export interface ProfileFormData {
   gender: "male" | "female" | "other" | "prefer_not_to_say";
   dob: string;
@@ -42,45 +41,36 @@ export interface SettingsFormData {
 }
 
 interface UserProfileContextType {
-  // User data from users collection
   userData: UserData | null | undefined;
   isUserDataLoading: boolean;
   userDataError: Error | null;
 
-  // Settings
   settings: UserSettings | null | undefined;
   isSettingsLoading: boolean;
   settingsError: Error | null;
 
-  // Weight target
   weightTarget: WeightTarget | null | undefined;
   isWeightTargetLoading: boolean;
 
-  // Combined loading state
   isLoading: boolean;
 
-  // Form state for editing
   profileForm: ProfileFormData;
   setProfileForm: React.Dispatch<React.SetStateAction<ProfileFormData>>;
   settingsForm: SettingsFormData;
   setSettingsForm: React.Dispatch<React.SetStateAction<SettingsFormData>>;
 
-  // Mutations
   updateUserData: (data: UpdateUserData) => Promise<UserData>;
   updateSettings: (data: UpdateSettingsData) => Promise<UserSettings>;
   saveProfile: () => Promise<void>;
   isSaving: boolean;
 
-  // Reset form to server values
   resetForm: () => void;
 
-  // Utilities
   refetchAll: () => void;
   invalidateAll: () => void;
 
-  // Computed values
   bmi: number;
-  formBmi: number; // BMI based on form values (for live preview)
+  formBmi: number;
 }
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(
@@ -106,18 +96,16 @@ function calculateBMI(heightCm?: number, weightKg?: number): number {
  */
 function formatDateForInput(dateString?: string): string {
   if (!dateString) return "";
-  // Try to extract YYYY-MM-DD from the beginning of the string
+
   const match = dateString.match(/^(\d{4}-\d{2}-\d{2})/);
   if (match) return match[1];
-  // Fallback: try to parse as Date and format
+
   try {
     const date = new Date(dateString);
     if (!isNaN(date.getTime())) {
       return date.toISOString().split("T")[0];
     }
-  } catch {
-    // Ignore parsing errors
-  }
+  } catch {}
   return "";
 }
 
@@ -139,7 +127,6 @@ const defaultSettingsForm: SettingsFormData = {
 export function UserProfileProvider({ children }: UserProfileProviderProps) {
   const queryClient = useQueryClient();
 
-  // Query hooks
   const {
     data: userData,
     isLoading: isUserDataLoading,
@@ -160,13 +147,11 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     refetch: refetchWeightTarget,
   } = useWeightTargetQuery();
 
-  // Form state
   const [profileForm, setProfileForm] =
     useState<ProfileFormData>(defaultProfileForm);
   const [settingsForm, setSettingsForm] =
     useState<SettingsFormData>(defaultSettingsForm);
 
-  // Initialize form from server data
   useEffect(() => {
     if (userData) {
       console.log(userData);
@@ -191,12 +176,10 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     }
   }, [settings]);
 
-  // Mutation hooks
   const updateUserMutation = useUpdateUserMutation();
   const updateSettingsMutation = useUpdateSettingsMutation();
   const saveProfileMutation = useSaveProfileMutation();
 
-  // Combined loading state
   const isLoading =
     isUserDataLoading || isSettingsLoading || isWeightTargetLoading;
   const isSaving =
@@ -204,7 +187,6 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     updateSettingsMutation.isPending ||
     saveProfileMutation.isPending;
 
-  // Mutation functions
   const updateUserData = async (data: UpdateUserData): Promise<UserData> => {
     return updateUserMutation.mutateAsync(data);
   };
@@ -215,7 +197,6 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     return updateSettingsMutation.mutateAsync(data);
   };
 
-  // Save using current form state
   const saveProfile = async (): Promise<void> => {
     await saveProfileMutation.mutateAsync({
       userData: {
@@ -234,7 +215,6 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     });
   };
 
-  // Reset form to server values
   const resetForm = () => {
     if (userData) {
       setProfileForm({
@@ -255,7 +235,6 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     }
   };
 
-  // Utility functions
   const refetchAll = () => {
     refetchUserData();
     refetchSettings();
@@ -266,9 +245,8 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     queryClient.invalidateQueries({ queryKey: profileQueryKeys.all });
   };
 
-  // Computed BMI (from saved data)
   const bmi = calculateBMI(userData?.heightCm, userData?.weightKg);
-  // Form BMI (from current form values, for live preview)
+
   const formBmi = calculateBMI(profileForm.heightCm, profileForm.weightKg);
 
   const value: UserProfileContextType = {

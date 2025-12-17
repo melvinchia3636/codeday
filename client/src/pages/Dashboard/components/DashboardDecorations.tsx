@@ -21,56 +21,47 @@ export function DashboardDecorations() {
 
   return (
     <>
-      {/* Matrix rain background */}
       <div
         ref={matrixRainRef}
         className="absolute inset-0 pointer-events-none overflow-hidden z-0"
       />
 
-      {/* Cyber grid */}
       <div
         ref={cyberGridRef}
         className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(236,72,153,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.2)_1px,transparent_1px)] bg-size-[40px_40px] z-0"
       />
 
-      {/* Hex grid overlay */}
       <div
         ref={hexGridRef}
         className="absolute inset-0 pointer-events-none overflow-hidden z-0"
       />
 
-      {/* Floating particles */}
       <div
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none overflow-hidden z-0"
       />
 
-      {/* Data streams */}
       <div
         ref={dataStreamRef}
         className="absolute inset-0 pointer-events-none overflow-hidden z-0"
       />
 
-      {/* Scanline effect */}
       <div
         ref={scanlineRef}
         className="absolute left-0 right-0 h-1 bg-linear-to-b from-transparent via-cyan-500/30 to-transparent pointer-events-none z-50"
       />
 
-      {/* Glitch overlay */}
       <div
         ref={glitchOverlayRef}
         className="absolute inset-0 bg-linear-to-r from-pink-500/20 via-transparent to-cyan-500/20 pointer-events-none z-40 mix-blend-overlay"
         style={{ opacity: 0 }}
       />
 
-      {/* Energy field */}
       <div
         ref={energyFieldRef}
         className="absolute inset-0 pointer-events-none z-0"
       />
 
-      {/* Floating orbs */}
       {[...Array(6)].map((_, i) => (
         <div
           key={`orb-${i}`}
@@ -91,7 +82,6 @@ export function DashboardDecorations() {
         />
       ))}
 
-      {/* Hologram rings */}
       {[...Array(5)].map((_, i) => (
         <div
           key={`ring-${i}`}
@@ -116,7 +106,6 @@ export function DashboardDecorations() {
         />
       ))}
 
-      {/* Pulse rings */}
       {[...Array(3)].map((_, i) => (
         <div
           key={`pulse-${i}`}
@@ -128,7 +117,6 @@ export function DashboardDecorations() {
         />
       ))}
 
-      {/* Neon accent lines */}
       <div
         ref={(el) => {
           if (el) neonLinesRef.current[0] = el;
@@ -158,7 +146,6 @@ export function DashboardDecorations() {
         style={{ opacity: 0, transform: "scaleY(0)" }}
       />
 
-      {/* Corner brackets */}
       <div
         ref={(el) => {
           if (el) cornersRef.current[0] = el;
@@ -188,7 +175,6 @@ export function DashboardDecorations() {
         style={{ opacity: 0 }}
       />
 
-      {/* Side bars - Top */}
       <div className="absolute left-12 top-8 flex gap-2 z-10">
         {[...Array(8)].map((_, i) => (
           <div
@@ -204,7 +190,6 @@ export function DashboardDecorations() {
         ))}
       </div>
 
-      {/* Side bars - Bottom */}
       <div className="absolute right-12 bottom-8 flex gap-2 z-10">
         {[...Array(8)].map((_, i) => (
           <div

@@ -22,21 +22,18 @@ export function WaterCard() {
   const targetMl = settings?.hydroTargetMl || 3000;
   const { data: summary } = useWaterSummaryQuery(targetMl);
 
-  // Calculate hydration stats from summary
   const hydrationStats = useMemo(() => {
     const currentMl = summary?.totalMl || 0;
     const progress = summary?.percentage || 0;
     const liters = (currentMl / 1000).toFixed(1);
     const targetLiters = (targetMl / 1000).toFixed(1);
 
-    // Calculate filled bars (8 bars total)
     const filledBars = Math.round((progress / 100) * 8);
 
     return { currentMl, targetMl, progress, liters, targetLiters, filledBars };
   }, [summary, targetMl]);
 
   useEffect(() => {
-    // Animated value
     if (valueRef.current) {
       const startValue = lastAmountRef.current;
       const endValue = hydrationStats.currentMl;
@@ -55,7 +52,6 @@ export function WaterCard() {
         },
       });
 
-      // Glow pulse
       setTimeout(() => {
         if (valueRef.current) {
           animate(valueRef.current, {
@@ -72,7 +68,6 @@ export function WaterCard() {
       }, 1500);
     }
 
-    // Water bars fill animation
     if (barsContainerRef.current) {
       const bars = barsContainerRef.current.querySelectorAll(".water-bar");
       bars.forEach((bar, i) => {
@@ -87,7 +82,6 @@ export function WaterCard() {
       });
     }
 
-    // Icon water drop animation
     if (iconRef.current) {
       animate(iconRef.current, {
         translateY: [0, -5, 0],
@@ -98,7 +92,6 @@ export function WaterCard() {
       });
     }
 
-    // Floating orb
     if (orbRef.current) {
       animate(orbRef.current, {
         translateX: [0, random(-30, 30)],
@@ -111,7 +104,6 @@ export function WaterCard() {
       });
     }
 
-    // Top line glow
     if (topLineRef.current) {
       animate(topLineRef.current, {
         opacity: [0.5, 1, 0.5],
@@ -126,7 +118,6 @@ export function WaterCard() {
       });
     }
 
-    // Corners
     cornersRef.current.forEach((corner, i) => {
       if (corner) {
         animate(corner, {
@@ -139,7 +130,6 @@ export function WaterCard() {
       }
     });
 
-    // Wave effect
     if (waveRef.current) {
       animate(waveRef.current, {
         translateX: ["-25%", "0%"],
@@ -149,7 +139,6 @@ export function WaterCard() {
       });
     }
 
-    // Container animation
     if (containerRef.current) {
       animate(containerRef.current, {
         borderColor: [
@@ -194,19 +183,16 @@ export function WaterCard() {
         onMouseLeave={handleMouseLeave}
         className="group bg-zinc-900/80 border-2 border-cyan-500/50 p-4 relative overflow-hidden transition-all duration-300 backdrop-blur-sm cursor-pointer"
       >
-        {/* Particles */}
         <div
           ref={particlesRef}
           className="absolute inset-0 pointer-events-none"
         ></div>
 
-        {/* Bubbles */}
         <div
           ref={bubblesRef}
           className="absolute inset-0 pointer-events-none"
         ></div>
 
-        {/* Wave effect at bottom */}
         <div className="absolute bottom-0 left-0 right-0 h-8 overflow-hidden pointer-events-none opacity-20">
           <div
             ref={waveRef}
@@ -218,19 +204,16 @@ export function WaterCard() {
           ></div>
         </div>
 
-        {/* Top line */}
         <div
           ref={topLineRef}
           className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-cyan-500 via-blue-500 to-transparent"
         ></div>
 
-        {/* Orb */}
         <div
           ref={orbRef}
           className="absolute -top-10 -right-10 w-20 h-20 bg-cyan-500/10 rounded-full blur-xl"
         ></div>
 
-        {/* Corners */}
         <div
           ref={(el) => {
             if (el) cornersRef.current[0] = el;

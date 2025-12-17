@@ -1,3 +1,34 @@
+//TODO 888888888888888888888888888888888888888888888888888888888888888888888888
+//TODO 南无阿弥陀佛南无阿弥陀佛南无阿弥陀佛南无阿弥陀佛南无阿弥陀佛南无阿弥陀佛88
+//TODO                       _oo0oo_                               8南8
+//TODO                      o8888888o                              8无8
+//TODO                      88" . "88                              8阿8
+//TODO                      (| ^_^ |)                              8弥8
+//TODO                      0\  =  /0                              8陀8
+//TODO                    ___/`---'\___                            8佛8
+//TODO                  .' \\|     |// '.                          8南8
+//TODO                 / \\|||  :  |||// \                         8无8
+//TODO                / _||||| -:- |||||- \                        8阿8
+//TODO               |   | \\\  -  /// |   |                       8弥8
+//TODO               | \_|  ''\---/''  |_/ |                       8陀8
+//TODO               \  .-\__  '-'  ___/-. /                       8佛8
+//TODO             ___'. .'  /--.--\  `. .'___                     8南8
+//TODO          ."" '<  `.___\_<|>_/___.' >' "".                   8无8
+//TODO         | | :  `- \`.;`\ _ /`;.`/ - ` : | |                 8阿8
+//TODO         \  \ `-.   \_ __\ /__ _/   .-` /  /                 8弥8
+//TODO     =====`-.____`.___ \_____/___.-`___.-'=====              8陀8
+//TODO                       `=---='                               8南8
+//TODO     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^      8无8
+//TODO               佛祖保佑                  永无BUG                8阿8
+//TODO               系统稳定      |            天天盈利                8弥8
+//TODO                      \    |    /                             8陀8
+//TODO                       \   |   /                              8佛8
+//TODO                        =======                               8南8
+//TODO                      ====上香=====                            8无8
+//TODO                        =========                             8阿8
+//TODO 南无阿弥陀佛南无阿弥陀佛南无阿弥陀佛南无阿弥陀佛南无阿弥陀佛南无阿弥陀佛88
+//TODO 888888888888888888888888888888888888888888888888888888888888888888888888
+
 import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -9,7 +40,9 @@ import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import { devLogger, requestLogger } from './middleware/logger.middleware';
 
 // Load environment variables
-config();
+config({
+  path: './.env',
+});
 
 /**
  * Express Application Setup

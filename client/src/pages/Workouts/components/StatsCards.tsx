@@ -7,7 +7,6 @@ export function StatsCards() {
   const { statsRef } = useWorkoutsAnimationRefs();
   const { workouts } = useWorkouts();
 
-  // Calculate real stats from workouts
   const stats = useMemo(() => {
     const totalWorkouts = workouts.length;
     const totalCalories = workouts.reduce(
@@ -19,7 +18,6 @@ export function StatsCards() {
       0
     );
 
-    // Format calories (e.g., 48500 -> "48.5K")
     const formatCalories = (cal: number) => {
       if (cal >= 1000) {
         return `${(cal / 1000).toFixed(1)}K`;
@@ -27,7 +25,6 @@ export function StatsCards() {
       return cal.toString();
     };
 
-    // Format duration (e.g., 120 minutes -> "2h")
     const formatDuration = (minutes: number) => {
       if (minutes >= 60) {
         const hours = Math.floor(minutes / 60);

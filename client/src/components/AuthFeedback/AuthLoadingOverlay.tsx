@@ -22,7 +22,6 @@ export function AuthLoadingOverlay({
   const percentRef = useRef<HTMLSpanElement>(null);
   const [progress, setProgress] = useState(0);
 
-  // Ref to always have latest onComplete callback
   const onCompleteRef = useRef(onComplete);
   useEffect(() => {
     onCompleteRef.current = onComplete;
@@ -36,7 +35,6 @@ export function AuthLoadingOverlay({
       return;
     }
 
-    // Create particles
     if (particlesRef.current) {
       particlesRef.current.innerHTML = "";
       for (let i = 0; i < 40; i++) {
@@ -54,7 +52,6 @@ export function AuthLoadingOverlay({
       }
     }
 
-    // Overlay fade in
     if (overlayRef.current) {
       animate(overlayRef.current, {
         opacity: [0, 1],
@@ -63,7 +60,6 @@ export function AuthLoadingOverlay({
       });
     }
 
-    // Progress animation
     let currentProgress = 0;
     const progressInterval = setInterval(() => {
       const increment = Math.random() * 15 + 5;
@@ -72,14 +68,13 @@ export function AuthLoadingOverlay({
 
       if (currentProgress >= 100) {
         clearInterval(progressInterval);
-        // Small delay after hitting 100% before calling onComplete
+
         setTimeout(() => {
           onCompleteRef.current?.();
         }, 500);
       }
     }, 200);
 
-    // Animate progress segments
     if (progressBarsRef.current) {
       const segments =
         progressBarsRef.current.querySelectorAll(".progress-segment");
@@ -92,7 +87,6 @@ export function AuthLoadingOverlay({
       });
     }
 
-    // Glitch effect
     const glitchInterval = setInterval(() => {
       if (glitchRef.current) {
         animate(glitchRef.current, {
@@ -110,7 +104,6 @@ export function AuthLoadingOverlay({
       }
     }, 200);
 
-    // Particle animation
     if (particlesRef.current) {
       animate(particlesRef.current.children, {
         opacity: [0, 0.8, 0],
@@ -142,12 +135,10 @@ export function AuthLoadingOverlay({
       className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/95 backdrop-blur-md"
       style={{ opacity: 0 }}
     >
-      {/* Background grid */}
       <div
         className={`absolute inset-0 bg-[linear-gradient(rgba(${rgbColor},0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(${rgbColor},0.03)_1px,transparent_1px)] bg-[size:20px_20px]`}
       />
 
-      {/* Animated circuit lines */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
         <defs>
           <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -180,18 +171,14 @@ export function AuthLoadingOverlay({
         />
       </svg>
 
-      {/* Particles */}
       <div
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none overflow-hidden"
       />
 
-      {/* Scanlines */}
       <div className="absolute inset-0 pointer-events-none bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.1)_2px,rgba(0,0,0,0.1)_4px)]" />
 
-      {/* Main content */}
       <div ref={glitchRef} className="relative z-10 w-full max-w-xl px-8">
-        {/* Top label */}
         <div className="flex items-center justify-center gap-2 mb-4">
           <div
             className={`w-8 h-0.5 bg-gradient-to-r from-transparent to-${colorClass}-500`}
@@ -206,9 +193,7 @@ export function AuthLoadingOverlay({
           />
         </div>
 
-        {/* Progress bar container */}
         <div className="relative">
-          {/* Outer frame */}
           <div
             className={`relative border-2 border-${colorClass}-500/70 bg-zinc-900/80 p-3`}
             style={{
@@ -217,18 +202,15 @@ export function AuthLoadingOverlay({
               boxShadow: `0 0 30px rgba(${rgbColor},0.3), inset 0 0 20px rgba(${rgbColor},0.1)`,
             }}
           >
-            {/* Glow effect */}
             <div
               className={`absolute inset-0 bg-gradient-to-r from-${colorClass}-500/10 via-${colorClass}-500/5 to-${colorClass}-500/10`}
             />
 
-            {/* Inner progress container */}
             <div
               ref={progressBarsRef}
               className={`relative border border-${colorClass}-500/40 bg-zinc-950/60 p-2`}
               style={{ boxShadow: `inset 0 0 15px rgba(${rgbColor},0.2)` }}
             >
-              {/* Segments */}
               <div className="flex gap-1.5">
                 {Array.from({ length: totalSegments }).map((_, i) => {
                   const isActive = i < activeSegments;
@@ -251,7 +233,6 @@ export function AuthLoadingOverlay({
                           : "none",
                       }}
                     >
-                      {/* Segment shine */}
                       {isActive && (
                         <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-white/40 to-transparent" />
                       )}
@@ -261,7 +242,6 @@ export function AuthLoadingOverlay({
               </div>
             </div>
 
-            {/* Corner accents */}
             <div
               className={`absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-${colorClass}-400`}
             />
@@ -276,9 +256,7 @@ export function AuthLoadingOverlay({
             />
           </div>
 
-          {/* Bottom HUD elements */}
           <div className="mt-4 flex items-center justify-between">
-            {/* Left status */}
             <div className="flex items-center gap-2">
               <div
                 className={`w-2 h-2 bg-${colorClass}-500 animate-pulse shadow-[0_0_10px_rgba(${rgbColor},0.8)]`}
@@ -294,7 +272,6 @@ export function AuthLoadingOverlay({
               </span>
             </div>
 
-            {/* Center percentage */}
             <div
               className={`relative px-6 py-1 border border-${colorClass}-500/50 bg-zinc-900/80`}
             >
@@ -313,7 +290,6 @@ export function AuthLoadingOverlay({
               />
             </div>
 
-            {/* Right status */}
             <div className="flex items-center gap-2">
               <span
                 className={`text-${colorClass}-400/70 text-[10px] tracking-widest uppercase`}
@@ -330,7 +306,6 @@ export function AuthLoadingOverlay({
             </div>
           </div>
 
-          {/* Decorative lines */}
           <div className="mt-3 flex justify-center gap-1">
             {Array.from({ length: 9 }).map((_, i) => (
               <div
@@ -343,7 +318,6 @@ export function AuthLoadingOverlay({
           </div>
         </div>
 
-        {/* Bottom message */}
         <div
           className={`mt-6 text-center text-[10px] text-${colorClass}-400/50 tracking-[0.3em] uppercase flex items-center justify-center gap-2`}
         >
@@ -353,7 +327,6 @@ export function AuthLoadingOverlay({
         </div>
       </div>
 
-      {/* Corner frame decorations */}
       <div
         className={`absolute top-6 left-6 w-16 h-16 border-l-2 border-t-2 border-${colorClass}-500/50`}
       />
@@ -367,7 +340,6 @@ export function AuthLoadingOverlay({
         className={`absolute bottom-6 right-6 w-16 h-16 border-r-2 border-b-2 border-${colorClass}-500/50`}
       />
 
-      {/* Animated corner dots */}
       {[
         "top-8 left-8",
         "top-8 right-8",

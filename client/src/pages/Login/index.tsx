@@ -29,7 +29,6 @@ function LoginContent() {
   const [localError, setLocalError] = useState<string | null>(null);
   const [feedbackState, setFeedbackState] = useState<FeedbackState>("idle");
 
-  // Store auth data in ref to apply after loading animation
   const authDataRef = useRef<{ token: string; user: unknown } | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -75,9 +74,8 @@ function LoginContent() {
     triggerSubmitAnimation();
 
     try {
-      // Use loginSilent to avoid updating state immediately
       const authData = await loginSilent({ identity: username, password });
-      // Store auth data to apply after loading animation
+
       authDataRef.current = authData;
     } catch {
       setLocalError(error || "Login failed. Please check your credentials.");
@@ -88,7 +86,6 @@ function LoginContent() {
 
   const handleLoadingComplete = useCallback(() => {
     if (authDataRef.current) {
-      // Now apply the auth data to context state
       applyAuthData(authDataRef.current as Parameters<typeof applyAuthData>[0]);
       setFeedbackState("success");
       setIsLoading(false);
@@ -116,7 +113,6 @@ function LoginContent() {
     >
       <PageDecorations />
 
-      {/* Left sidebars - Login specific */}
       <div className="absolute left-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-3">
         {[...Array(6)].map((_, i) => (
           <div
@@ -137,7 +133,6 @@ function LoginContent() {
         ))}
       </div>
 
-      {/* Right sidebars - Login specific */}
       <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-3">
         {[...Array(6)].map((_, i) => (
           <div
@@ -186,7 +181,6 @@ function LoginContent() {
         />
       </div>
 
-      {/* Auth Feedback Overlays */}
       <AuthLoadingOverlay
         isVisible={feedbackState === "loading"}
         message="AUTHENTICATING..."

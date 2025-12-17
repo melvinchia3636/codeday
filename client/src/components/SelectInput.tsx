@@ -56,7 +56,7 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
               </option>
             ))}
           </select>
-          {/* Custom chevron icon */}
+
           <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
             <Icon
               icon="pixelarticons:chevron-down"

@@ -8,7 +8,6 @@ import { useSettingsQuery } from "../hooks/useProfileQueries";
 import type { WaterLog } from "../lib/hydration";
 
 interface HydrationContextValue {
-  // Data
   logs: WaterLog[];
   totalWater: number;
   targetWater: number;
@@ -17,12 +16,10 @@ interface HydrationContextValue {
   remaining: number;
   isOverflow: boolean;
 
-  // Loading states
   isLoading: boolean;
   isAddingWater: boolean;
   isResetting: boolean;
 
-  // Actions
   addWater: (amountMl: number) => void;
   resetToday: () => void;
 }
@@ -34,15 +31,12 @@ interface HydrationProviderProps {
 }
 
 export function HydrationProvider({ children }: HydrationProviderProps) {
-  // Fetch data
   const { data: logs = [], isLoading: isLoadingLogs } = useTodayLogsQuery();
   const { data: settings } = useSettingsQuery();
 
-  // Mutations
   const addWaterLogMutation = useAddWaterLogMutation();
   const resetWaterLogsMutation = useResetWaterLogsMutation();
 
-  // Calculated values
   const targetWater = settings?.hydroTargetMl || 3000;
   const totalWater = useMemo(
     () => logs.reduce((sum, log) => sum + (log.amountMl || 0), 0),
@@ -52,7 +46,6 @@ export function HydrationProvider({ children }: HydrationProviderProps) {
   const remaining = Math.max(0, targetWater - totalWater);
   const isOverflow = percentage > 100;
 
-  // Actions
   const addWater = (amountMl: number) => {
     addWaterLogMutation.mutate({ amountMl });
   };
@@ -62,7 +55,6 @@ export function HydrationProvider({ children }: HydrationProviderProps) {
   };
 
   const value: HydrationContextValue = {
-    // Data
     logs,
     totalWater,
     targetWater,
@@ -71,12 +63,10 @@ export function HydrationProvider({ children }: HydrationProviderProps) {
     remaining,
     isOverflow,
 
-    // Loading states
     isLoading: isLoadingLogs,
     isAddingWater: addWaterLogMutation.isPending,
     isResetting: resetWaterLogsMutation.isPending,
 
-    // Actions
     addWater,
     resetToday,
   };

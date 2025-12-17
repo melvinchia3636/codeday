@@ -8,9 +8,6 @@ import {
 import { useWorkoutsAnimations } from "../hooks/useWorkoutsAnimations";
 import { useWorkouts } from "../../../contexts/WorkoutsContext";
 
-// Animation ref types (page-specific only)
-// Header animation is now handled by PageHeader component
-// Decoration refs come from PageDecorationsContext
 interface WorkoutsAnimationRefs {
   containerRef: RefObject<HTMLDivElement | null>;
   statsRef: RefObject<HTMLDivElement | null>;
@@ -34,17 +31,14 @@ interface WorkoutsAnimationsProviderProps {
 export function WorkoutsAnimationsProvider({
   children,
 }: WorkoutsAnimationsProviderProps) {
-  // Main layout refs
   const containerRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const historyRef = useRef<HTMLDivElement>(null);
   const typesRef = useRef<HTMLDivElement>(null);
   const logFormRef = useRef<HTMLDivElement>(null);
 
-  // Get loading state from WorkoutsContext
   const { isLoading } = useWorkouts();
 
-  // Run the animations hook - waits for data to load
   useWorkoutsAnimations({
     containerRef,
     statsRef,

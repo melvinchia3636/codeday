@@ -26,7 +26,6 @@ export function AuthErrorModal({
   useEffect(() => {
     if (!isVisible) return;
 
-    // Overlay fade in with red flash
     if (overlayRef.current) {
       animate(overlayRef.current, {
         opacity: [0, 1],
@@ -35,14 +34,12 @@ export function AuthErrorModal({
       });
     }
 
-    // Red flash effect
     animate(".error-flash", {
       opacity: [0.5, 0],
       duration: 500,
       ease: "outQuad",
     });
 
-    // Modal shake in
     if (modalRef.current) {
       animate(modalRef.current, {
         opacity: [0, 1],
@@ -58,7 +55,6 @@ export function AuthErrorModal({
       });
     }
 
-    // Icon pulse
     if (iconRef.current) {
       animate(iconRef.current, {
         scale: [0, 1.3, 1],
@@ -68,7 +64,6 @@ export function AuthErrorModal({
       });
     }
 
-    // Warning bars animation
     if (warningBarsRef.current) {
       animate(warningBarsRef.current.children, {
         opacity: [0, 1, 0.5],
@@ -79,7 +74,6 @@ export function AuthErrorModal({
       });
     }
 
-    // Glitch effect loop
     const glitchInterval = setInterval(() => {
       if (glitchRef.current) {
         animate(glitchRef.current, {
@@ -107,16 +101,13 @@ export function AuthErrorModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/95 backdrop-blur-md"
       style={{ opacity: 0 }}
     >
-      {/* Red flash overlay */}
       <div
         className="error-flash absolute inset-0 bg-red-500/30 pointer-events-none"
         style={{ opacity: 0 }}
       />
 
-      {/* Background warning pattern */}
       <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(239,68,68,0.05)_10px,rgba(239,68,68,0.05)_20px)]" />
 
-      {/* Warning bars */}
       <div
         ref={warningBarsRef}
         className="absolute top-0 left-0 right-0 flex justify-center gap-4 p-4"
@@ -130,16 +121,13 @@ export function AuthErrorModal({
         ))}
       </div>
 
-      {/* Main modal */}
       <div
         ref={modalRef}
         className="relative bg-zinc-900/95 border-2 border-red-500/70 p-10 max-w-md w-full mx-4 shadow-[0_0_50px_rgba(239,68,68,0.4)]"
         style={{ opacity: 0 }}
       >
-        {/* Animated top border */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 animate-pulse" />
 
-        {/* Error icon */}
         <div className="relative w-24 h-24 mx-auto mb-6">
           <div className="absolute inset-0 bg-red-500/20 rounded-full animate-ping" />
           <div
@@ -154,7 +142,6 @@ export function AuthErrorModal({
           </div>
         </div>
 
-        {/* Title with glitch */}
         <div ref={glitchRef}>
           <h2 className="text-3xl font-bold tracking-[0.3em] text-red-400 text-center mb-4 flex items-center justify-center gap-3">
             <Icon icon="pixelarticons:warning-box" className="w-6 h-6" />
@@ -163,19 +150,16 @@ export function AuthErrorModal({
           </h2>
         </div>
 
-        {/* Error code */}
         <div className="text-center mb-4">
           <span className="inline-block px-3 py-1 bg-red-500/20 border border-red-500/50 text-red-400 text-xs tracking-widest">
             ERROR_CODE: AUTH_FAILED
           </span>
         </div>
 
-        {/* Message */}
         <p className="text-zinc-300 text-center tracking-wide mb-8 text-sm">
           {message}
         </p>
 
-        {/* Retry button */}
         <button
           onClick={onClose}
           className="w-full py-4 bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold tracking-[0.2em] uppercase hover:shadow-[0_0_30px_rgba(239,68,68,0.6)] transition-all flex items-center justify-center gap-3"
@@ -184,14 +168,12 @@ export function AuthErrorModal({
           {buttonText}
         </button>
 
-        {/* Corner warning accents */}
         <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-red-500" />
         <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-red-500" />
         <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-red-500" />
         <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-red-500" />
       </div>
 
-      {/* Bottom warning bars */}
       <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-4 p-4">
         {[...Array(7)].map((_, i) => (
           <div

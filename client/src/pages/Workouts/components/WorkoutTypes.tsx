@@ -26,15 +26,11 @@ export function WorkoutTypes() {
     setSelectedTypeFilter,
   } = useWorkouts();
 
-  // Track previous count to detect new types being added (after initial load)
   const prevCountRef = useRef<number | null>(null);
 
-  // Reanimate all type buttons when a new type is added
   useEffect(() => {
-    // Wait for initial load to complete before tracking
     if (isLoading) return;
 
-    // Set initial count after first load (skip animation for initial load)
     if (prevCountRef.current === null) {
       prevCountRef.current = workoutTypes.length;
       return;
@@ -43,11 +39,9 @@ export function WorkoutTypes() {
     const prevCount = prevCountRef.current;
     const currentCount = workoutTypes.length;
 
-    // Only reanimate if a new type was added
     if (currentCount > prevCount && typesRef.current) {
       const allButtons = typesRef.current.querySelectorAll(".type-btn");
 
-      // Reset opacity and animate all together
       allButtons.forEach((btn) => {
         (btn as HTMLElement).style.opacity = "0";
       });
@@ -64,20 +58,17 @@ export function WorkoutTypes() {
     prevCountRef.current = currentCount;
   }, [isLoading, workoutTypes.length, typesRef]);
 
-  // Modal states
   const [showModal, setShowModal] = useState(false);
   const [editingType, setEditingType] = useState<WorkoutType | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingType, setDeletingType] = useState<WorkoutType | null>(null);
 
-  // Context menu state
   const [contextMenu, setContextMenu] = useState<{
     id: string;
     x: number;
     y: number;
   } | null>(null);
 
-  // Show predefined defaults + custom user types
   const defaultDisplayTypes = defaultWorkoutTypes.map((t, i) => ({
     id: `default-${i}`,
     icon: t.icon,
@@ -108,7 +99,6 @@ export function WorkoutTypes() {
     caloriesPerMinute: number;
   }) => {
     if (data.id) {
-      // Edit mode
       updateType(data.id, {
         name: data.name,
         icon: data.icon,
@@ -116,7 +106,6 @@ export function WorkoutTypes() {
         caloriesPerMinute: data.caloriesPerMinute,
       });
     } else {
-      // Create mode
       createType(data);
     }
     setShowModal(false);
@@ -155,7 +144,7 @@ export function WorkoutTypes() {
 
   const handleContextMenu = (e: React.MouseEvent, typeId: string) => {
     e.preventDefault();
-    // Only show context menu for custom types (not defaults)
+
     const type = displayTypes.find((t) => t.id === typeId);
     if (type?.original) {
       setContextMenu({ id: typeId, x: e.clientX, y: e.clientY });
@@ -171,7 +160,6 @@ export function WorkoutTypes() {
 
   return (
     <>
-      {/* Click outside to close context menu */}
       {contextMenu && (
         <div
           className="fixed inset-0 z-40 w-full h-dvh top-0 left-0"
@@ -214,7 +202,6 @@ export function WorkoutTypes() {
                 )}
               </button>
 
-              {/* Context Menu */}
               {contextMenu?.id === t.id && t.original && (
                 <div
                   className="fixed bg-zinc-900 border-2 border-pink-500/50 shadow-[0_0_20px_rgba(236,72,153,0.3)] min-w-[140px]"
@@ -240,7 +227,6 @@ export function WorkoutTypes() {
           );
         })}
 
-        {/* Add new type button */}
         <button
           onClick={() => {
             setEditingType(null);
@@ -257,7 +243,6 @@ export function WorkoutTypes() {
         </button>
       </div>
 
-      {/* Create/Edit Modal */}
       <WorkoutTypeModal
         isVisible={showModal}
         initialData={editingType || undefined}
@@ -266,7 +251,6 @@ export function WorkoutTypes() {
         isLoading={isCreatingType || isUpdatingType}
       />
 
-      {/* Delete Confirmation Modal */}
       <ConfirmModal
         isVisible={showDeleteModal}
         onConfirm={handleDeleteConfirm}
