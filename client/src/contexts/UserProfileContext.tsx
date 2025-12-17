@@ -34,6 +34,7 @@ export interface ProfileFormData {
 
 export interface SettingsFormData {
   dietCalorieTarget: number;
+  workoutCalorieTarget: number;
   hydroTargetMl: number;
   hydroIntervalMin: number;
   expectedMealsPerDay: number;
@@ -118,6 +119,7 @@ const defaultProfileForm: ProfileFormData = {
 
 const defaultSettingsForm: SettingsFormData = {
   dietCalorieTarget: 2000,
+  workoutCalorieTarget: 500,
   hydroTargetMl: 2000,
   hydroIntervalMin: 60,
   expectedMealsPerDay: 3,
@@ -168,6 +170,7 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     if (settings) {
       setSettingsForm({
         dietCalorieTarget: settings.dietCalorieTarget || 2000,
+        workoutCalorieTarget: settings.workoutCalorieTarget || 500,
         hydroTargetMl: settings.hydroTargetMl || 2000,
         hydroIntervalMin: settings.hydroIntervalMin || 60,
         expectedMealsPerDay: settings.expectedMealsPerDay || 3,
@@ -207,6 +210,7 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
       },
       settingsData: {
         dietCalorieTarget: settingsForm.dietCalorieTarget,
+        workoutCalorieTarget: settingsForm.workoutCalorieTarget,
         hydroTargetMl: settingsForm.hydroTargetMl,
         hydroIntervalMin: settingsForm.hydroIntervalMin,
         expectedMealsPerDay: settingsForm.expectedMealsPerDay,
@@ -227,6 +231,7 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     if (settings) {
       setSettingsForm({
         dietCalorieTarget: settings.dietCalorieTarget || 2000,
+        workoutCalorieTarget: settings.workoutCalorieTarget || 500,
         hydroTargetMl: settings.hydroTargetMl || 2000,
         hydroIntervalMin: settings.hydroIntervalMin || 60,
         expectedMealsPerDay: settings.expectedMealsPerDay || 3,

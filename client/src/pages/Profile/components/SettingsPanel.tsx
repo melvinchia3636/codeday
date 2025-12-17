@@ -59,6 +59,25 @@ export function SettingsPanel() {
 
           <div className="setting-item" style={{ opacity: 0 }}>
             <NumberInput
+              label="WORKOUT_CALORIE_TARGET"
+              icon="pixelarticons:human-run"
+              iconColor="orange"
+              unit="KCAL"
+              step={50}
+              value={settingsForm.workoutCalorieTarget || ""}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({
+                  ...prev,
+                  workoutCalorieTarget: parseFloat(e.target.value) || 0,
+                }))
+              }
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+            />
+          </div>
+
+          <div className="setting-item" style={{ opacity: 0 }}>
+            <NumberInput
               label="HYDRATION_TARGET"
               icon="pixelarticons:drop"
               iconColor="cyan"

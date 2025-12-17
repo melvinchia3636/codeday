@@ -56,6 +56,7 @@ export interface UserSettings {
   id: string;
   userId: string;
   dietCalorieTarget: number;
+  workoutCalorieTarget: number;
   hydroTargetMl: number;
   hydroIntervalMin: number;
   expectedMealsPerDay: number;
@@ -66,6 +67,7 @@ export interface UserSettings {
 
 export interface UpdateSettingsData {
   dietCalorieTarget?: number;
+  workoutCalorieTarget?: number;
   hydroTargetMl?: number;
   hydroIntervalMin?: number;
   expectedMealsPerDay?: number;

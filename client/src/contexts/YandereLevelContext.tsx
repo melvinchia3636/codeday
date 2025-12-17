@@ -156,23 +156,28 @@ export function YandereLevelProvider({ children }: YandereLevelProviderProps) {
     const hydrationScore = calculateZoneScore(adjustedHydrationPercentage);
 
     // --- WORKOUT ---
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-    const todayEnd = new Date(todayStart);
-    todayEnd.setDate(todayEnd.getDate() + 1);
+    // Get today's date string in YYYY-MM-DD format (ignoring timezone)
+    const now = new Date();
+    const todayDateStr = `${now.getFullYear()}-${String(
+      now.getMonth() + 1
+    ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
     const todayWorkouts = workouts.filter((w) => {
-      const date = new Date(w.timestamp);
-      return date >= todayStart && date < todayEnd;
+      // Extract date part from timestamp without timezone conversion
+      const workoutDateStr =
+        w.timestamp?.split(" ")[0] || w.timestamp?.split("T")[0] || "";
+      return workoutDateStr === todayDateStr;
     });
 
-    const workoutMinutes = todayWorkouts.reduce(
-      (sum, w) => sum + (w.durationMin || 0),
+    const workoutCaloriesBurned = todayWorkouts.reduce(
+      (sum, w) => sum + (w.caloriesBurned || 0),
       0
     );
-    const workoutTarget = 60;
+    const workoutCalorieTarget = settings?.workoutCalorieTarget || 500;
     const workoutPercentage =
-      workoutTarget > 0 ? (workoutMinutes / workoutTarget) * 100 : 0;
+      workoutCalorieTarget > 0
+        ? (workoutCaloriesBurned / workoutCalorieTarget) * 100
+        : 0;
     // No diminishing return for workout - just cap at 100
     // Also apply time adjustment for fair early-day scoring
     const adjustedWorkoutPercentage =
