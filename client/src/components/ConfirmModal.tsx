@@ -218,7 +218,7 @@ export function ConfirmModal({
 
       <div
         ref={modalRef}
-        className={`relative bg-zinc-900/95 border-2 ${primaryBorder}/60 p-10 max-w-md w-full mx-4`}
+        className={`relative bg-zinc-900/95 border-2 ${primaryBorder}/60 p-10 max-w-xl w-full mx-4`}
         style={{
           opacity: 0,
           boxShadow: `0 0 50px ${theme.glow}0.3), 0 0 100px rgba(239,68,68,0.15), inset 0 0 30px ${theme.glow}0.1)`,

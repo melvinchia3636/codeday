@@ -61,6 +61,16 @@ export const auth = {
   },
 
   /**
+   * Delete the current user's account
+   */
+  async deleteAccount(): Promise<void> {
+    await api.delete("/users/me");
+    // Clear local auth data after successful deletion
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(AUTH_USER_KEY);
+  },
+
+  /**
    * Get stored token
    */
   getToken(): string | null {

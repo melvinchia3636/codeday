@@ -35,6 +35,10 @@ export const createUserRoutes = (pb: PocketBase): Router => {
     userController.updateMe(req as AuthenticatedRequest, res, next)
   );
 
+  router.delete('/me', authMiddleware, (req, res, next) =>
+    userController.deleteMe(req as AuthenticatedRequest, res, next)
+  );
+
   router.get('/:id', validate(idParamSchema, 'params'), (req, res, next) =>
     userController.getById(req, res, next)
   );

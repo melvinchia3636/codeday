@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { BaseController } from './base.controller';
 import { UserService } from '../services/user.service';
 import { SettingsService } from '../services/settings.service';
+import { SeedService } from '../services/seed.service';
 import { User, CreateUserDto, UpdateUserDto } from '../models/user.model';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
 import PocketBase from 'pocketbase';
@@ -13,6 +14,7 @@ import PocketBase from 'pocketbase';
 export class UserController extends BaseController<User> {
   private userService: UserService;
   private settingsService: SettingsService;
+  private seedService: SeedService;
   private pb: PocketBase;
 
   constructor(pb: PocketBase) {
@@ -20,6 +22,7 @@ export class UserController extends BaseController<User> {
     this.pb = pb;
     this.userService = new UserService(pb);
     this.settingsService = new SettingsService(pb);
+    this.seedService = new SeedService(pb);
   }
 
   /**
@@ -28,10 +31,8 @@ export class UserController extends BaseController<User> {
    */
   async getAll(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
-      const { page, perPage, sort, filter } = req.query;
+      const { sort, filter } = req.query;
       const users = await this.userService.findAll({
-        page: page ? Number(page) : undefined,
-        perPage: perPage ? Number(perPage) : undefined,
         sort: sort as string,
         filter: filter as string,
       });
@@ -65,7 +66,7 @@ export class UserController extends BaseController<User> {
       const userData: CreateUserDto = req.body;
       const user = await this.userService.createUser(userData);
 
-      // Auth as the new user to create settings with proper ownership
+      // Auth as the new user to create settings and seed data with proper ownership
       try {
         // Authenticate as the new user
         await this.pb
@@ -81,16 +82,19 @@ export class UserController extends BaseController<User> {
           timezone: 'UTC',
         });
 
-        // Clear auth after creating settings
+        // Seed example data for the new user
+        await this.seedService.seedUserData(user.id);
+
+        // Clear auth after creating settings and seeding data
         this.pb.authStore.clear();
       } catch (settingsError) {
-        console.error('Failed to create default settings:', settingsError);
+        console.error('Failed to create default settings or seed data:', settingsError);
         // Clear auth in case of error
         this.pb.authStore.clear();
-        // Don't fail user creation if settings creation fails
+        // Don't fail user creation if settings/seeding fails
       }
 
-      return this.success(res, user, 'User timestamp successfully', 201);
+      return this.success(res, user, 'User created successfully', 201);
     } catch (error) {
       next(error);
     }
@@ -143,6 +147,24 @@ export class UserController extends BaseController<User> {
       const userData: UpdateUserDto = req.body;
       const user = await this.userService.updateUser(userId, userData);
       return this.success(res, user, 'User updated successfully');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Delete current authenticated user
+   * DELETE /users/me
+   */
+  async deleteMe(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    try {
+      const userId = req.userId!;
+      await this.userService.delete(userId);
+      return this.success(res, null, 'Account deleted successfully');
     } catch (error) {
       next(error);
     }

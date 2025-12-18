@@ -65,3 +65,16 @@ export const deleteActivityModalConfig: ConfirmModalConfig = {
   warningText: "WARNING",
   irreversibleText: "IRREVERSIBLE",
 };
+
+export const deleteAccountModalConfig: ConfirmModalConfig = {
+  title: "DELETE_ACCOUNT",
+  message: "Are you sure you want to permanently delete your account?",
+  subMessage: "All your data will be erased. This action cannot be undone.",
+  statusText: "CONFIRM_DELETION",
+  icon: "pixelarticons:trash",
+  confirmText: "DELETE_FOREVER",
+  cancelText: "CANCEL",
+  theme: "danger",
+  warningText: "DANGER",
+  irreversibleText: "PERMANENT",
+};
