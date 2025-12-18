@@ -1,6 +1,7 @@
 import { SelectInput } from "../../../components/SelectInput";
 import { DateInput } from "../../../components/DateInput";
 import { NumberInput } from "../../../components/NumberInput";
+import { TextInput } from "../../../components/TextInput";
 import { Icon } from "@iconify/react";
 import { useUserProfile } from "../../../contexts/UserProfileContext";
 import { useInputAnimations } from "../hooks/useProfileAnimations";
@@ -59,7 +60,8 @@ function getBmiPosition(bmi: number): number {
 }
 
 export function UserInfoCards() {
-  const { profileForm, setProfileForm, formBmi } = useUserProfile();
+  const { profileForm, setProfileForm, formBmi, fieldErrors, clearFieldError } =
+    useUserProfile();
   const { handleInputFocus, handleInputBlur } = useInputAnimations();
   const { userInfoRef } = useProfileAnimationRefs();
 
@@ -99,6 +101,33 @@ export function UserInfoCards() {
 
   return (
     <div ref={userInfoRef} className="space-y-3">
+      {/* Username Field */}
+      <div
+        className="info-card bg-zinc-900/70 border border-pink-500/30 p-4 backdrop-blur-sm hover:border-cyan-400/50 transition-all hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]"
+        style={{ opacity: 0 }}
+      >
+        <TextInput
+          label="USERNAME"
+          icon="pixelarticons:user"
+          iconColor="pink"
+          value={profileForm.username}
+          onChange={(e) => {
+            // Clear error when user starts typing
+            if (fieldErrors.username) {
+              clearFieldError("username");
+            }
+            setProfileForm((prev) => ({
+              ...prev,
+              username: e.target.value,
+            }));
+          }}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          placeholder="Enter username"
+          error={fieldErrors.username}
+        />
+      </div>
+
       <div
         className="info-card bg-zinc-900/70 border border-pink-500/30 p-4 backdrop-blur-sm hover:border-cyan-400/50 transition-all hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]"
         style={{ opacity: 0 }}

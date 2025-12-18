@@ -21,21 +21,26 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           <Icon icon={icon} className={`w-4 h-4 text-${iconColor}-400`} />
           {label}
         </label>
-        <div className="flex items-center gap-2">
+        <div className="relative">
           <input
             ref={ref}
             type="text"
             className={`
-              flex-1 bg-zinc-800/80 border border-pink-500/40 px-4 py-2.5 
-              text-white placeholder-zinc-500 focus:outline-none transition-all
-              focus:border-pink-500 focus:shadow-[0_0_15px_rgba(236,72,153,0.3)]
-              ${error ? "border-red-500" : ""}
+              w-full bg-zinc-800/80 border-2 px-4 py-3 
+              text-white text-xl font-bold placeholder-zinc-500 focus:outline-none transition-all
+              focus:shadow-[0_0_15px_rgba(236,72,153,0.3)]
+              ${
+                error
+                  ? "border-red-500! focus:border-red-400!"
+                  : "border-pink-500/40 focus:border-pink-400"
+              }
+              ${unit ? "pr-20" : ""}
               ${className}
             `}
             {...props}
           />
           {unit && (
-            <span className="text-pink-400/60 text-xs tracking-wider min-w-[3rem]">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-pink-400/50 text-sm tracking-widest pointer-events-none">
               {unit}
             </span>
           )}

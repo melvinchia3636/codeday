@@ -24,8 +24,10 @@ import type {
   UpdateUserData,
   UpdateSettingsData,
 } from "../lib/profile";
+import type { ApiClientError } from "../lib/api";
 
 export interface ProfileFormData {
+  username: string;
   gender: "male" | "female" | "other" | "prefer_not_to_say";
   dob: string;
   heightCm: number;
@@ -60,10 +62,15 @@ interface UserProfileContextType {
   settingsForm: SettingsFormData;
   setSettingsForm: React.Dispatch<React.SetStateAction<SettingsFormData>>;
 
+  // Field-level validation errors from API
+  fieldErrors: Record<string, string>;
+  clearFieldError: (field: string) => void;
+
   updateUserData: (data: UpdateUserData) => Promise<UserData>;
   updateSettings: (data: UpdateSettingsData) => Promise<UserSettings>;
   saveProfile: () => Promise<void>;
   isSaving: boolean;
+  saveError: string | null;
 
   resetForm: () => void;
 
@@ -111,6 +118,7 @@ function formatDateForInput(dateString?: string): string {
 }
 
 const defaultProfileForm: ProfileFormData = {
+  username: "",
   gender: "prefer_not_to_say",
   dob: "",
   heightCm: 0,
@@ -158,6 +166,7 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     if (userData) {
       console.log(userData);
       setProfileForm({
+        username: userData.username || "",
         gender: userData.gender || "prefer_not_to_say",
         dob: formatDateForInput(userData.dob),
         heightCm: userData.heightCm || 0,
@@ -183,6 +192,18 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
   const updateSettingsMutation = useUpdateSettingsMutation();
   const saveProfileMutation = useSaveProfileMutation();
 
+  // Field-level errors from API validation
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const clearFieldError = (field: string) => {
+    setFieldErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[field];
+      return newErrors;
+    });
+  };
+
   const isLoading =
     isUserDataLoading || isSettingsLoading || isWeightTargetLoading;
   const isSaving =
@@ -201,27 +222,57 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
   };
 
   const saveProfile = async (): Promise<void> => {
-    await saveProfileMutation.mutateAsync({
-      userData: {
-        gender: profileForm.gender,
-        dob: profileForm.dob,
-        heightCm: profileForm.heightCm,
-        weightKg: profileForm.weightKg,
-      },
-      settingsData: {
-        dietCalorieTarget: settingsForm.dietCalorieTarget,
-        workoutCalorieTarget: settingsForm.workoutCalorieTarget,
-        hydroTargetMl: settingsForm.hydroTargetMl,
-        hydroIntervalMin: settingsForm.hydroIntervalMin,
-        expectedMealsPerDay: settingsForm.expectedMealsPerDay,
-        timezone: settingsForm.timezone,
-      },
-    });
+    // Clear previous errors
+    setFieldErrors({});
+    setSaveError(null);
+
+    try {
+      await saveProfileMutation.mutateAsync({
+        userData: {
+          username: profileForm.username,
+          gender: profileForm.gender,
+          dob: profileForm.dob,
+          heightCm: profileForm.heightCm,
+          weightKg: profileForm.weightKg,
+        },
+        settingsData: {
+          dietCalorieTarget: settingsForm.dietCalorieTarget,
+          workoutCalorieTarget: settingsForm.workoutCalorieTarget,
+          hydroTargetMl: settingsForm.hydroTargetMl,
+          hydroIntervalMin: settingsForm.hydroIntervalMin,
+          expectedMealsPerDay: settingsForm.expectedMealsPerDay,
+          timezone: settingsForm.timezone,
+        },
+      });
+    } catch (error: unknown) {
+      // Debug: Log the full error to see its structure
+      console.log("Save profile error:", error);
+      console.log("Error errors property:", (error as any)?.errors);
+
+      // Parse API error and set field-level errors
+      // Check if error has errors property (ApiClientError from api.ts)
+      const apiError = error as ApiClientError;
+      if (apiError.errors) {
+        setFieldErrors(
+          Object.fromEntries(
+            apiError.errors.map((error) => [error.field, error.message])
+          )
+        );
+      }
+      // Set general error message
+      if (error instanceof Error) {
+        setSaveError(error.message);
+      } else {
+        setSaveError("Failed to save profile");
+      }
+      throw error; // Re-throw so caller knows it failed
+    }
   };
 
   const resetForm = () => {
     if (userData) {
       setProfileForm({
+        username: userData.username || "",
         gender: userData.gender || "prefer_not_to_say",
         dob: formatDateForInput(userData.dob),
         heightCm: userData.heightCm || 0,
@@ -268,10 +319,13 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     setProfileForm,
     settingsForm,
     setSettingsForm,
+    fieldErrors,
+    clearFieldError,
     updateUserData,
     updateSettings,
     saveProfile,
     isSaving,
+    saveError,
     resetForm,
     refetchAll,
     invalidateAll,

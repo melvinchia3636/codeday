@@ -7,6 +7,7 @@ import { UserInfoCards } from "./components/UserInfoCards";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { TargetsPanel } from "./components/TargetsPanel";
 import { WaifuPanel } from "./components/WaifuPanel";
+import { DangerZone } from "./components/DangerZone";
 import { ActionButtons } from "./components/ActionButtons";
 import { useUserProfile } from "../../contexts/UserProfileContext";
 import { useAuth } from "../../contexts/AuthContext";
@@ -135,6 +136,7 @@ function ProfileContent() {
             name={waifuProfile.name}
             yandereLevel={waifuProfile.yandere_level}
           />
+          <DangerZone />
         </div>
       </div>
       <ActionButtons onSave={handleSave} />

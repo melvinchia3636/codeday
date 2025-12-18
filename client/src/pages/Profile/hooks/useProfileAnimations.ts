@@ -8,6 +8,7 @@ interface UseProfileAnimationsProps {
   settingsRef: RefObject<HTMLDivElement | null>;
   targetsRef: RefObject<HTMLDivElement | null>;
   waifuRef: RefObject<HTMLDivElement | null>;
+  dangerZoneRef: RefObject<HTMLDivElement | null>;
   sideBarsRef: RefObject<HTMLDivElement[]>;
   glitchOverlayRef: RefObject<HTMLDivElement | null>;
   isReady?: boolean;
@@ -26,6 +27,7 @@ export function useProfileAnimations(props: UseProfileAnimationsProps) {
     settingsRef,
     targetsRef,
     waifuRef,
+    dangerZoneRef,
     sideBarsRef,
     glitchOverlayRef,
     isReady = true,
@@ -122,6 +124,19 @@ export function useProfileAnimations(props: UseProfileAnimationsProps) {
           ease: "outElastic(1, .6)",
         },
         "-=400"
+      );
+    }
+
+    // Danger zone panel with warning effect
+    if (dangerZoneRef.current) {
+      tl.add(
+        dangerZoneRef.current,
+        {
+          opacity: [0, 1],
+          translateY: [20, 0],
+          duration: 600,
+        },
+        "-=300"
       );
     }
 

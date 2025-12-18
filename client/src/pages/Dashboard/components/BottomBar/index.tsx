@@ -7,12 +7,14 @@ import { useDashboardAnimationRefs } from "../../contexts/DashboardAnimationsCon
 import LogoutButton from "./components/LogoutButton";
 import NavigationIcons from "./components/NavigationIcons";
 import SystemStatus from "./components/SystemStatus";
+import { BugReportModal } from "../../../../components/BugReportButton";
 
 export function BottomBar() {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { bottomBarRef } = useDashboardAnimationRefs();
+  const [showBugModal, setShowBugModal] = useState(false);
 
   return (
     <>
@@ -25,7 +27,7 @@ export function BottomBar() {
         <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-pink-500 via-fuchsia-500 to-cyan-500" />
         <LogoutButton onLogout={() => setShowLogoutModal(true)} />
         <NavigationIcons />
-        <SystemStatus />
+        <SystemStatus setShowBugModal={setShowBugModal} />
       </section>
       <ConfirmModal
         isVisible={showLogoutModal}
@@ -35,6 +37,10 @@ export function BottomBar() {
           navigate("/login");
         }}
         config={logoutModalConfig}
+      />
+      <BugReportModal
+        isOpen={showBugModal}
+        onClose={() => setShowBugModal(false)}
       />
     </>
   );

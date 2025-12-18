@@ -61,6 +61,7 @@ export function WaifuPanel() {
     nutritionScore,
     hydrationScore,
     workoutScore,
+    isLoading: isDataLoading,
   } = useYandereLevel();
   const config = levelConfig[yandereLevel];
 
@@ -81,7 +82,11 @@ export function WaifuPanel() {
   const pulseRingsRef = useRef<HTMLDivElement[]>([]);
   const particlesRef = useRef<HTMLDivElement>(null);
 
+  // Only fetch greeting once all data has loaded
   useEffect(() => {
+    // Wait until data is fully loaded before fetching greeting
+    if (isDataLoading) return;
+
     const fetchGreeting = async () => {
       try {
         const aiGreeting = await chatApi.getGreeting({
@@ -101,7 +106,14 @@ export function WaifuPanel() {
     };
 
     fetchGreeting();
-  }, []);
+  }, [
+    isDataLoading,
+    yandereLevel,
+    totalScore,
+    nutritionScore,
+    hydrationScore,
+    workoutScore,
+  ]);
 
   useEffect(() => {
     if (heartRef.current) {

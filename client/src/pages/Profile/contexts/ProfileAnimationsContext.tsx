@@ -15,6 +15,7 @@ interface ProfileAnimationRefs {
   settingsRef: RefObject<HTMLDivElement | null>;
   targetsRef: RefObject<HTMLDivElement | null>;
   waifuRef: RefObject<HTMLDivElement | null>;
+  dangerZoneRef: RefObject<HTMLDivElement | null>;
   sideBarsRef: RefObject<HTMLDivElement[]>;
   glitchOverlayRef: RefObject<HTMLDivElement | null>;
 }
@@ -42,6 +43,7 @@ export function ProfileAnimationsProvider({
   const settingsRef = useRef<HTMLDivElement>(null);
   const targetsRef = useRef<HTMLDivElement>(null);
   const waifuRef = useRef<HTMLDivElement>(null);
+  const dangerZoneRef = useRef<HTMLDivElement>(null);
 
   const sideBarsRef = useRef<HTMLDivElement[]>([]);
   const glitchOverlayRef = useRef<HTMLDivElement>(null);
@@ -55,6 +57,7 @@ export function ProfileAnimationsProvider({
     settingsRef,
     targetsRef,
     waifuRef,
+    dangerZoneRef,
     sideBarsRef,
     glitchOverlayRef,
     isReady: isAnimationsReady,
@@ -67,6 +70,7 @@ export function ProfileAnimationsProvider({
     settingsRef,
     targetsRef,
     waifuRef,
+    dangerZoneRef,
     sideBarsRef,
     glitchOverlayRef,
     isAnimationsReady,

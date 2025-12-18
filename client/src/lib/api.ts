@@ -10,14 +10,14 @@ export interface ApiResponse<T> {
 export interface ApiError {
   success: false;
   message: string;
-  errors?: Record<string, string[]>;
+  errors?: { field: string; message: string }[];
 }
 
 export class ApiClientError extends Error {
   constructor(
     message: string,
     public status: number,
-    public errors?: Record<string, string[]>
+    public errors?: { field: string; message: string }[]
   ) {
     super(message);
     this.name = "ApiClientError";
@@ -59,7 +59,7 @@ async function request<T>(
     throw new ApiClientError(
       data.message || "An error occurred",
       response.status,
-      data.errors
+      data.data
     );
   }
 

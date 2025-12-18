@@ -3,14 +3,102 @@ import { Icon } from "@iconify/react";
 import { animate, random } from "animejs";
 
 const colorConfig = {
-  pink: { primary: "pink", glow: "rgba(236,72,153,", rgb: "236,72,153" },
-  cyan: { primary: "cyan", glow: "rgba(34,211,238,", rgb: "34,211,238" },
-  fuchsia: { primary: "fuchsia", glow: "rgba(217,70,239,", rgb: "217,70,239" },
-  purple: { primary: "purple", glow: "rgba(168,85,247,", rgb: "168,85,247" },
-  green: { primary: "green", glow: "rgba(34,197,94,", rgb: "34,197,94" },
-  orange: { primary: "orange", glow: "rgba(249,115,22,", rgb: "249,115,22" },
-  amber: { primary: "amber", glow: "rgba(245,158,11,", rgb: "245,158,11" },
-  red: { primary: "red", glow: "rgba(239,68,68,", rgb: "239,68,68" },
+  pink: {
+    glow: "rgba(236,72,153,",
+    rgb: "236,72,153",
+    textMatrix: "text-pink-500/30",
+    bgParticle: "bg-pink-500",
+    borderRing: "border-pink-500/20",
+    borderModal: "border-pink-500/60",
+    borderCorner: "border-pink-500",
+    borderOuter: "border-pink-500/40",
+    textTitle: "text-pink-400",
+    bgDot: "bg-pink-500",
+  },
+  cyan: {
+    glow: "rgba(34,211,238,",
+    rgb: "34,211,238",
+    textMatrix: "text-cyan-500/30",
+    bgParticle: "bg-cyan-500",
+    borderRing: "border-cyan-500/20",
+    borderModal: "border-cyan-500/60",
+    borderCorner: "border-cyan-500",
+    borderOuter: "border-cyan-500/40",
+    textTitle: "text-cyan-400",
+    bgDot: "bg-cyan-500",
+  },
+  fuchsia: {
+    glow: "rgba(217,70,239,",
+    rgb: "217,70,239",
+    textMatrix: "text-fuchsia-500/30",
+    bgParticle: "bg-fuchsia-500",
+    borderRing: "border-fuchsia-500/20",
+    borderModal: "border-fuchsia-500/60",
+    borderCorner: "border-fuchsia-500",
+    borderOuter: "border-fuchsia-500/40",
+    textTitle: "text-fuchsia-400",
+    bgDot: "bg-fuchsia-500",
+  },
+  purple: {
+    glow: "rgba(168,85,247,",
+    rgb: "168,85,247",
+    textMatrix: "text-purple-500/30",
+    bgParticle: "bg-purple-500",
+    borderRing: "border-purple-500/20",
+    borderModal: "border-purple-500/60",
+    borderCorner: "border-purple-500",
+    borderOuter: "border-purple-500/40",
+    textTitle: "text-purple-400",
+    bgDot: "bg-purple-500",
+  },
+  green: {
+    glow: "rgba(34,197,94,",
+    rgb: "34,197,94",
+    textMatrix: "text-green-500/30",
+    bgParticle: "bg-green-500",
+    borderRing: "border-green-500/20",
+    borderModal: "border-green-500/60",
+    borderCorner: "border-green-500",
+    borderOuter: "border-green-500/40",
+    textTitle: "text-green-400",
+    bgDot: "bg-green-500",
+  },
+  orange: {
+    glow: "rgba(249,115,22,",
+    rgb: "249,115,22",
+    textMatrix: "text-orange-500/30",
+    bgParticle: "bg-orange-500",
+    borderRing: "border-orange-500/20",
+    borderModal: "border-orange-500/60",
+    borderCorner: "border-orange-500",
+    borderOuter: "border-orange-500/40",
+    textTitle: "text-orange-400",
+    bgDot: "bg-orange-500",
+  },
+  amber: {
+    glow: "rgba(245,158,11,",
+    rgb: "245,158,11",
+    textMatrix: "text-amber-500/30",
+    bgParticle: "bg-amber-500",
+    borderRing: "border-amber-500/20",
+    borderModal: "border-amber-500/60",
+    borderCorner: "border-amber-500",
+    borderOuter: "border-amber-500/40",
+    textTitle: "text-amber-400",
+    bgDot: "bg-amber-500",
+  },
+  red: {
+    glow: "rgba(239,68,68,",
+    rgb: "239,68,68",
+    textMatrix: "text-red-500/30",
+    bgParticle: "bg-red-500",
+    borderRing: "border-red-500/20",
+    borderModal: "border-red-500/60",
+    borderCorner: "border-red-500",
+    borderOuter: "border-red-500/40",
+    textTitle: "text-red-400",
+    bgDot: "bg-red-500",
+  },
 };
 
 export type ModalColor = keyof typeof colorConfig;
@@ -49,9 +137,6 @@ export function CyberpunkModal({
   const matrixRef = useRef<HTMLDivElement>(null);
 
   const config = colorConfig[color];
-  const primaryColor = config.primary;
-  const primaryGlow = config.glow;
-  const primaryRgb = config.rgb;
   const accentGlow = colorConfig.fuchsia.glow;
 
   useEffect(() => {
@@ -61,7 +146,7 @@ export function CyberpunkModal({
       matrixRef.current.innerHTML = "";
       for (let i = 0; i < 30; i++) {
         const column = document.createElement("div");
-        column.className = `absolute text-${primaryColor}-500/30 text-xs font-mono`;
+        column.className = `absolute ${config.textMatrix} text-xs font-mono`;
         column.style.left = `${i * 3.33}%`;
         column.style.top = "-100%";
         column.textContent = Array.from({ length: 15 }, () =>
@@ -87,7 +172,7 @@ export function CyberpunkModal({
         const size = random(2, 6);
         particle.className = `absolute rounded-full ${
           i % 3 === 0
-            ? `bg-${primaryColor}-500`
+            ? config.bgParticle
             : i % 3 === 1
             ? "bg-fuchsia-500"
             : "bg-cyan-500"
@@ -150,7 +235,7 @@ export function CyberpunkModal({
 
       return () => clearInterval(glitchInterval);
     }
-  }, [isVisible, primaryColor]);
+  }, [isVisible, config]);
 
   const handleClose = () => {
     if (!isLoading) onClose();
@@ -173,12 +258,16 @@ export function CyberpunkModal({
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at center, ${primaryGlow}0.3) 0%, transparent 60%)`,
+          background: `radial-gradient(ellipse at center, ${config.glow}0.3) 0%, transparent 60%)`,
         }}
       />
 
       <div
-        className={`absolute inset-0 bg-[linear-gradient(rgba(${primaryRgb},0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(${primaryRgb},0.03)_1px,transparent_1px)] bg-size-[30px_30px] pointer-events-none`}
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(${config.rgb},0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(${config.rgb},0.03) 1px,transparent 1px)`,
+          backgroundSize: "30px 30px",
+        }}
       />
 
       <div
@@ -190,7 +279,7 @@ export function CyberpunkModal({
         {[...Array(3)].map((_, i) => (
           <div
             key={i}
-            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-${primaryColor}-500/20 animate-ping`}
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 ${config.borderRing} animate-ping`}
             style={{
               width: `${300 + i * 100}px`,
               height: `${300 + i * 100}px`,
@@ -203,21 +292,21 @@ export function CyberpunkModal({
 
       <div
         ref={modalRef}
-        className={`relative z-10 bg-zinc-900/95 border-2 border-${primaryColor}-500/60 p-8 max-w-lg w-full mx-4`}
+        className={`relative z-10 bg-zinc-900/95 border-2 ${config.borderModal} p-8 max-w-lg w-full mx-4`}
         style={{
           opacity: 0,
-          boxShadow: `0 0 60px ${primaryGlow}0.4), 0 0 120px ${accentGlow}0.2), inset 0 0 40px ${primaryGlow}0.1)`,
+          boxShadow: `0 0 60px ${config.glow}0.4), 0 0 120px ${accentGlow}0.2), inset 0 0 40px ${config.glow}0.1)`,
         }}
       >
         <div className="absolute inset-0 border-2 border-fuchsia-500/20 animate-pulse pointer-events-none" />
 
         <div
-          className={`absolute top-0 left-0 w-10 h-10 border-l-4 border-t-4 border-${primaryColor}-500 pointer-events-none`}
+          className={`absolute top-0 left-0 w-10 h-10 border-l-4 border-t-4 ${config.borderCorner} pointer-events-none`}
         />
         <div className="absolute top-0 right-0 w-10 h-10 border-r-4 border-t-4 border-cyan-500 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-10 h-10 border-l-4 border-b-4 border-cyan-500 pointer-events-none" />
         <div
-          className={`absolute bottom-0 right-0 w-10 h-10 border-r-4 border-b-4 border-${primaryColor}-500 pointer-events-none`}
+          className={`absolute bottom-0 right-0 w-10 h-10 border-r-4 border-b-4 ${config.borderCorner} pointer-events-none`}
         />
 
         <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-pink-500 via-fuchsia-500 to-cyan-500 animate-pulse pointer-events-none" />
@@ -235,9 +324,9 @@ export function CyberpunkModal({
 
           <div ref={titleRef}>
             <h2
-              className={`text-2xl font-bold tracking-[0.15em] text-${primaryColor}-400 text-center mb-6 flex items-center justify-center gap-3`}
+              className={`text-2xl font-bold tracking-[0.15em] ${config.textTitle} text-center mb-6 flex items-center justify-center gap-3`}
               style={{
-                textShadow: `0 0 25px ${primaryGlow}0.8), 0 0 50px ${primaryGlow}0.4)`,
+                textShadow: `0 0 25px ${config.glow}0.8), 0 0 50px ${config.glow}0.4)`,
               }}
             >
               <Icon icon={titleIcon} className="w-6 h-6" />
@@ -261,7 +350,7 @@ export function CyberpunkModal({
                 <div
                   key={i}
                   className={`w-1.5 h-1.5 ${
-                    i < 3 ? `bg-${primaryColor}-500` : "bg-fuchsia-500"
+                    i < 3 ? config.bgDot : "bg-fuchsia-500"
                   } animate-pulse`}
                   style={{ animationDelay: `${i * 100}ms` }}
                 />
@@ -276,16 +365,16 @@ export function CyberpunkModal({
       </div>
 
       <div
-        className={`absolute top-8 left-8 w-16 h-16 border-l-2 border-t-2 border-${primaryColor}-500/40`}
+        className={`absolute top-8 left-8 w-16 h-16 border-l-2 border-t-2 ${config.borderOuter}`}
       />
       <div
-        className={`absolute top-8 right-8 w-16 h-16 border-r-2 border-t-2 border-${primaryColor}-500/40`}
+        className={`absolute top-8 right-8 w-16 h-16 border-r-2 border-t-2 ${config.borderOuter}`}
       />
       <div
-        className={`absolute bottom-8 left-8 w-16 h-16 border-l-2 border-b-2 border-${primaryColor}-500/40`}
+        className={`absolute bottom-8 left-8 w-16 h-16 border-l-2 border-b-2 ${config.borderOuter}`}
       />
       <div
-        className={`absolute bottom-8 right-8 w-16 h-16 border-r-2 border-b-2 border-${primaryColor}-500/40`}
+        className={`absolute bottom-8 right-8 w-16 h-16 border-r-2 border-b-2 ${config.borderOuter}`}
       />
 
       {[
@@ -297,7 +386,7 @@ export function CyberpunkModal({
         <div
           key={i}
           className={`absolute ${pos} w-3 h-3 ${
-            i % 2 === 0 ? `bg-${primaryColor}-500` : "bg-cyan-500"
+            i % 2 === 0 ? config.bgDot : "bg-cyan-500"
           } animate-ping`}
           style={{ animationDelay: `${i * 150}ms` }}
         />

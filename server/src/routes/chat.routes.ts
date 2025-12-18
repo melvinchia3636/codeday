@@ -6,7 +6,7 @@ import { ChatHistoryService } from '../services/chatHistory.service';
 
 export const createChatRoutes = (pb: PocketBase): Router => {
   const router = Router();
-  const chatController = new ChatController();
+  const chatController = new ChatController(pb);
   const chatHistoryService = new ChatHistoryService(pb);
 
   /**

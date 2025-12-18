@@ -1,15 +1,19 @@
 import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
 import { ChatService, ChatRequest, GreetingRequest } from '../services/chat.service';
+import { UserService } from '../services/user.service';
+import PocketBase from 'pocketbase';
 
 /**
  * Chat Controller - Handles chat endpoint requests
  */
 export class ChatController {
   private chatService: ChatService;
+  private userService: UserService;
 
-  constructor() {
+  constructor(pb: PocketBase) {
     this.chatService = new ChatService();
+    this.userService = new UserService(pb);
   }
 
   /**
@@ -47,8 +51,12 @@ export class ChatController {
           .json({ success: false, error: 'Valid yandereLevel (0-3) is required' });
       }
 
+      // Fetch user to get username for personalization
+      const user = await this.userService.findById(userId);
+
       const response = await this.chatService.chat(userId, {
         message,
+        username: user?.username || user?.name,
         yandereLevel,
         totalScore: totalScore ?? 0,
         nutritionScore: nutritionScore ?? 0,
@@ -94,7 +102,11 @@ export class ChatController {
           .json({ success: false, error: 'Valid yandereLevel (0-3) is required' });
       }
 
+      // Fetch user to get username for personalization
+      const user = await this.userService.findById(userId);
+
       const greeting = await this.chatService.generateGreeting({
+        username: user?.username || user?.name,
         yandereLevel,
         totalScore: totalScore ?? 0,
         nutritionScore: nutritionScore ?? 0,

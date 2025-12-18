@@ -17,6 +17,7 @@ export interface UserData {
 }
 
 export interface UpdateUserData {
+  username?: string;
   gender?: "male" | "female" | "other" | "prefer_not_to_say";
   dob?: string;
   heightCm?: number;
