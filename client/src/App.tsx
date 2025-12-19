@@ -44,6 +44,7 @@ import { RouterProvider } from "react-router/dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { UserProfileProvider } from "./contexts/UserProfileContext";
 import { ProtectedLayout, GuestLayout } from "./components/RouteGuards";
+import { MobileBlockScreen } from "./components/MobileBlockScreen";
 
 const router = createBrowserRouter([
   {
@@ -74,6 +75,7 @@ function App() {
   return (
     <AuthProvider>
       <UserProfileProvider>
+        <MobileBlockScreen />
         <main className="bg-zinc-950 p-4 flex flex-col h-dvh text-white">
           <RouterProvider router={router} />
         </main>
