@@ -8,7 +8,6 @@ export interface WaterLog {
   amountMl: number;
   timestamp: string;
   userId: string;
-  timestamp?: string;
   updated?: string;
 }
 

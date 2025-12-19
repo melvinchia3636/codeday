@@ -4,7 +4,7 @@ import { useHydration } from "../../../contexts/HydrationContext";
 
 export function StatsGrid() {
   const { statsRef } = useHydrationAnimationRefs();
-  const { totalWater, targetWater, logsCount, remaining } = useHydration();
+  const { totalWater, logsCount, remaining } = useHydration();
 
   const stats = [
     { label: "TODAY", value: `${totalWater}ml`, icon: "pixelarticons:drop" },
