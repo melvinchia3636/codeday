@@ -32,7 +32,9 @@ export abstract class BaseService<T> {
    * Get a single record by ID
    */
   async findById(id: string): Promise<T> {
-    return await this.pb.collection(this.collectionName).getOne<T>(id);
+    return await this.pb.collection(this.collectionName).getOne<T>(id, {
+      requestKey: Math.random().toString(),
+    });
   }
 
   /**

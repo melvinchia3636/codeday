@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+import { GoogleGenerativeAI, Content } from '@google/generative-ai';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -62,23 +62,23 @@ export interface GreetingRequest {
 }
 
 /**
- * Chat Service - Handles OpenAI interactions for Lucy chat
+ * Chat Service - Handles Gemini interactions for Lucy chat
  */
 export class ChatService {
-  private openai: OpenAI | null = null;
+  private genAI: GoogleGenerativeAI | null = null;
 
   /**
-   * Lazy initialization of OpenAI client to ensure env vars are loaded
+   * Lazy initialization of Gemini client to ensure env vars are loaded
    */
-  private getClient(): OpenAI {
-    if (!this.openai) {
-      const apiKey = process.env.OPENAI_API_KEY;
+  private getClient(): GoogleGenerativeAI {
+    if (!this.genAI) {
+      const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        throw new Error('OPENAI_API_KEY environment variable is not set');
+        throw new Error('GEMINI_API_KEY environment variable is not set');
       }
-      this.openai = new OpenAI({ apiKey });
+      this.genAI = new GoogleGenerativeAI(apiKey);
     }
-    return this.openai;
+    return this.genAI;
   }
 
   /**
@@ -101,37 +101,37 @@ Respond according to yandere_level ${request.yandereLevel}. Remember your person
   /**
    * Send message to Lucy and get response
    */
-  async chat(userId: string, request: ChatRequest): Promise<ChatResponse> {
-    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-      { role: 'system', content: CHAT_SYSTEM_PROMPT },
-      { role: 'system', content: this.buildContextMessage(request) },
-    ];
-
-    // Add conversation history if provided
-    if (request.conversationHistory && request.conversationHistory.length > 0) {
-      // Only keep last 10 messages to avoid token limits
-      const recentHistory = request.conversationHistory.slice(-10);
-      for (const msg of recentHistory) {
-        if (msg.role === 'user' || msg.role === 'assistant') {
-          messages.push({ role: msg.role, content: msg.content });
-        }
-      }
-    }
-
-    // Add current user message
-    messages.push({ role: 'user', content: request.message });
-
+  async chat(_userId: string, request: ChatRequest): Promise<ChatResponse> {
     try {
       const client = this.getClient();
-      const completion = await client.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages,
-        max_tokens: 300,
-        temperature: 0.8 + request.yandereLevel * 0.1, // Higher temp for higher yandere
+      const model = client.getGenerativeModel({
+        model: 'gemini-2.5-flash-lite',
+        systemInstruction: `${CHAT_SYSTEM_PROMPT}\n\n${this.buildContextMessage(request)}`,
+        generationConfig: {
+          maxOutputTokens: 3000,
+          temperature: 0.8 + request.yandereLevel * 0.1, // Higher temp for higher yandere
+        },
       });
 
+      // Build conversation history for Gemini
+      const history: Content[] = [];
+
+      if (request.conversationHistory && request.conversationHistory.length > 0) {
+        // Only keep last 10 messages to avoid token limits
+        const recentHistory = request.conversationHistory.slice(-10);
+        for (const msg of recentHistory) {
+          if (msg.role === 'user') {
+            history.push({ role: 'user', parts: [{ text: msg.content }] });
+          } else if (msg.role === 'assistant') {
+            history.push({ role: 'model', parts: [{ text: msg.content }] });
+          }
+        }
+      }
+
+      const chat = model.startChat({ history });
+      const result = await chat.sendMessage(request.message);
       const responseMessage =
-        completion.choices[0]?.message?.content ||
+        result.response.text() ||
         "...I can't find the words right now. But I'm thinking of you. Always.";
 
       return {
@@ -139,7 +139,7 @@ Respond according to yandere_level ${request.yandereLevel}. Remember your person
         yandereLevel: request.yandereLevel,
       };
     } catch (error) {
-      console.error('OpenAI API error:', error);
+      console.error('Gemini API error:', error);
       throw new Error('Failed to get response from Lucy');
     }
   }
@@ -160,19 +160,20 @@ Respond according to yandere_level ${request.yandereLevel}. Remember your person
 
     try {
       const client = this.getClient();
-      const completion = await client.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: GREETING_SYSTEM_PROMPT },
-          { role: 'user', content: greetingInput },
-        ],
-        max_tokens: 100,
-        temperature: 0.9,
+      const model = client.getGenerativeModel({
+        model: 'gemini-2.5-flash-lite',
+        systemInstruction: GREETING_SYSTEM_PROMPT,
+        generationConfig: {
+          maxOutputTokens: 200,
+          temperature: 0.9,
+        },
       });
 
-      return completion.choices[0]?.message?.content?.trim() || "I'm watching over you...";
+      const result = await model.generateContent(greetingInput);
+      console.log(result.response.text());
+      return result.response.text()?.trim() || "I'm watching over you...";
     } catch (error) {
-      console.error('OpenAI greeting error:', error);
+      console.error('Gemini greeting error:', error);
       // Return fallback based on level
       const fallbacks = [
         'Take care of yourself today~ ♡',
